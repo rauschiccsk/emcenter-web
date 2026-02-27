@@ -89,9 +89,9 @@ body {
 .form-wrapper {
     background-color: var(--white);
     border-radius: 12px;
-    padding: 30px;
+    padding: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-    max-width: 420px;
+    max-width: 360px;
     margin: 0 auto;
 }
 
@@ -111,14 +111,14 @@ body {
 }
 
 .form-group {
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .form-group label {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 3px;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 13px;
     color: var(--text);
 }
 
@@ -129,11 +129,11 @@ body {
 .form-group input,
 .form-group textarea {
     width: 100%;
-    padding: 8px 12px;
+    padding: 6px 10px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     font-family: 'Open Sans', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--text);
     background-color: var(--white);
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -153,22 +153,23 @@ body {
 
 .form-group textarea {
     resize: vertical;
-    min-height: 80px;
+    min-height: 60px;
+    max-height: 80px;
 }
 
 button[type="submit"] {
     width: 100%;
-    padding: 12px;
+    padding: 8px 20px;
     border: none;
     border-radius: var(--radius);
     background-color: var(--primary);
     color: var(--white);
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
-    font-size: 1.05rem;
+    font-size: 0.95rem;
     cursor: pointer;
     transition: background-color 0.2s ease, transform 0.1s ease;
-    margin-top: 10px;
+    margin-top: 8px;
 }
 
 button[type="submit"]:hover {
@@ -254,7 +255,7 @@ button[type="submit"]:disabled {
     }
 
     .form-wrapper {
-        padding: 30px 24px;
+        padding: 20px 18px;
     }
 
     .form-wrapper h2 {
@@ -281,7 +282,7 @@ button[type="submit"]:disabled {
     }
 
     .form-wrapper {
-        padding: 24px 18px;
+        padding: 18px 14px;
         border-radius: 8px;
     }
 
@@ -291,13 +292,13 @@ button[type="submit"]:disabled {
 
     .form-group input,
     .form-group textarea {
-        padding: 10px 14px;
-        font-size: 0.95rem;
+        padding: 6px 10px;
+        font-size: 13px;
     }
 
     button[type="submit"] {
-        padding: 14px;
-        font-size: 1rem;
+        padding: 8px 20px;
+        font-size: 0.9rem;
     }
 
     .logo {
