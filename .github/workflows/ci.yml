@@ -35,7 +35,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Deploy
         run: |
-          cd /home/icc/emcenter-web
+          cd /opt/emcenter-web-src
           git pull origin main
           docker compose down
           docker compose up -d --build
