@@ -22,7 +22,6 @@
         // Honeypot check
         var honeypot = form.querySelector('input[name="website"]');
         if (honeypot && honeypot.value) {
-            // Bot detected — show fake success, don't send
             form.style.display = "none";
             successMsg.style.display = "block";
             return;
@@ -43,60 +42,49 @@
             showError("Prosím, zadajte platný e-mail.");
             return;
         }
+        if (message && message.length > 500) {
+            showError("Správa môže mať maximálne 500 znakov.");
+            return;
+        }
 
         // Disable button
         submitBtn.disabled = true;
         submitBtn.textContent = "Odosielam...";
 
         // Send AJAX request
-        var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/api/contact", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-
-        xhr.onreadystatechange = function () {
-            if (xhr.readyState !== 4) return;
-
-            if (xhr.status === 200) {
-                var resp = JSON.parse(xhr.responseText);
-                if (resp.status === "ok") {
-                    form.style.display = "none";
-                    successMsg.style.display = "block";
-                } else {
-                    showError(resp.message || "Niečo sa pokazilo.");
-                    resetButton();
-                }
+        fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                phone: phone || null,
+                message: message || null
+            })
+        })
+        .then(function (response) {
+            return response.json().then(function (data) {
+                return { ok: response.ok, data: data };
+            });
+        })
+        .then(function (result) {
+            if (result.ok && result.data.success) {
+                form.style.display = "none";
+                successMsg.textContent = result.data.message;
+                successMsg.style.display = "block";
             } else {
-                var errResp;
-                try {
-                    errResp = JSON.parse(xhr.responseText);
-                } catch (_) {
-                    errResp = null;
-                }
-                var errMsg = errResp && errResp.message
-                    ? errResp.message
-                    : "Niečo sa pokazilo. Skúste to prosím znova.";
-                showError(errMsg);
+                showError(result.data.detail || result.data.message || "Nastala chyba. Skúste to prosím znova.");
                 resetButton();
             }
-        };
-
-        xhr.onerror = function () {
-            showError("Chyba pripojenia. Skontrolujte internet a skúste znova.");
+        })
+        .catch(function () {
+            showError("Nastala chyba pripojenia. Skúste to prosím znova.");
             resetButton();
-        };
-
-        var payload = JSON.stringify({
-            name: name,
-            email: email,
-            phone: phone || null,
-            message: message || null
         });
-
-        xhr.send(payload);
     });
 
     function showError(msg) {
-        errorMsg.textContent = "✗ " + msg;
+        errorMsg.textContent = msg;
         errorMsg.style.display = "block";
     }
 

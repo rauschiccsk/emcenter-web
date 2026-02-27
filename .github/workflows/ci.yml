@@ -1,1 +1,45 @@
-# CI/CD pipeline — placeholder pre Fázu 2
+name: CI/CD — EM Center Web
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: andros-ubuntu-emcenter
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install ruff
+        run: pip install ruff
+      - name: Lint
+        run: ruff check app/
+
+  build:
+    runs-on: andros-ubuntu-emcenter
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - name: Docker build test
+        run: docker build -t emcenter-web:test .
+
+  deploy:
+    runs-on: andros-ubuntu-emcenter
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deploy
+        run: |
+          cd /home/icc/emcenter-web
+          git pull origin main
+          docker compose down
+          docker compose up -d --build
+      - name: Verify health
+        run: |
+          sleep 5
+          curl -f http://localhost:9162/health

@@ -11,7 +11,13 @@ services:
       - DB_PORT=9150
       - DB_NAME=emcenter_db
       - DB_USER=emcenter_user
+      - ADMIN_EMAIL=odbyt@em-1.sk
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - default
 

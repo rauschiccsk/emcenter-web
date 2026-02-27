@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>EM center — Nový e-shop OASIS EM-1</title>
-    <meta name="description" content="Pripravujeme pre vás nový e-shop OASIS EM-1. Zanechajte nám kontakt a dáme vám vedieť.">
+    <meta name="description" content="Pripravujeme pre vás nový e-shop s produktmi OASIS EM-1. Zanechajte nám kontakt.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
@@ -14,14 +14,14 @@
     <!-- Header -->
     <header class="header">
         <div class="container">
-            <div class="logo">EM center</div>
+            <h1 class="logo">EM center</h1>
         </div>
     </header>
 
     <!-- Hero -->
     <section class="hero">
         <div class="container">
-            <h1>Pripravujeme pre vás nový e-shop OASIS EM-1</h1>
+            <h2>Pripravujeme pre vás nový e-shop OASIS EM-1</h2>
             <p class="hero-text">Náš e-shop prechádza kompletnou modernizáciou. Čoskoro vám prinesieme nový dizajn, jednoduchšie objednávanie a lepší zážitok z nákupu.</p>
         </div>
     </section>
@@ -30,7 +30,7 @@
     <section class="contact">
         <div class="container">
             <div class="form-wrapper">
-                <h2>Zanechajte nám kontakt</h2>
+                <h3>Zanechajte nám kontakt</h3>
                 <p class="form-subtitle">Dáme vám vedieť hneď, ako bude nový e-shop spustený.</p>
 
                 <form id="contactForm" novalidate>
@@ -51,7 +51,7 @@
 
                     <div class="form-group">
                         <label for="message">Správa</label>
-                        <textarea id="message" name="message" rows="4" placeholder="Vaša správa (voliteľné)"></textarea>
+                        <textarea id="message" name="message" rows="4" maxlength="500" placeholder="Vaša správa (voliteľné)"></textarea>
                     </div>
 
                     <!-- Honeypot -->
@@ -61,11 +61,9 @@
                 </form>
 
                 <div id="successMessage" class="message success-message" style="display:none;">
-                    ✓ Ďakujeme! Budeme vás kontaktovať.
+                    Ďakujeme! Budeme vás kontaktovať.
                 </div>
-                <div id="errorMessage" class="message error-message" style="display:none;">
-                    ✗ Niečo sa pokazilo. Skúste to prosím znova.
-                </div>
+                <div id="errorMessage" class="message error-message" style="display:none;"></div>
             </div>
 
             <p class="gdpr-text">
