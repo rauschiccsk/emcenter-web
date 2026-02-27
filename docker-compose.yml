@@ -3,7 +3,7 @@ services:
     build: .
     container_name: emcenter-web
     ports:
-      - "9160:8000"
+      - "9162:8000"
     env_file:
       - .env
     environment:

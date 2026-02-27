@@ -11,7 +11,7 @@ Dočasná holding page pre emcenter.sk počas migrácie e-shopu OASIS EM-1.
 docker compose up -d --build
 
 ## Port
-- Aplikácia: 9160
+- Aplikácia: 9162
 - Interný: 8000 (uvicorn)
 
 ## Endpointy
