@@ -1,0 +1,20 @@
+services:
+  emcenter-web:
+    build: .
+    container_name: emcenter-web
+    ports:
+      - "9160:8000"
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=172.17.0.1
+      - DB_PORT=9150
+      - DB_NAME=emcenter_db
+      - DB_USER=emcenter_user
+    restart: unless-stopped
+    networks:
+      - default
+
+networks:
+  default:
+    name: emcenter-network

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EM center — Nový e-shop OASIS EM-1</title>
+    <meta name="description" content="Pripravujeme pre vás nový e-shop OASIS EM-1. Zanechajte nám kontakt a dáme vám vedieť.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">EM center</div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1>Pripravujeme pre vás nový e-shop OASIS EM-1</h1>
+            <p class="hero-text">Náš e-shop prechádza kompletnou modernizáciou. Čoskoro vám prinesieme nový dizajn, jednoduchšie objednávanie a lepší zážitok z nákupu.</p>
+        </div>
+    </section>
+
+    <!-- Contact Form -->
+    <section class="contact">
+        <div class="container">
+            <div class="form-wrapper">
+                <h2>Zanechajte nám kontakt</h2>
+                <p class="form-subtitle">Dáme vám vedieť hneď, ako bude nový e-shop spustený.</p>
+
+                <form id="contactForm" novalidate>
+                    <div class="form-group">
+                        <label for="name">Meno <span class="required">*</span></label>
+                        <input type="text" id="name" name="name" required placeholder="Vaše meno">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">E-mail <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" required placeholder="vas@email.sk">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Telefón</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+421...">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="message">Správa</label>
+                        <textarea id="message" name="message" rows="4" placeholder="Vaša správa (voliteľné)"></textarea>
+                    </div>
+
+                    <!-- Honeypot -->
+                    <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+
+                    <button type="submit" id="submitBtn">Chcem byť informovaný/á</button>
+                </form>
+
+                <div id="successMessage" class="message success-message" style="display:none;">
+                    ✓ Ďakujeme! Budeme vás kontaktovať.
+                </div>
+                <div id="errorMessage" class="message error-message" style="display:none;">
+                    ✗ Niečo sa pokazilo. Skúste to prosím znova.
+                </div>
+            </div>
+
+            <p class="gdpr-text">
+                Vaše kontaktné údaje budú použité výlučne na účel oznámenia o spustení nového e-shopu.
+                Po odoslaní tohto oznámenia budú vaše údaje natrvalo odstránené z nášho informačného systému.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 EM center s.r.o.</p>
+            <p>Kontakt: <a href="mailto:odbyt@em-1.sk">odbyt@em-1.sk</a></p>
+        </div>
+    </footer>
+
+    <script src="/static/js/form.js"></script>
+</body>
+</html>
