@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objednávka potvrdená | EM Center</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="result-page">
+    <div class="container result-container">
+        <div class="result-icon result-icon--success">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="38" stroke="#2E7D32" stroke-width="4" fill="#E8F5E9"/>
+                <path d="M24 42L34 52L56 30" stroke="#2E7D32" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </div>
+        <h1>Dakujeme za vašu objednávku!</h1>
+        <p class="result-order-number">Číslo objednávky: <strong>{{ order_number }}</strong></p>
+        <p class="result-text">Na váš e-mail sme odoslali potvrdenie objednávky.</p>
+        <p class="result-text">Objednávka bude spracovaná a odoslaná čo najskôr.</p>
+        <div class="result-actions">
+            <a href="/" class="btn btn-primary btn-lg">Späť na hlavnú stránku</a>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom">
+            <p>&copy; 2026 EM Center. Všetky práva vyhradené.</p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

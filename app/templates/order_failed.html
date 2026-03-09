@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Platba nebola dokončená | EM Center</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<div class="result-page">
+    <div class="container result-container">
+        <div class="result-icon result-icon--error">
+            <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="40" cy="40" r="38" stroke="#E65100" stroke-width="4" fill="#FFF3E0"/>
+                <path d="M40 24V46" stroke="#E65100" stroke-width="5" stroke-linecap="round"/>
+                <circle cx="40" cy="54" r="3" fill="#E65100"/>
+            </svg>
+        </div>
+        <h1>Platba nebola dokončená</h1>
+        {% if order_number %}
+        <p class="result-order-number">Číslo objednávky: <strong>{{ order_number }}</strong></p>
+        {% endif %}
+        <p class="result-text">Vaša objednávka bola vytvorená, ale platba nebola úspešná.</p>
+        <p class="result-text">Skúste to prosím znova alebo nás kontaktujte.</p>
+        <p class="result-contact">Kontakt: <a href="mailto:info@emcenter.sk">info@emcenter.sk</a></p>
+        <div class="result-actions">
+            <a href="/" class="btn btn-primary btn-lg">Skúsiť znova</a>
+            <a href="mailto:info@emcenter.sk" class="btn btn-outline">Kontaktovať nás</a>
+        </div>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-bottom">
+            <p>&copy; 2026 EM Center. Všetky práva vyhradené.</p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

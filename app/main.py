@@ -9,10 +9,11 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Optional
 
+import httpx
 import pg8000
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel, field_validator
@@ -112,6 +113,10 @@ def init_db():
 
 
 # --- SMTP ---
+# --- NEX Automat ESHOP API ---
+NEX_API_BASE = os.environ.get("NEX_API_BASE", "http://localhost:9110")
+ESHOP_TOKEN = os.environ.get("ESHOP_TOKEN", "")
+
 SMTP_HOST = os.environ.get("SMTP_HOST", "")
 SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
 SMTP_USER = os.environ.get("SMTP_USER", "")
@@ -282,4 +287,109 @@ async def contact(request: Request, form: ContactForm):
             "success": True,
             "message": "Ďakujeme! Budeme vás kontaktovať.",
         }
+    )
+
+
+# --- NEX Automat ESHOP API Proxy ---
+
+@app.get("/api/products")
+async def get_products():
+    """Proxy to NEX Automat — list products."""
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        resp = await client.get(
+            f"{NEX_API_BASE}/api/eshop/products",
+            headers={"X-Eshop-Token": ESHOP_TOKEN},
+        )
+        return Response(
+            content=resp.content,
+            status_code=resp.status_code,
+            media_type="application/json",
+        )
+
+
+@app.get("/api/products/{sku}")
+async def get_product(sku: str):
+    """Proxy to NEX Automat — product detail."""
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        resp = await client.get(
+            f"{NEX_API_BASE}/api/eshop/products/{sku}",
+            headers={"X-Eshop-Token": ESHOP_TOKEN},
+        )
+        return Response(
+            content=resp.content,
+            status_code=resp.status_code,
+            media_type="application/json",
+        )
+
+
+@app.post("/api/orders")
+async def create_order(request: Request):
+    """Proxy to NEX Automat — create order."""
+    body = await request.json()
+    async with httpx.AsyncClient(timeout=30.0) as client:
+        resp = await client.post(
+            f"{NEX_API_BASE}/api/eshop/orders",
+            headers={
+                "X-Eshop-Token": ESHOP_TOKEN,
+                "Content-Type": "application/json",
+            },
+            json=body,
+        )
+        return Response(
+            content=resp.content,
+            status_code=resp.status_code,
+            media_type="application/json",
+        )
+
+
+@app.get("/api/orders/{order_number}")
+async def get_order_status(order_number: str):
+    """Proxy to NEX Automat — order status."""
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        resp = await client.get(
+            f"{NEX_API_BASE}/api/eshop/orders/{order_number}",
+            headers={"X-Eshop-Token": ESHOP_TOKEN},
+        )
+        return Response(
+            content=resp.content,
+            status_code=resp.status_code,
+            media_type="application/json",
+        )
+
+
+@app.get("/payment/return")
+async def payment_return(request: Request):
+    """Comgate redirect after payment — show thank you or failure page."""
+    trans_id = request.query_params.get("id", "")
+    try:
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            resp = await client.get(
+                f"{NEX_API_BASE}/api/eshop/payment/return",
+                headers={"X-Eshop-Token": ESHOP_TOKEN},
+                params={"id": trans_id},
+            )
+        if resp.status_code == 200:
+            data = resp.json()
+            if data.get("payment_status") == "paid":
+                return templates.TemplateResponse(
+                    "order_success.html",
+                    {
+                        "request": request,
+                        "order_number": data.get("order_number", ""),
+                        "status": data.get("status", ""),
+                    },
+                )
+            else:
+                return templates.TemplateResponse(
+                    "order_failed.html",
+                    {
+                        "request": request,
+                        "order_number": data.get("order_number", ""),
+                    },
+                )
+    except Exception:
+        pass
+    return templates.TemplateResponse(
+        "order_failed.html",
+        {"request": request, "order_number": ""},
     )
