@@ -295,65 +295,117 @@ async def contact(request: Request, form: ContactForm):
 @app.get("/api/products")
 async def get_products():
     """Proxy to NEX Automat — list products."""
-    async with httpx.AsyncClient(timeout=10.0) as client:
-        resp = await client.get(
-            f"{NEX_API_BASE}/api/eshop/products",
-            headers={"X-Eshop-Token": ESHOP_TOKEN},
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(
+                f"{NEX_API_BASE}/api/eshop/products",
+                headers={"X-Eshop-Token": ESHOP_TOKEN},
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type="application/json",
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: GET /api/eshop/products")
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
         )
-        return Response(
-            content=resp.content,
-            status_code=resp.status_code,
-            media_type="application/json",
+    except Exception as e:
+        logger.error("Proxy error GET /api/products: %s", e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
         )
 
 
 @app.get("/api/products/{sku}")
 async def get_product(sku: str):
     """Proxy to NEX Automat — product detail."""
-    async with httpx.AsyncClient(timeout=10.0) as client:
-        resp = await client.get(
-            f"{NEX_API_BASE}/api/eshop/products/{sku}",
-            headers={"X-Eshop-Token": ESHOP_TOKEN},
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(
+                f"{NEX_API_BASE}/api/eshop/products/{sku}",
+                headers={"X-Eshop-Token": ESHOP_TOKEN},
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type="application/json",
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: GET /api/eshop/products/%s", sku)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
         )
-        return Response(
-            content=resp.content,
-            status_code=resp.status_code,
-            media_type="application/json",
+    except Exception as e:
+        logger.error("Proxy error GET /api/products/%s: %s", sku, e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
         )
 
 
 @app.post("/api/orders")
 async def create_order(request: Request):
     """Proxy to NEX Automat — create order."""
-    body = await request.json()
-    async with httpx.AsyncClient(timeout=30.0) as client:
-        resp = await client.post(
-            f"{NEX_API_BASE}/api/eshop/orders",
-            headers={
-                "X-Eshop-Token": ESHOP_TOKEN,
-                "Content-Type": "application/json",
-            },
-            json=body,
+    try:
+        body = await request.json()
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            resp = await client.post(
+                f"{NEX_API_BASE}/api/eshop/orders",
+                headers={
+                    "X-Eshop-Token": ESHOP_TOKEN,
+                    "Content-Type": "application/json",
+                },
+                json=body,
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type="application/json",
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: POST /api/eshop/orders")
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
         )
-        return Response(
-            content=resp.content,
-            status_code=resp.status_code,
-            media_type="application/json",
+    except Exception as e:
+        logger.error("Proxy error POST /api/orders: %s", e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
         )
 
 
 @app.get("/api/orders/{order_number}")
 async def get_order_status(order_number: str):
     """Proxy to NEX Automat — order status."""
-    async with httpx.AsyncClient(timeout=10.0) as client:
-        resp = await client.get(
-            f"{NEX_API_BASE}/api/eshop/orders/{order_number}",
-            headers={"X-Eshop-Token": ESHOP_TOKEN},
+    try:
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(
+                f"{NEX_API_BASE}/api/eshop/orders/{order_number}",
+                headers={"X-Eshop-Token": ESHOP_TOKEN},
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type="application/json",
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: GET /api/eshop/orders/%s", order_number)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
         )
-        return Response(
-            content=resp.content,
-            status_code=resp.status_code,
-            media_type="application/json",
+    except Exception as e:
+        logger.error("Proxy error GET /api/orders/%s: %s", order_number, e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
         )
 
 
