@@ -1,4 +1,4 @@
-"""EM Center Web — Coming Soon holding page."""
+"""EM Center Web — OASIS EM-1 landing page."""
 
 import logging
 import os
@@ -210,7 +210,7 @@ def on_startup():
 # --- Endpoints ---
 @app.get("/", response_class=HTMLResponse)
 async def homepage(request: Request):
-    """Render landing page."""
+    """Render OASIS EM-1 conversion landing page."""
     return templates.TemplateResponse("index.html", {"request": request})
 
 

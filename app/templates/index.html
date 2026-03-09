@@ -3,84 +3,386 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EM center — Nový e-shop OASIS EM-1</title>
-    <meta name="description" content="Pripravujeme pre vás nový e-shop s produktmi OASIS EM-1. Zanechajte nám kontakt.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <title>OASIS EM-1 — Efektívne mikroorganizmy pre ekologické poľnohospodárstvo | EM Center</title>
+    <meta name="description" content="OASIS EM-1 efektívne mikroorganizmy. Prírodná cesta k zdravej pôde a bohatej úrode. Objednajte 500ml alebo 5L balenie.">
+    <meta property="og:title" content="OASIS EM-1 — Efektívne mikroorganizmy | EM Center">
+    <meta property="og:description" content="Prírodná cesta k zdravej pôde a bohatej úrode. Objednajte 500ml alebo 5L balenie.">
+    <meta property="og:url" content="https://emcenter.sk">
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://emcenter.sk/images/og-image.png">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <h1 class="logo">EM center</h1>
+
+<!-- Sticky Header -->
+<header class="header" id="header">
+    <div class="container header-inner">
+        <a href="#hero" class="logo">EM Center</a>
+        <nav class="nav" id="nav">
+            <a href="#benefity" class="nav-link">Benefity</a>
+            <a href="#ako-funguje" class="nav-link">Ako funguje</a>
+            <a href="#produkty" class="nav-link">Produkty</a>
+            <a href="#faq" class="nav-link">FAQ</a>
+            <a href="#produkty" class="btn btn-primary btn-sm nav-cta">Objednať</a>
+        </nav>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+</header>
+
+<!-- SECTION 1: Hero -->
+<section class="hero" id="hero">
+    <div class="container hero-inner">
+        <div class="hero-text fade-in">
+            <h1>Prírodná sila pre vašu záhradu</h1>
+            <p class="hero-subtitle">OASIS EM-1 — efektívne mikroorganizmy pre zdravú pôdu a bohatú úrodu</p>
+            <a href="#produkty" class="btn btn-primary btn-lg">Objednať teraz →</a>
         </div>
-    </header>
-
-    <!-- Hero -->
-    <section class="hero">
-        <div class="container">
-            <h2>Pripravujeme pre vás nový e-shop OASIS EM-1</h2>
-            <p class="hero-text">Náš e-shop prechádza kompletnou modernizáciou. Čoskoro vám prinesieme nový dizajn, jednoduchšie objednávanie a lepší zážitok z nákupu.</p>
-        </div>
-    </section>
-
-    <!-- Contact Form -->
-    <section class="contact">
-        <div class="container">
-            <div class="form-wrapper">
-                <h3>Zanechajte nám kontakt</h3>
-                <p class="form-subtitle">Dáme vám vedieť hneď, ako bude nový e-shop spustený.</p>
-
-                <form id="contactForm" novalidate>
-                    <div class="form-group">
-                        <label for="name">Meno <span class="required">*</span></label>
-                        <input type="text" id="name" name="name" required placeholder="Vaše meno">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="email">E-mail <span class="required">*</span></label>
-                        <input type="email" id="email" name="email" required placeholder="vas@email.sk">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phone">Telefón</label>
-                        <input type="tel" id="phone" name="phone" placeholder="+421...">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="message">Správa</label>
-                        <textarea id="message" name="message" rows="3" maxlength="500" placeholder="Vaša správa (voliteľné)"></textarea>
-                    </div>
-
-                    <!-- Honeypot -->
-                    <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
-
-                    <button type="submit" id="submitBtn">Chcem byť informovaný/á</button>
-                </form>
-
-                <div id="successMessage" class="message success-message" style="display:none;">
-                    Ďakujeme! Budeme vás kontaktovať.
-                </div>
-                <div id="errorMessage" class="message error-message" style="display:none;"></div>
+        <div class="hero-image fade-in">
+            <div class="placeholder-image hero-placeholder" data-placeholder="hero-product-image">
+                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                <span>Product Image</span>
             </div>
-
-            <p class="gdpr-text">
-                Vaše kontaktné údaje budú použité výlučne na účel oznámenia o spustení nového e-shopu.
-                Po odoslaní tohto oznámenia budú vaše údaje natrvalo odstránené z nášho informačného systému.
-            </p>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>&copy; 2026 EM-1 s.r.o.</p>
-            <p>Kontakt: <a href="mailto:odbyt@em-1.sk">odbyt@em-1.sk</a></p>
+<!-- SECTION 2: Benefits -->
+<section class="benefits" id="benefity">
+    <div class="container">
+        <h2 class="section-title fade-in">Prečo OASIS EM-1?</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card fade-in">
+                <div class="benefit-icon">
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 42V22" stroke="#2E7D32" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M24 22C24 22 18 16 18 10C18 6 20.7 4 24 4C27.3 4 30 6 30 10C30 16 24 22 24 22Z" fill="#4CAF50" opacity="0.2" stroke="#2E7D32" stroke-width="2.5"/>
+                        <path d="M24 30C24 30 16 26 12 22" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M24 34C24 34 32 30 36 26" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M12 22C10 20 9 17 10 14C11 11 14 10 16 11C18 12 18 15 16 18C14 21 12 22 12 22Z" fill="#4CAF50" opacity="0.15" stroke="#2E7D32" stroke-width="2"/>
+                        <path d="M36 26C38 24 39 21 38 18C37 15 34 14 32 15C30 16 30 19 32 22C34 25 36 26 36 26Z" fill="#4CAF50" opacity="0.15" stroke="#2E7D32" stroke-width="2"/>
+                    </svg>
+                </div>
+                <h3>Zdravá pôda</h3>
+                <p>Obnovuje prirodzenú mikroflóru pôdy a podporuje rast prospešných baktérií.</p>
+            </div>
+            <div class="benefit-card fade-in">
+                <div class="benefit-icon">
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M16 44V28" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M32 44V24" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round"/>
+                        <path d="M16 28C16 28 8 22 8 14C8 8 12 5 16 5C20 5 24 8 24 14C24 22 16 28 16 28Z" fill="#4CAF50" opacity="0.2" stroke="#2E7D32" stroke-width="2.5"/>
+                        <path d="M32 24C32 24 40 18 40 10C40 4 36 2 32 2C28 2 24 4 24 10C24 18 32 24 32 24Z" fill="#4CAF50" opacity="0.3" stroke="#2E7D32" stroke-width="2.5"/>
+                        <circle cx="16" cy="16" r="2" fill="#2E7D32" opacity="0.4"/>
+                        <circle cx="32" cy="12" r="2.5" fill="#2E7D32" opacity="0.4"/>
+                    </svg>
+                </div>
+                <h3>Väčšia úroda</h3>
+                <p>Zvyšuje výnos a kvalitu plodín prirodzenou cestou bez syntetických hnojív.</p>
+            </div>
+            <div class="benefit-card fade-in">
+                <div class="benefit-icon">
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M24 4L6 14V24C6 35 14 43 24 46C34 43 42 35 42 24V14L24 4Z" fill="#4CAF50" opacity="0.15" stroke="#2E7D32" stroke-width="2.5" stroke-linejoin="round"/>
+                        <path d="M16 24L22 30L34 18" stroke="#2E7D32" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <h3>Bez chémie</h3>
+                <p>100% prírodný produkt, bezpečný pre deti, domáce zvieratá aj životné prostredie.</p>
+            </div>
+            <div class="benefit-card fade-in">
+                <div class="benefit-icon">
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M30 8C35.5 8 40 12.5 40 18C40 22 38 25.5 34 28L30 24" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18 8C12.5 8 8 12.5 8 18C8 22 10 25.5 14 28L18 24" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M18 40C12.5 40 8 35.5 8 30C8 26 10 22.5 14 20L18 24" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M30 40C35.5 40 40 35.5 40 30C40 26 38 22.5 34 20L30 24" stroke="#2E7D32" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="24" cy="24" r="5" fill="#4CAF50" opacity="0.2" stroke="#2E7D32" stroke-width="2"/>
+                        <path d="M36 12L32 16" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M12 12L16 16" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M12 36L16 32" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+                        <path d="M36 36L32 32" stroke="#2E7D32" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h3>Ekologické</h3>
+                <p>Znižuje potrebu umelých hnojív a pesticídov. Šetrné k prírode.</p>
+            </div>
         </div>
-    </footer>
+    </div>
+</section>
 
-    <script src="/static/js/form.js"></script>
+<!-- SECTION 3: How It Works -->
+<section class="how-it-works" id="ako-funguje">
+    <div class="container">
+        <h2 class="section-title fade-in">Ako to funguje?</h2>
+        <div class="steps">
+            <div class="step fade-in">
+                <div class="step-number">1</div>
+                <h3>Zrieďte</h3>
+                <p>Zmiešajte EM-1 s vodou podľa návodu na etikete. Pomer závisí od účelu použitia.</p>
+            </div>
+            <div class="step-connector" aria-hidden="true">
+                <svg viewBox="0 0 60 24" fill="none"><path d="M0 12H50M50 12L42 4M50 12L42 20" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step fade-in">
+                <div class="step-number">2</div>
+                <h3>Aplikujte</h3>
+                <p>Zalejte pôdu alebo postrekovajte rastliny. Aplikujte ráno alebo večer.</p>
+            </div>
+            <div class="step-connector" aria-hidden="true">
+                <svg viewBox="0 0 60 24" fill="none"><path d="M0 12H50M50 12L42 4M50 12L42 20" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <div class="step fade-in">
+                <div class="step-number">3</div>
+                <h3>Výsledky</h3>
+                <p>Viditeľné zlepšenie kvality pôdy a rastu rastlín do 2-4 týždňov.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 4: Social Proof -->
+<section class="social-proof" id="referencie">
+    <div class="container">
+        <h2 class="section-title fade-in">Naši zákazníci hovoria</h2>
+        <div class="stats-row fade-in">
+            <div class="stat">
+                <span class="stat-number">20+</span>
+                <span class="stat-label">rokov skúseností</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">1000+</span>
+                <span class="stat-label">spokojných zákazníkov</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">5</span>
+                <span class="stat-label">krajín predaja</span>
+            </div>
+        </div>
+        <div class="testimonials">
+            <div class="testimonial-card fade-in">
+                <div class="stars">★★★★★</div>
+                <blockquote>
+                    „Od kedy používam EM-1, moja záhrada nikdy nevyzerala lepšie. Paradajky sú šťavnatejšie a úroda väčšia."
+                </blockquote>
+                <cite>— Martin K., záhradkár z Bratislavy</cite>
+            </div>
+            <div class="testimonial-card fade-in">
+                <div class="stars">★★★★★</div>
+                <blockquote>
+                    „Najlepší prírodný prípravok pre kompost. Rozklad organického materiálu je viditeľne rýchlejší."
+                </blockquote>
+                <cite>— Jana S., ekologická farmárka</cite>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 5: Products — PRIMARY CONVERSION ZONE -->
+<section class="products" id="produkty">
+    <div class="container">
+        <h2 class="section-title fade-in">Vyberte si balenie</h2>
+        <!-- TODO: Load from API -->
+        <div class="products-grid">
+            <div class="product-card fade-in" data-product-id="EM-500" data-price="9.90">
+                <div class="placeholder-image product-placeholder" data-placeholder="product-em500">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                    <span>Product Image</span>
+                </div>
+                <h3>OASIS EM-1 — 500ml</h3>
+                <p class="product-subtitle">Ideálne na vyskúšanie</p>
+                <div class="product-price">
+                    <span class="price">9,90 €</span>
+                    <span class="price-vat">s DPH</span>
+                </div>
+                <div class="quantity-selector">
+                    <button class="qty-btn qty-minus" aria-label="Znížiť množstvo">−</button>
+                    <span class="qty-value">1</span>
+                    <button class="qty-btn qty-plus" aria-label="Zvýšiť množstvo">+</button>
+                </div>
+                <button class="btn btn-outline add-to-cart">Pridať do košíka</button>
+            </div>
+            <div class="product-card product-card--highlighted fade-in" data-product-id="EM-5L" data-price="39.90">
+                <div class="product-badge">Odporúčané</div>
+                <div class="placeholder-image product-placeholder" data-placeholder="product-em5l">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
+                    <span>Product Image</span>
+                </div>
+                <h3>OASIS EM-1 — 5L</h3>
+                <p class="product-subtitle">Najlepšia hodnota za peniaze</p>
+                <div class="product-price">
+                    <span class="price">39,90 €</span>
+                    <span class="price-vat">s DPH</span>
+                </div>
+                <div class="quantity-selector">
+                    <button class="qty-btn qty-minus" aria-label="Znížiť množstvo">−</button>
+                    <span class="qty-value">1</span>
+                    <button class="qty-btn qty-plus" aria-label="Zvýšiť množstvo">+</button>
+                </div>
+                <button class="btn btn-primary add-to-cart">Pridať do košíka</button>
+            </div>
+        </div>
+
+        <!-- Order Summary -->
+        <!-- TODO: API integration in F2.2 -->
+        <div class="order-summary" id="kosik" style="display: none;">
+            <h3>Vaša objednávka</h3>
+            <table class="cart-table">
+                <thead>
+                    <tr>
+                        <th>Produkt</th>
+                        <th>Množstvo</th>
+                        <th>Cena</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="cart-body">
+                </tbody>
+            </table>
+            <div class="cart-total">
+                <span>Celkom:</span>
+                <span class="cart-total-price" id="cart-total-price">0,00 €</span>
+            </div>
+            <a href="#produkty" class="btn btn-primary btn-lg btn-full" id="checkout-btn">Pokračovať k objednávke →</a>
+            <p class="cart-note">Doprava a platba v ďalšom kroku</p>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 6: FAQ -->
+<section class="faq" id="faq">
+    <div class="container">
+        <h2 class="section-title fade-in">Často kladené otázky</h2>
+        <div class="faq-list">
+            <div class="faq-item fade-in">
+                <button class="faq-question" aria-expanded="false">
+                    <span>Čo sú efektívne mikroorganizmy?</span>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="faq-answer">
+                    <p>Efektívne mikroorganizmy (EM) sú zmes prospešných baktérií, kvasiniek a hub, ktoré sa vyskytujú v prírode. Boli objavené japonským profesorom Teruom Higom v 80. rokoch. Pomáhajú obnoviť prirodzenú rovnováhu pôdy a podporujú zdravý rast rastlín.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <button class="faq-question" aria-expanded="false">
+                    <span>Ako sa OASIS EM-1 používa?</span>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="faq-answer">
+                    <p>OASIS EM-1 sa riedi vodou v pomere 1:100 až 1:1000 podľa účelu použitia. Môžete ho použiť na zalievanie rastlín, postrekovanie listov, ošetrenie kompostu alebo zlepšenie kvality pôdy. Podrobný návod nájdete na etikete produktu.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <button class="faq-question" aria-expanded="false">
+                    <span>Je EM-1 bezpečný pre domáce zvieratá?</span>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="faq-answer">
+                    <p>Áno, OASIS EM-1 je 100% prírodný produkt a je bezpečný pre domáce zvieratá, deti aj životné prostredie. Neobsahuje žiadne syntetické chemikálie ani geneticky modifikované organizmy.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <button class="faq-question" aria-expanded="false">
+                    <span>Ako dlho trvá, kým uvidím výsledky?</span>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="faq-answer">
+                    <p>Prvé výsledky sú zvyčajne viditeľné do 2-4 týždňov pri pravidelnej aplikácii. Dlhodobé zlepšenie kvality pôdy sa prejaví počas celej sezóny. Čím dlhšie EM-1 používate, tým lepšie výsledky dosiahnete.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <button class="faq-question" aria-expanded="false">
+                    <span>Aká je trvanlivosť produktu?</span>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="faq-answer">
+                    <p>Neotvorený OASIS EM-1 má trvanlivosť 12 mesiacov od dátumu výroby. Po otvorení odporúčame spotrebovať do 6 mesiacov. Skladujte na tmavom mieste pri teplote 15-25°C.</p>
+                </div>
+            </div>
+            <div class="faq-item fade-in">
+                <button class="faq-question" aria-expanded="false">
+                    <span>Kam doručujete?</span>
+                    <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="faq-answer">
+                    <p>Doručujeme po celom Slovensku prostredníctvom kuriérskej služby. Štandardné doručenie trvá 2-3 pracovné dni. Pri objednávke nad 50 € je doručenie zadarmo.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SECTION 7: Seasonal Urgency -->
+<section class="urgency">
+    <div class="container urgency-inner fade-in">
+        <h2>Jarná sezóna začína — objednajte včas!</h2>
+        <p>Pripravte svoju záhradu na novú sezónu s prírodnými efektívnymi mikroorganizmami.</p>
+        <a href="#produkty" class="btn btn-white btn-lg">Objednať teraz →</a>
+    </div>
+</section>
+
+<!-- SECTION 8: Final CTA -->
+<section class="final-cta">
+    <div class="container fade-in">
+        <h2 class="section-title">Začnite s prírodným pestovaním ešte dnes</h2>
+        <a href="#produkty" class="btn btn-primary btn-lg">Objednať OASIS EM-1</a>
+        <div class="trust-badges">
+            <div class="trust-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>Bezpečná platba</span>
+            </div>
+            <div class="trust-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                <span>Rýchle doručenie</span>
+            </div>
+            <div class="trust-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4-4 8-7.5 8-12a8 8 0 0 0-16 0c0 4.5 4 8 8 12z"/><path d="M12 2C8.5 6 6 9 8 14c1.5 3.5 4 5 4 8"/><path d="M12 2c3.5 4 6 7 4 12-1.5 3.5-4 5-4 8"/></svg>
+                <span>100% prírodný produkt</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>EM Center</h4>
+                <p>Prevádzkovateľ: ICC s.r.o. pre EM-1 s.r.o.</p>
+                <p>Email: <a href="mailto:info@emcenter.sk">info@emcenter.sk</a></p>
+                <p>Telefón: +421 XXX XXX XXX</p>
+            </div>
+            <div class="footer-col">
+                <h4>Informácie</h4>
+                <ul>
+                    <li><a href="#">VOP</a></li>
+                    <li><a href="#">Reklamačný poriadok</a></li>
+                    <li><a href="#">Ochrana osobných údajov</a></li>
+                    <li><a href="#">Cookies</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Sledujte nás</h4>
+                <div class="social-icons">
+                    <a href="#" aria-label="Facebook" class="social-icon">
+                        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+                    </a>
+                    <a href="#" aria-label="Instagram" class="social-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 EM Center. Všetky práva vyhradené.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="/static/js/main.js"></script>
 </body>
 </html>
