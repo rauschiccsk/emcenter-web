@@ -39,6 +39,7 @@ body {
     color: var(--text);
     background-color: var(--bg);
     line-height: 1.6;
+    padding-top: 60px;
 }
 
 img {
@@ -73,7 +74,8 @@ ul {
 
 /* === Brand Typography === */
 .brand-name {
-    font-family: 'Alfa Slab One', serif;
+    font-family: 'Alfa Slab One', serif !important;
+    font-weight: 400;
 }
 
 /* === Fade-in Animation === */
@@ -166,14 +168,8 @@ ul {
     right: 0;
     z-index: 1000;
     background-color: var(--bg-white);
-    transform: translateY(-100%);
-    transition: transform var(--transition), box-shadow var(--transition);
-    padding: 0;
-}
-
-.header.visible {
-    transform: translateY(0);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+    padding: 0;
 }
 
 .header-inner {
@@ -187,40 +183,6 @@ ul {
     font-weight: 700;
     font-size: 1.4rem;
     color: var(--primary);
-}
-
-.nav {
-    display: none;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    right: 0;
-    background-color: var(--bg-white);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    flex-direction: column;
-    padding: 16px;
-    gap: 8px;
-}
-
-.nav.open {
-    display: flex;
-}
-
-.nav-link {
-    padding: 10px 16px;
-    color: var(--text);
-    font-weight: 500;
-    border-radius: var(--radius-sm);
-    transition: background-color var(--transition);
-}
-
-.nav-link:hover {
-    background-color: #E8F5E9;
-    color: var(--primary);
-}
-
-.nav-cta {
-    margin-top: 4px;
 }
 
 .header-cart {
@@ -250,40 +212,6 @@ ul {
     font-family: var(--font-stack);
 }
 
-.hamburger {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-    width: 40px;
-    height: 40px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-}
-
-.hamburger span {
-    display: block;
-    width: 24px;
-    height: 2px;
-    background-color: var(--text);
-    transition: transform var(--transition), opacity var(--transition);
-    border-radius: 1px;
-}
-
-.hamburger.active span:nth-child(1) {
-    transform: translateY(7px) rotate(45deg);
-}
-
-.hamburger.active span:nth-child(2) {
-    opacity: 0;
-}
-
-.hamburger.active span:nth-child(3) {
-    transform: translateY(-7px) rotate(-45deg);
-}
 
 /* ============================
    HERO
@@ -959,25 +887,6 @@ ul {
     }
 
     /* Header */
-    .nav {
-        display: flex;
-        position: static;
-        flex-direction: row;
-        align-items: center;
-        gap: 4px;
-        box-shadow: none;
-        padding: 0;
-        background: transparent;
-    }
-
-    .nav-link {
-        padding: 8px 12px;
-    }
-
-    .hamburger {
-        display: none;
-    }
-
     .header-cart {
         margin-left: 12px;
         margin-right: 0;

@@ -8,44 +8,8 @@
     "use strict";
 
     // =========================================
-    // 1. Sticky Header — show after 100px scroll
+    // 1. Header — always visible (fixed position via CSS)
     // =========================================
-    var header = document.getElementById("header");
-    var lastScrollY = 0;
-
-    function handleScroll() {
-        var scrollY = window.scrollY || window.pageYOffset;
-        if (scrollY > 100) {
-            header.classList.add("visible");
-        } else {
-            header.classList.remove("visible");
-        }
-        lastScrollY = scrollY;
-    }
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-
-    // =========================================
-    // 2. Mobile Hamburger Menu Toggle
-    // =========================================
-    var hamburger = document.getElementById("hamburger");
-    var nav = document.getElementById("nav");
-
-    if (hamburger && nav) {
-        hamburger.addEventListener("click", function () {
-            hamburger.classList.toggle("active");
-            nav.classList.toggle("open");
-        });
-
-        // Close menu when nav link is clicked
-        var navLinks = nav.querySelectorAll(".nav-link, .nav-cta");
-        for (var i = 0; i < navLinks.length; i++) {
-            navLinks[i].addEventListener("click", function () {
-                hamburger.classList.remove("active");
-                nav.classList.remove("open");
-            });
-        }
-    }
 
     // =========================================
     // 3. Smooth Scroll for Anchor Links
