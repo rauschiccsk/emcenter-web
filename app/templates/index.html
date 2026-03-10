@@ -11,6 +11,9 @@
     <meta property="og:type" content="website">
     <meta property="og:image" content="https://emcenter.sk/static/images/oasis-em1-logo.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
@@ -27,6 +30,9 @@
             <a href="#faq" class="nav-link">FAQ</a>
             <a href="#produkty" class="btn btn-primary btn-sm nav-cta">Objednať</a>
         </nav>
+        <a href="#checkout" class="header-cart" id="headerCart" title="Košík">
+            🛒 <span class="cart-badge" id="cartBadge" style="display:none;">0</span>
+        </a>
         <button class="hamburger" id="hamburger" aria-label="Menu">
             <span></span>
             <span></span>
@@ -52,7 +58,7 @@
 <!-- SECTION 2: Benefits -->
 <section class="benefits" id="benefity">
     <div class="container">
-        <h2 class="section-title fade-in">Prečo OASIS EM-1?</h2>
+        <h2 class="section-title fade-in">Prečo <span class="brand-name">OASIS EM-1</span>?</h2>
         <div class="benefits-grid">
             <div class="benefit-card fade-in">
                 <div class="benefit-icon">
@@ -103,7 +109,7 @@
 <!-- SECTION 3: How It Works -->
 <section class="how-it-works" id="ako-funguje">
     <div class="container">
-        <h2 class="section-title fade-in">Ako funguje Oasis EM-1</h2>
+        <h2 class="section-title fade-in">Ako funguje <span class="brand-name">Oasis EM-1</span></h2>
         <div class="checklist fade-in">
             <div class="checklist-item">✅ zlepšuje priepustnosť pôdy a jej štruktúru</div>
             <div class="checklist-item">✅ poskytuje vysokú úroveň plodnosti pestovaných rastlín</div>
@@ -114,32 +120,27 @@
     </div>
 </section>
 
-<!-- SECTION: Lead Capture -->
+<!-- SECTION: Lead Capture (e-Book) -->
 <section id="lead-capture" class="lead-capture-section">
     <div class="container">
-        <h2>Získajte 50% zľavu na prvý nákup</h2>
-        <p>Zaregistrujte sa a dostanete kód na 50% zľavu platný 3 mesiace.</p>
+        <h2>Stiahnite si zadarmo e-Book o efektívnych mikroorganizmoch</h2>
+        <p>Získajte praktického sprievodcu využitím <span class="brand-name">Oasis EM-1</span> v domácnosti, záhrade a poľnohospodárstve. Stačí zadať váš email.</p>
         <form id="leadForm" class="lead-form" novalidate>
             <div class="form-row">
                 <input type="text" id="leadFirstName" name="first_name" placeholder="Meno (voliteľné)">
                 <input type="email" id="leadEmail" name="email" placeholder="Váš email *" required>
             </div>
-            <div class="form-row">
-                <input type="tel" id="leadPhone" name="phone" placeholder="Telefón (voliteľné)">
-            </div>
             <div class="form-row gdpr-row">
                 <label>
                     <input type="checkbox" id="leadGdpr" name="gdpr_consent" required>
-                    Súhlasím so spracovaním osobných údajov za účelom zaslania zľavového kódu a informácií o produkte.
+                    Súhlasím so spracovaním osobných údajov za účelom zaslania e-Booku a informácií o produkte.
                 </label>
             </div>
-            <button type="submit" class="btn-lead">Chcem zľavu 50%</button>
+            <button type="submit" class="btn-lead">Stiahnuť e-Book zadarmo</button>
         </form>
         <div id="leadSuccess" class="lead-success" style="display:none;">
             <h3>Ďakujeme!</h3>
-            <p>Váš zľavový kód: <strong id="discountCode"></strong></p>
-            <p>Kód je platný do <span id="discountExpiry"></span>.</p>
-            <p>Poslali sme Vám ho aj na email.</p>
+            <p>E-Book vám pošleme na zadaný email.</p>
         </div>
         <div id="leadError" class="lead-error" style="display:none;"></div>
     </div>
@@ -164,7 +165,7 @@
             </div>
         </div>
         <div class="cert-notice fade-in">
-            <p>Oasis EM-1 je certifikovaná ÚKSÚP pôdna pomocná látka povolená pre ekologickú poľnohospodársku výrobu.</p>
+            <p><span class="brand-name">Oasis EM-1</span> je certifikovaná ÚKSÚP pôdna pomocná látka povolená pre ekologickú poľnohospodársku výrobu.</p>
         </div>
     </div>
 </section>
@@ -222,14 +223,6 @@
         <form id="checkout-form" novalidate>
             <!-- Objednané produkty (sumarizácia) -->
             <div class="checkout-summary" id="checkout-summary"></div>
-
-            <!-- Zľavový kód -->
-            <div class="form-group-title">Zľavový kód</div>
-            <div class="discount-row">
-                <input type="text" id="discountCodeInput" placeholder="Zľavový kód (voliteľné)">
-                <button type="button" id="validateDiscount" class="btn-validate">Overiť</button>
-                <span id="discountStatus"></span>
-            </div>
 
             <!-- Kontaktné údaje -->
             <div class="form-group-title">Kontaktné údaje</div>
@@ -433,16 +426,16 @@
         <div class="faq-list">
             <div class="faq-item fade-in">
                 <button class="faq-question" aria-expanded="false">
-                    <span>Čo je Oasis EM-1?</span>
+                    <span>Čo je <span class="brand-name">Oasis EM-1</span>?</span>
                     <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Oasis EM-1 je vodný roztok obsahujúci symbiotické komplexy špeciálne zvolených prírodných živých mikroorganizmov — probiotické baktérie, fotosyntézne baktérie, dusíkofixujúce baktérie a droždie. Neobsahuje GMO.</p>
+                    <p><span class="brand-name">Oasis EM-1</span> je vodný roztok obsahujúci symbiotické komplexy špeciálne zvolených prírodných živých mikroorganizmov — probiotické baktérie, fotosyntézne baktérie, dusíkofixujúce baktérie a droždie. Neobsahuje GMO.</p>
                 </div>
             </div>
             <div class="faq-item fade-in">
                 <button class="faq-question" aria-expanded="false">
-                    <span>Ako sa Oasis EM-1 používa?</span>
+                    <span>Ako sa <span class="brand-name">Oasis EM-1</span> používa?</span>
                     <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div class="faq-answer">
@@ -460,11 +453,11 @@
             </div>
             <div class="faq-item fade-in">
                 <button class="faq-question" aria-expanded="false">
-                    <span>Je Oasis EM-1 certifikovaný?</span>
+                    <span>Je <span class="brand-name">Oasis EM-1</span> certifikovaný?</span>
                     <svg class="faq-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div class="faq-answer">
-                    <p>Áno, Oasis EM-1 má certifikát hnojiva č. 1555 vydaný ÚKSÚP a povolenie na použitie v systéme ekologickej poľnohospodárskej výroby v SR do roku 2029.</p>
+                    <p>Áno, <span class="brand-name">Oasis EM-1</span> má certifikát hnojiva č. 1555 vydaný ÚKSÚP a povolenie na použitie v systéme ekologickej poľnohospodárskej výroby v SR do roku 2029.</p>
                 </div>
             </div>
             <div class="faq-item fade-in">
@@ -494,15 +487,15 @@
     <div class="container">
         <h2 class="section-title fade-in">Dokumenty na stiahnutie</h2>
         <div class="documents-grid fade-in">
-            <a href="/static/downloads/oasis-em1-pribalovy-letak.pdf" target="_blank" class="document-card">
+            <a href="/static/downloads/oasis-em1-pribalovy-letak.pdf" target="_blank" rel="noopener noreferrer" class="document-card">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" width="32" height="32"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 <span>Príbalový leták</span>
             </a>
-            <a href="/static/downloads/oasis-em1-certifikat-uksup-2024.pdf" target="_blank" class="document-card">
+            <a href="/static/downloads/oasis-em1-certifikat-uksup-2024.pdf" target="_blank" rel="noopener noreferrer" class="document-card">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" width="32" height="32"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 <span>Certifikát ÚKSÚP 2024</span>
             </a>
-            <a href="/static/downloads/oasis-em1-ekologicka-vyroba.pdf" target="_blank" class="document-card">
+            <a href="/static/downloads/oasis-em1-ekologicka-vyroba.pdf" target="_blank" rel="noopener noreferrer" class="document-card">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" width="32" height="32"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 <span>Ekologická výroba</span>
             </a>
@@ -523,7 +516,7 @@
 <section class="final-cta">
     <div class="container fade-in">
         <h2 class="section-title">Začnite s prírodným pestovaním ešte dnes</h2>
-        <a href="#produkty" class="btn btn-primary btn-lg">Objednať OASIS EM-1</a>
+        <a href="#produkty" class="btn btn-primary btn-lg">Objednať <span class="brand-name">OASIS EM-1</span></a>
         <div class="trust-badges">
             <div class="trust-badge">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -564,9 +557,9 @@
             <div class="footer-col">
                 <h4>Dokumenty</h4>
                 <ul>
-                    <li><a href="/static/downloads/oasis-em1-pribalovy-letak.pdf" target="_blank">Príbalový leták</a></li>
-                    <li><a href="/static/downloads/oasis-em1-certifikat-uksup-2024.pdf" target="_blank">Certifikát ÚKSÚP</a></li>
-                    <li><a href="/static/downloads/oasis-em1-ekologicka-vyroba.pdf" target="_blank">Ekologická výroba</a></li>
+                    <li><a href="/static/downloads/oasis-em1-pribalovy-letak.pdf" target="_blank" rel="noopener noreferrer">Príbalový leták</a></li>
+                    <li><a href="/static/downloads/oasis-em1-certifikat-uksup-2024.pdf" target="_blank" rel="noopener noreferrer">Certifikát ÚKSÚP</a></li>
+                    <li><a href="/static/downloads/oasis-em1-ekologicka-vyroba.pdf" target="_blank" rel="noopener noreferrer">Ekologická výroba</a></li>
                 </ul>
             </div>
         </div>

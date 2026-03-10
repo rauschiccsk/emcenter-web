@@ -284,6 +284,30 @@
     var cartBody = document.getElementById("cart-body");
     var cartTotalPrice = document.getElementById("cart-total-price");
 
+    function updateCartBadge() {
+        var badge = document.getElementById("cartBadge");
+        if (badge && typeof cart !== "undefined") {
+            var count = cart.reduce(function (sum, item) { return sum + item.quantity; }, 0);
+            badge.textContent = count;
+            badge.style.display = count > 0 ? "flex" : "none";
+        }
+    }
+
+    // Header cart click — scroll to checkout/cart
+    var headerCartEl = document.getElementById("headerCart");
+    if (headerCartEl) {
+        headerCartEl.addEventListener("click", function (e) {
+            e.preventDefault();
+            var target = document.getElementById("kosik");
+            if (target && target.style.display !== "none") {
+                target.scrollIntoView({ behavior: "smooth" });
+            } else {
+                var prodSection = document.getElementById("produkty");
+                if (prodSection) prodSection.scrollIntoView({ behavior: "smooth" });
+            }
+        });
+    }
+
     function addToCart(sku, name, price, quantity) {
         // Check if SKU already in cart
         var found = false;
@@ -306,6 +330,7 @@
     }
 
     function updateCartDisplay() {
+        updateCartBadge();
         if (cart.length === 0) {
             cartSection.style.display = "none";
             // Hide checkout if cart is empty
@@ -509,7 +534,7 @@
             items: cart.map(function (item) { return { sku: item.sku, quantity: item.quantity }; }),
             payment_method: document.querySelector('input[name="payment_method"]:checked').value,
             note: document.getElementById("order_note").value.trim(),
-            discount_code: window._discountCode || null,
+            discount_code: null,
             lang: "sk"
         };
 
@@ -577,7 +602,7 @@
         var body = {
             email: email,
             first_name: document.getElementById("leadFirstName").value.trim() || null,
-            phone: document.getElementById("leadPhone").value.trim() || null,
+            phone: null,
             gdpr_consent: gdpr
         };
         try {
@@ -587,15 +612,12 @@
                 body: JSON.stringify(body)
             });
             if (resp.status === 201) {
-                var data = await resp.json();
-                document.getElementById("discountCode").textContent = data.discount_code;
-                document.getElementById("discountExpiry").textContent =
-                    new Date(data.expires_at).toLocaleDateString("sk-SK");
+                // Backend returns discount_code but we ignore it — e-Book pivot
                 document.getElementById("leadForm").style.display = "none";
                 document.getElementById("leadSuccess").style.display = "block";
                 document.getElementById("leadError").style.display = "none";
             } else if (resp.status === 409) {
-                showLeadError("Tento email je už zaregistrovaný. Skontrolujte svoj email pre zľavový kód.");
+                showLeadError("Tento email je už zaregistrovaný. Skontrolujte svoj email.");
             } else {
                 var errData = await resp.json();
                 showLeadError(errData.detail || "Nastala chyba. Skúste to znova.");
@@ -614,29 +636,8 @@
     }
 
     // =========================================
-    // 10. DISCOUNT CODE VALIDATION
+    // 10. DISCOUNT CODE VALIDATION (removed — e-Book pivot)
     // =========================================
-
-    document.getElementById("validateDiscount")?.addEventListener("click", async function () {
-        var code = document.getElementById("discountCodeInput").value.trim();
-        if (!code) return;
-        try {
-            var resp = await fetch("/api/leads/validate/" + encodeURIComponent(code));
-            var data = await resp.json();
-            var status = document.getElementById("discountStatus");
-            if (data.valid) {
-                status.textContent = "\u2705 Zľava " + data.discount_percentage + "% bude aplikovaná";
-                status.className = "discount-valid";
-                window._discountCode = code;
-            } else {
-                status.textContent = "\u274c " + data.message;
-                status.className = "discount-invalid";
-                window._discountCode = null;
-            }
-        } catch (err) {
-            document.getElementById("discountStatus").textContent = "\u274c Chyba pri overení";
-        }
-    });
 
     // =========================================
     // 11. Init — load products on DOMContentLoaded

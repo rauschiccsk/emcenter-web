@@ -71,6 +71,11 @@ ul {
     margin-bottom: 40px;
 }
 
+/* === Brand Typography === */
+.brand-name {
+    font-family: 'Alfa Slab One', serif;
+}
+
 /* === Fade-in Animation === */
 .fade-in {
     opacity: 0;
@@ -216,6 +221,33 @@ ul {
 
 .nav-cta {
     margin-top: 4px;
+}
+
+.header-cart {
+    position: relative;
+    font-size: 1.4rem;
+    text-decoration: none;
+    color: var(--text);
+    cursor: pointer;
+    line-height: 1;
+    margin-left: auto;
+    margin-right: 8px;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -8px;
+    right: -12px;
+    background: #c62828;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-stack);
 }
 
 .hamburger {
@@ -944,6 +976,11 @@ ul {
 
     .hamburger {
         display: none;
+    }
+
+    .header-cart {
+        margin-left: 12px;
+        margin-right: 0;
     }
 
     /* Hero */
