@@ -12,7 +12,6 @@ services:
       - DB_NAME=emcenter_db
       - DB_USER=emcenter_user
       - ADMIN_EMAIL=odbyt@em-1.sk
-      - NEX_API_BASE=http://172.17.0.1:9110
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
