@@ -2,6 +2,7 @@
  * EM Center — Landing Page JavaScript
  * Vanilla JS, no dependencies.
  * F2.2: API integration — dynamic products, cart, checkout
+ * F4.4d: Lead capture + discount code validation
  */
 (function () {
     "use strict";
@@ -138,16 +139,19 @@
     var FALLBACK_PRODUCTS = [
         {
             sku: "EM-500",
-            name: "OASIS EM-1 — 500ml",
-            short_description: "Ideálne na vyskúšanie",
+            name: "Oasis EM-1 - 500ml",
+            short_description: "Koncentrát efektívnych mikroorganizmov. Certifikovaná pôdna pomocná látka ÚKSÚP.",
             price_vat: 9.90,
+            vat_rate: 23,
             recommended: false
         },
         {
-            sku: "EM-5L",
-            name: "OASIS EM-1 — 5L",
-            short_description: "Najlepšia hodnota za peniaze",
-            price_vat: 39.90,
+            sku: "EM-500-3PACK",
+            name: "Akcia 2+1 zadarmo",
+            short_description: "3\u00d7 500ml balenie za cenu dvoch. Ušetríte 9,90 \u20ac!",
+            price_vat: 19.80,
+            original_price: 29.70,
+            vat_rate: 23,
             recommended: true
         }
     ];
@@ -179,24 +183,29 @@
         var html = "";
         for (var i = 0; i < products.length; i++) {
             var product = products[i];
-            var isRecommended = product.recommended || product.sku === "EM-5L";
+            var isRecommended = product.recommended || product.sku === "EM-500-3PACK";
             var priceFormatted = parseFloat(product.price_vat).toFixed(2).replace(".", ",");
+            var vatNote = product.vat_rate ? "vrátane " + product.vat_rate + "% DPH" : "s DPH";
 
-            html += '<div class="product-card fade-in' + (isRecommended ? " product-card--highlighted" : "") + '">';
+            html += '<div class="product-card fade-in' + (isRecommended ? " product-card--highlighted" : "") + '" data-sku="' + escapeHtml(product.sku) + '">';
             if (isRecommended) {
-                html += '<div class="product-badge">Odporúčané</div>';
+                html += '<div class="product-badge">NAJLEPŠIA PONUKA</div>';
             }
-            html += '<div class="placeholder-image product-placeholder" data-placeholder="product-image">';
-            html += '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>';
-            html += "<span>Product Image</span></div>";
+            html += '<div class="product-image-wrap">';
+            html += '<img src="/static/images/oasis-em1-logo.png" alt="' + escapeHtml(product.name) + '" class="product-img">';
+            html += "</div>";
             html += "<h3>" + escapeHtml(product.name) + "</h3>";
             html += '<p class="product-subtitle">' + escapeHtml(product.short_description || "") + "</p>";
             html += '<div class="product-price">';
-            html += '<span class="price">' + priceFormatted + " €</span>";
-            html += '<span class="price-vat">s DPH</span>';
+            if (product.original_price) {
+                var origFormatted = parseFloat(product.original_price).toFixed(2).replace(".", ",");
+                html += '<span class="price-original">' + origFormatted + " \u20ac</span> ";
+            }
+            html += '<span class="price">' + priceFormatted + " \u20ac</span>";
+            html += '<span class="price-vat">' + vatNote + "</span>";
             html += "</div>";
             html += '<div class="quantity-selector">';
-            html += '<button class="qty-btn qty-minus" data-sku="' + escapeHtml(product.sku) + '" aria-label="Znížiť množstvo">−</button>';
+            html += '<button class="qty-btn qty-minus" data-sku="' + escapeHtml(product.sku) + '" aria-label="Znížiť množstvo">\u2212</button>';
             html += '<span class="qty-value" id="qty-' + escapeHtml(product.sku) + '">1</span>';
             html += '<button class="qty-btn qty-plus" data-sku="' + escapeHtml(product.sku) + '" aria-label="Zvýšiť množstvo">+</button>';
             html += "</div>";
@@ -256,7 +265,7 @@
 
                 // Visual feedback
                 var originalText = this.textContent;
-                this.textContent = "✓ Pridané";
+                this.textContent = "\u2713 Pridané";
                 this.disabled = true;
                 var btn = this;
                 setTimeout(function () {
@@ -338,7 +347,7 @@
     }
 
     function formatPrice(amount) {
-        return amount.toFixed(2).replace(".", ",") + " €";
+        return amount.toFixed(2).replace(".", ",") + " \u20ac";
     }
 
     function escapeHtml(str) {
@@ -500,6 +509,7 @@
             items: cart.map(function (item) { return { sku: item.sku, quantity: item.quantity }; }),
             payment_method: document.querySelector('input[name="payment_method"]:checked').value,
             note: document.getElementById("order_note").value.trim(),
+            discount_code: window._discountCode || null,
             lang: "sk"
         };
 
@@ -553,7 +563,83 @@
     }
 
     // =========================================
-    // 9. Init — load products on DOMContentLoaded
+    // 9. LEAD CAPTURE
+    // =========================================
+
+    document.getElementById("leadForm")?.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        var email = document.getElementById("leadEmail").value.trim();
+        var gdpr = document.getElementById("leadGdpr").checked;
+        if (!email || !gdpr) {
+            showLeadError("Vyplňte email a súhlas s GDPR.");
+            return;
+        }
+        var body = {
+            email: email,
+            first_name: document.getElementById("leadFirstName").value.trim() || null,
+            phone: document.getElementById("leadPhone").value.trim() || null,
+            gdpr_consent: gdpr
+        };
+        try {
+            var resp = await fetch("/api/leads", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
+            if (resp.status === 201) {
+                var data = await resp.json();
+                document.getElementById("discountCode").textContent = data.discount_code;
+                document.getElementById("discountExpiry").textContent =
+                    new Date(data.expires_at).toLocaleDateString("sk-SK");
+                document.getElementById("leadForm").style.display = "none";
+                document.getElementById("leadSuccess").style.display = "block";
+                document.getElementById("leadError").style.display = "none";
+            } else if (resp.status === 409) {
+                showLeadError("Tento email je už zaregistrovaný. Skontrolujte svoj email pre zľavový kód.");
+            } else {
+                var errData = await resp.json();
+                showLeadError(errData.detail || "Nastala chyba. Skúste to znova.");
+            }
+        } catch (err) {
+            showLeadError("Nepodarilo sa spojiť so serverom. Skúste to znova neskôr.");
+        }
+    });
+
+    function showLeadError(msg) {
+        var el = document.getElementById("leadError");
+        if (!el) return;
+        el.textContent = msg;
+        el.style.display = "block";
+        setTimeout(function () { el.style.display = "none"; }, 5000);
+    }
+
+    // =========================================
+    // 10. DISCOUNT CODE VALIDATION
+    // =========================================
+
+    document.getElementById("validateDiscount")?.addEventListener("click", async function () {
+        var code = document.getElementById("discountCodeInput").value.trim();
+        if (!code) return;
+        try {
+            var resp = await fetch("/api/leads/validate/" + encodeURIComponent(code));
+            var data = await resp.json();
+            var status = document.getElementById("discountStatus");
+            if (data.valid) {
+                status.textContent = "\u2705 Zľava " + data.discount_percentage + "% bude aplikovaná";
+                status.className = "discount-valid";
+                window._discountCode = code;
+            } else {
+                status.textContent = "\u274c " + data.message;
+                status.className = "discount-invalid";
+                window._discountCode = null;
+            }
+        } catch (err) {
+            document.getElementById("discountStatus").textContent = "\u274c Chyba pri overení";
+        }
+    });
+
+    // =========================================
+    // 11. Init — load products on DOMContentLoaded
     // =========================================
     loadProducts();
 

@@ -1,6 +1,6 @@
 """Tests for EM Center Web application — proxy endpoints, landing page, resilience."""
 
-from tests.conftest import MOCK_ORDER_PAYLOAD
+from tests.conftest import MOCK_ORDER_PAYLOAD, MOCK_LEAD_CREATED
 
 
 # === Category 1: Landing Page Tests ===
@@ -210,3 +210,56 @@ class TestResilience:
         """Product proxy forwards NEX API 500 error."""
         resp = client.get("/api/products")
         assert resp.status_code == 500
+
+
+# === Category 7: Lead Proxy Tests ===
+
+
+class TestLeadProxy:
+    """Tests for lead capture proxy endpoints."""
+
+    def test_lead_register_success(self, client, mock_nex_api):
+        """POST /api/leads with valid payload returns 201 with discount code."""
+        payload = {
+            "email": "new@example.com",
+            "first_name": "Test",
+            "gdpr_consent": True,
+        }
+        resp = client.post("/api/leads", json=payload)
+        assert resp.status_code == 201
+        data = resp.json()
+        assert "discount_code" in data
+        assert data["discount_code"] == MOCK_LEAD_CREATED["discount_code"]
+
+    def test_lead_register_duplicate_email(self, client, mock_nex_api):
+        """POST /api/leads with duplicate email returns 409."""
+        payload = {
+            "email": "duplicate@example.com",
+            "gdpr_consent": True,
+        }
+        resp = client.post("/api/leads", json=payload)
+        assert resp.status_code == 409
+
+    def test_lead_register_no_gdpr(self, client, mock_nex_api):
+        """POST /api/leads without GDPR consent returns 400."""
+        payload = {
+            "email": "test@example.com",
+            "gdpr_consent": False,
+        }
+        resp = client.post("/api/leads", json=payload)
+        assert resp.status_code == 400
+
+    def test_lead_validate_valid_code(self, client, mock_nex_api):
+        """GET /api/leads/validate/{code} with valid code returns valid=true."""
+        resp = client.get("/api/leads/validate/EM-TEST123")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["valid"] is True
+        assert data["discount_percentage"] == 50
+
+    def test_lead_validate_invalid_code(self, client, mock_nex_api):
+        """GET /api/leads/validate/{code} with invalid code returns valid=false."""
+        resp = client.get("/api/leads/validate/INVALID-CODE")
+        assert resp.status_code == 200
+        data = resp.json()
+        assert data["valid"] is False
