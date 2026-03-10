@@ -77,33 +77,6 @@ MOCK_PAYMENT_FAILED = {
     "payment_status": "failed",
 }
 
-MOCK_LEAD_CREATED = {
-    "id": 1,
-    "email": "test@example.com",
-    "first_name": "Test",
-    "discount_code": "EM-TEST123",
-    "discount_percentage": 50,
-    "expires_at": "2026-06-10T00:00:00",
-}
-
-MOCK_LEAD_DUPLICATE = {
-    "detail": "Email already registered",
-}
-
-MOCK_LEAD_VALIDATION_VALID = {
-    "valid": True,
-    "discount_code": "EM-TEST123",
-    "discount_percentage": 50,
-    "message": "Discount code is valid",
-}
-
-MOCK_LEAD_VALIDATION_INVALID = {
-    "valid": False,
-    "discount_code": "INVALID",
-    "discount_percentage": 0,
-    "message": "Discount code is expired or invalid",
-}
-
 MOCK_ORDER_PAYLOAD = {
     "customer_name": "Test User",
     "customer_email": "test@example.com",
@@ -163,20 +136,6 @@ def _route_request(url: str, method: str = "GET", **kwargs) -> MagicMock:
 
     if "/api/eshop/orders/" in url and method == "GET":
         return _make_response(MOCK_ORDER_STATUS)
-
-    if "/api/eshop/leads/validate/" in url and method == "GET":
-        if "INVALID" in url or "NEEXISTUJE" in url:
-            return _make_response(MOCK_LEAD_VALIDATION_INVALID)
-        return _make_response(MOCK_LEAD_VALIDATION_VALID)
-
-    if "/api/eshop/leads" in url and method == "POST":
-        # Check body for duplicate test
-        json_body = kwargs.get("json", {})
-        if json_body and json_body.get("email") == "duplicate@example.com":
-            return _make_response(MOCK_LEAD_DUPLICATE, 409)
-        if json_body and not json_body.get("gdpr_consent"):
-            return _make_error_response(400, "GDPR consent is required")
-        return _make_response(MOCK_LEAD_CREATED, 201)
 
     return _make_error_response(404, "Not found")
 

@@ -409,69 +409,6 @@ async def get_order_status(order_number: str):
         )
 
 
-@app.post("/api/leads")
-async def proxy_lead_register(request: Request):
-    """Proxy pre lead registráciu → NEX Automat API."""
-    try:
-        body = await request.json()
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.post(
-                f"{NEX_API_BASE}/api/eshop/leads",
-                headers={
-                    "X-Eshop-Token": ESHOP_TOKEN,
-                    "Content-Type": "application/json",
-                },
-                json=body,
-            )
-            return Response(
-                content=resp.content,
-                status_code=resp.status_code,
-                media_type="application/json",
-            )
-    except (httpx.TimeoutException, httpx.ConnectError):
-        logger.error("NEX API unavailable: POST /api/eshop/leads")
-        return JSONResponse(
-            status_code=502,
-            content={"detail": "Backend service unavailable"},
-        )
-    except Exception as e:
-        logger.error("Proxy error POST /api/leads: %s", e)
-        return JSONResponse(
-            status_code=502,
-            content={"detail": "Backend service unavailable"},
-        )
-
-
-@app.get("/api/leads/validate/{discount_code}")
-async def proxy_lead_validate(discount_code: str):
-    """Proxy pre validáciu discount kódu."""
-    try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            resp = await client.get(
-                f"{NEX_API_BASE}/api/eshop/leads/validate/{discount_code}",
-                headers={"X-Eshop-Token": ESHOP_TOKEN},
-            )
-            return Response(
-                content=resp.content,
-                status_code=resp.status_code,
-                media_type="application/json",
-            )
-    except (httpx.TimeoutException, httpx.ConnectError):
-        logger.error(
-            "NEX API unavailable: GET /api/eshop/leads/validate/%s", discount_code
-        )
-        return JSONResponse(
-            status_code=502,
-            content={"detail": "Backend service unavailable"},
-        )
-    except Exception as e:
-        logger.error("Proxy error GET /api/leads/validate/%s: %s", discount_code, e)
-        return JSONResponse(
-            status_code=502,
-            content={"detail": "Backend service unavailable"},
-        )
-
-
 @app.get("/payment/return")
 async def payment_return(request: Request):
     """Comgate redirect after payment — show thank you or failure page."""
