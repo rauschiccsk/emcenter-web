@@ -158,7 +158,8 @@
             html += '<div class="product-image-wrap">';
             html += '<img src="/static/images/oasis-em1-product.jpg" alt="' + escapeHtml(product.name) + '" class="product-img">';
             html += "</div>";
-            html += "<h3>" + escapeHtml(product.name) + "</h3>";
+            var displayName = escapeHtml(product.name).replace(/Oasis EM-1/g, '<span class="brand-name">Oasis EM-1</span>').replace(/OASIS EM-1/g, '<span class="brand-name">OASIS EM-1</span>');
+            html += "<h3>" + displayName + "</h3>";
             html += '<p class="product-subtitle">' + escapeHtml(product.short_description || "") + "</p>";
             html += '<div class="product-price">';
             if (product.original_price) {
