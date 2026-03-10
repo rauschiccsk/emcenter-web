@@ -192,7 +192,7 @@
                 html += '<div class="product-badge">NAJLEPŠIA PONUKA</div>';
             }
             html += '<div class="product-image-wrap">';
-            html += '<img src="/static/images/oasis-em1-logo.png" alt="' + escapeHtml(product.name) + '" class="product-img">';
+            html += '<img src="/static/images/oasis-em1-product.jpg" alt="' + escapeHtml(product.name) + '" class="product-img">';
             html += "</div>";
             html += "<h3>" + escapeHtml(product.name) + "</h3>";
             html += '<p class="product-subtitle">' + escapeHtml(product.short_description || "") + "</p>";

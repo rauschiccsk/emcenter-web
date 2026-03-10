@@ -1644,8 +1644,11 @@ ul {
 
 .product-img {
     max-width: 200px;
+    max-height: 260px;
     height: auto;
     margin: 0 auto;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
 }
 
 .price-original {
