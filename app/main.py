@@ -114,8 +114,8 @@ def init_db():
 
 # --- SMTP ---
 # --- NEX Automat ESHOP API ---
-NEX_API_BASE = os.environ.get("NEX_API_BASE", "http://localhost:9110")
-ESHOP_TOKEN = os.environ.get("ESHOP_TOKEN", "")
+NEX_API_BASE = os.environ.get("ESHOP_API_URL", os.environ.get("NEX_API_BASE", "http://localhost:9110"))
+ESHOP_TOKEN = os.environ.get("ESHOP_API_TOKEN", os.environ.get("ESHOP_TOKEN", ""))
 
 SMTP_HOST = os.environ.get("SMTP_HOST", "")
 SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))

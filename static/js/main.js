@@ -153,7 +153,6 @@
 
             var sku = (product.sku || '').toUpperCase();
             var isPromo = sku.indexOf('3PACK') !== -1;
-            console.log('[BADGE-DEBUG] SKU:', product.sku, 'isPromo:', isPromo, 'isRecommended:', isRecommended);
             html += '<div class="product-card fade-in' + (isRecommended ? " product-card--highlighted" : "") + '" data-sku="' + escapeHtml(product.sku || '') + '">';
             if (isRecommended) {
                 html += '<div class="product-badge">NAJLEPŠIA PONUKA</div>';
