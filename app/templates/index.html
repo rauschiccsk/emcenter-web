@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OASIS EM-1 — Efektívne mikroorganizmy pre ekologické poľnohospodárstvo | EM Center</title>
-    <meta name="description" content="OASIS EM-1 efektívne mikroorganizmy. Prírodná cesta k zdravej pôde a bohatej úrode. Objednajte 500ml alebo akciu 2+1 zadarmo.">
-    <meta property="og:title" content="OASIS EM-1 — Efektívne mikroorganizmy | EM Center">
+    <title>Oasis EM-1 — Efektívne mikroorganizmy pre ekologické poľnohospodárstvo | EM Center</title>
+    <meta name="description" content="Oasis EM-1 efektívne mikroorganizmy. Prírodná cesta k zdravej pôde a bohatej úrode. Objednajte 500ml alebo akciu 2+1 zadarmo.">
+    <meta property="og:title" content="Oasis EM-1 — Efektívne mikroorganizmy | EM Center">
     <meta property="og:description" content="Prírodná cesta k zdravej pôde a bohatej úrode. Objednajte 500ml alebo akciu 2+1 zadarmo.">
     <meta property="og:url" content="https://emcenter.sk">
     <meta property="og:type" content="website">
@@ -45,7 +45,7 @@
 <!-- SECTION 2: Benefits -->
 <section class="benefits" id="benefity">
     <div class="container">
-        <h2 class="section-title fade-in">Prečo <span class="brand-name">OASIS EM-1</span>?</h2>
+        <h2 class="section-title fade-in">Prečo <span class="brand-name">Oasis EM-1</span>?</h2>
         <div class="benefits-grid">
             <div class="benefit-card fade-in">
                 <div class="benefit-icon">
@@ -207,181 +207,208 @@
     <div class="container">
         <h2 class="section-title">Objednávka</h2>
 
+        <!-- Stepper -->
+        <div class="checkout-stepper" id="checkoutStepper"></div>
+
         <form id="checkout-form" novalidate>
-            <!-- Objednané produkty (sumarizácia) -->
-            <div class="checkout-summary" id="checkout-summary"></div>
-
-            <!-- Kontaktné údaje -->
-            <div class="form-group-title">Kontaktné údaje</div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="customer_name">Meno a priezvisko *</label>
-                    <input type="text" id="customer_name" name="customer_name" required>
-                    <span class="field-error"></span>
+            <!-- STEP 1: Košík -->
+            <div id="step-1" class="checkout-step">
+                <div class="checkout-summary" id="checkout-summary"></div>
+                <div class="checkout-total">
+                    <span>Celkom s DPH:</span>
+                    <strong id="checkout-total-price">0,00 €</strong>
                 </div>
-            </div>
-            <div class="form-row two-cols">
-                <div class="form-group">
-                    <label for="customer_email">E-mail *</label>
-                    <input type="email" id="customer_email" name="customer_email" required>
-                    <span class="field-error"></span>
-                </div>
-                <div class="form-group">
-                    <label for="customer_phone">Telefón *</label>
-                    <input type="tel" id="customer_phone" name="customer_phone" required placeholder="+421...">
-                    <span class="field-error"></span>
+                <div class="step-nav">
+                    <div></div>
+                    <button type="button" class="btn-step-next" onclick="nextStep()">Pokračovať →</button>
                 </div>
             </div>
 
-            <!-- Fakturačná adresa -->
-            <div class="form-group-title">Fakturačná adresa</div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="billing_street">Ulica a číslo *</label>
-                    <input type="text" id="billing_street" name="billing_street" required>
-                    <span class="field-error"></span>
-                </div>
-            </div>
-            <div class="form-row three-cols">
-                <div class="form-group">
-                    <label for="billing_city">Mesto *</label>
-                    <input type="text" id="billing_city" name="billing_city" required>
-                    <span class="field-error"></span>
-                </div>
-                <div class="form-group">
-                    <label for="billing_zip">PSČ *</label>
-                    <input type="text" id="billing_zip" name="billing_zip" required pattern="[0-9]{5}" maxlength="5">
-                    <span class="field-error"></span>
-                </div>
-                <div class="form-group">
-                    <label for="billing_country">Krajina *</label>
-                    <select id="billing_country" name="billing_country">
-                        <option value="SK" selected>Slovensko</option>
-                        <option value="CZ">Česká republika</option>
-                        <option value="HU">Maďarsko</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Dodacia adresa -->
-            <div class="form-row">
-                <div class="form-group checkbox-group">
-                    <label>
-                        <input type="checkbox" id="same_shipping" checked>
-                        Dodacia adresa je rovnaká ako fakturačná
-                    </label>
-                </div>
-            </div>
-            <div id="shipping-address-fields" style="display: none;">
-                <div class="form-group-title">Dodacia adresa</div>
+            <!-- STEP 2: Údaje -->
+            <div id="step-2" class="checkout-step" style="display:none;">
+                <!-- Kontaktné údaje -->
+                <div class="form-group-title">Kontaktné údaje</div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="shipping_name">Meno a priezvisko *</label>
-                        <input type="text" id="shipping_name" name="shipping_name">
+                        <label for="customer_name">Meno a priezvisko *</label>
+                        <input type="text" id="customer_name" name="customer_name" required>
                         <span class="field-error"></span>
                     </div>
                 </div>
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="customer_email">E-mail *</label>
+                        <input type="email" id="customer_email" name="customer_email" required>
+                        <span class="field-error"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="customer_phone">Telefón *</label>
+                        <input type="tel" id="customer_phone" name="customer_phone" required placeholder="+421...">
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+
+                <!-- Fakturačná adresa -->
+                <div class="form-group-title">Fakturačná adresa</div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="shipping_street">Ulica a číslo *</label>
-                        <input type="text" id="shipping_street" name="shipping_street">
+                        <label for="billing_street">Ulica a číslo *</label>
+                        <input type="text" id="billing_street" name="billing_street" required>
                         <span class="field-error"></span>
                     </div>
                 </div>
                 <div class="form-row three-cols">
                     <div class="form-group">
-                        <label for="shipping_city">Mesto *</label>
-                        <input type="text" id="shipping_city" name="shipping_city">
+                        <label for="billing_city">Mesto *</label>
+                        <input type="text" id="billing_city" name="billing_city" required>
                         <span class="field-error"></span>
                     </div>
                     <div class="form-group">
-                        <label for="shipping_zip">PSČ *</label>
-                        <input type="text" id="shipping_zip" name="shipping_zip" pattern="[0-9]{5}" maxlength="5">
+                        <label for="billing_zip">PSČ *</label>
+                        <input type="text" id="billing_zip" name="billing_zip" required pattern="[0-9]{5}" maxlength="5">
                         <span class="field-error"></span>
                     </div>
                     <div class="form-group">
-                        <label for="shipping_country">Krajina</label>
-                        <select id="shipping_country" name="shipping_country">
+                        <label for="billing_country">Krajina *</label>
+                        <select id="billing_country" name="billing_country">
                             <option value="SK" selected>Slovensko</option>
                             <option value="CZ">Česká republika</option>
                             <option value="HU">Maďarsko</option>
                         </select>
                     </div>
                 </div>
-            </div>
 
-            <!-- Firemné údaje -->
-            <div class="form-row">
-                <div class="form-group checkbox-group">
-                    <label>
-                        <input type="checkbox" id="is_company">
-                        Nakupujem na firmu
-                    </label>
-                </div>
-            </div>
-            <div id="company-fields" style="display: none;">
-                <div class="form-group-title">Firemné údaje</div>
-                <div class="form-row three-cols">
-                    <div class="form-group">
-                        <label for="company_ico">IČO</label>
-                        <input type="text" id="company_ico" name="company_ico">
-                    </div>
-                    <div class="form-group">
-                        <label for="company_dic">DIČ</label>
-                        <input type="text" id="company_dic" name="company_dic">
-                    </div>
-                    <div class="form-group">
-                        <label for="company_ic_dph">IČ DPH</label>
-                        <input type="text" id="company_ic_dph" name="company_ic_dph">
+                <!-- Dodacia adresa -->
+                <div class="form-row">
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="same_shipping" checked>
+                            Dodacia adresa je rovnaká ako fakturačná
+                        </label>
                     </div>
                 </div>
-            </div>
+                <div id="shipping-address-fields" style="display: none;">
+                    <div class="form-group-title">Dodacia adresa</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="shipping_name">Meno a priezvisko *</label>
+                            <input type="text" id="shipping_name" name="shipping_name">
+                            <span class="field-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="shipping_street">Ulica a číslo *</label>
+                            <input type="text" id="shipping_street" name="shipping_street">
+                            <span class="field-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row three-cols">
+                        <div class="form-group">
+                            <label for="shipping_city">Mesto *</label>
+                            <input type="text" id="shipping_city" name="shipping_city">
+                            <span class="field-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="shipping_zip">PSČ *</label>
+                            <input type="text" id="shipping_zip" name="shipping_zip" pattern="[0-9]{5}" maxlength="5">
+                            <span class="field-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="shipping_country">Krajina</label>
+                            <select id="shipping_country" name="shipping_country">
+                                <option value="SK" selected>Slovensko</option>
+                                <option value="CZ">Česká republika</option>
+                                <option value="HU">Maďarsko</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
 
-            <!-- Poznámka -->
-            <div class="form-row">
-                <div class="form-group">
-                    <label for="order_note">Poznámka k objednávke</label>
-                    <textarea id="order_note" name="order_note" rows="3" placeholder="Voliteľné..."></textarea>
+                <!-- Firemné údaje -->
+                <div class="form-row">
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="is_company">
+                            Nakupujem na firmu
+                        </label>
+                    </div>
+                </div>
+                <div id="company-fields" style="display: none;">
+                    <div class="form-group-title">Firemné údaje</div>
+                    <div class="form-row three-cols">
+                        <div class="form-group">
+                            <label for="company_ico">IČO</label>
+                            <input type="text" id="company_ico" name="company_ico">
+                        </div>
+                        <div class="form-group">
+                            <label for="company_dic">DIČ</label>
+                            <input type="text" id="company_dic" name="company_dic">
+                        </div>
+                        <div class="form-group">
+                            <label for="company_ic_dph">IČ DPH</label>
+                            <input type="text" id="company_ic_dph" name="company_ic_dph">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Poznámka -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="order_note">Poznámka k objednávke</label>
+                        <textarea id="order_note" name="order_note" rows="3" placeholder="Voliteľné..."></textarea>
+                    </div>
+                </div>
+
+                <div class="step-nav">
+                    <button type="button" class="btn-step-back" onclick="prevStep()">← Späť</button>
+                    <button type="button" class="btn-step-next" onclick="nextStep()">Pokračovať →</button>
                 </div>
             </div>
 
-            <!-- Platobná metóda -->
-            <div class="form-group-title">Spôsob platby</div>
-            <div class="form-row">
-                <div class="form-group radio-group">
-                    <label class="radio-label">
-                        <input type="radio" name="payment_method" value="CARD" checked>
-                        <span>Platba kartou</span>
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="payment_method" value="BANK">
-                        <span>Bankový prevod</span>
-                    </label>
+            <!-- STEP 3: Platba -->
+            <div id="step-3" class="checkout-step" style="display:none;">
+                <div class="form-group-title">Spôsob platby</div>
+                <div class="form-row">
+                    <div class="form-group radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="payment_method" value="CARD" checked>
+                            <span>Platba kartou</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="payment_method" value="BANK">
+                            <span>Bankový prevod</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Súhlas -->
+                <div class="form-row">
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="agree_terms" required>
+                            Súhlasím s <a href="#" target="_blank">VOP</a> a <a href="#" target="_blank">Reklamačným poriadkom</a> *
+                        </label>
+                        <span class="field-error"></span>
+                    </div>
+                </div>
+
+                <div class="step-nav">
+                    <button type="button" class="btn-step-back" onclick="prevStep()">← Späť</button>
+                    <button type="button" class="btn-step-next" onclick="nextStep()">Pokračovať →</button>
                 </div>
             </div>
 
-            <!-- Súhlas -->
-            <div class="form-row">
-                <div class="form-group checkbox-group">
-                    <label>
-                        <input type="checkbox" id="agree_terms" required>
-                        Súhlasím s <a href="#" target="_blank">VOP</a> a <a href="#" target="_blank">Reklamačným poriadkom</a> *
-                    </label>
-                    <span class="field-error"></span>
+            <!-- STEP 4: Súhrn -->
+            <div id="step-4" class="checkout-step" style="display:none;">
+                <div id="order-summary-final"></div>
+
+                <div class="step-nav">
+                    <button type="button" class="btn-step-back" onclick="prevStep()">← Späť</button>
+                    <button type="submit" class="btn-step-next" id="submit-order-btn">
+                        Objednať s povinnosťou platby
+                    </button>
                 </div>
-            </div>
-
-            <!-- Celková cena -->
-            <div class="checkout-total">
-                <span>Celkom s DPH:</span>
-                <strong id="checkout-total-price">0,00 €</strong>
-            </div>
-
-            <!-- Submit -->
-            <div class="form-row">
-                <button type="submit" class="btn btn-primary btn-lg btn-full" id="submit-order-btn">
-                    Záväzne objednať a zaplatiť
-                </button>
             </div>
 
             <!-- Error display -->
@@ -486,6 +513,10 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" width="32" height="32"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
                 <span>Ekologická výroba</span>
             </a>
+            <a href="/static/downloads/oasis-em1-produktovy-list.pdf" target="_blank" rel="noopener noreferrer" class="document-card">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" width="32" height="32"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                <span>Produktový list Oasis EM-1</span>
+            </a>
         </div>
     </div>
 </section>
@@ -503,7 +534,7 @@
 <section class="final-cta">
     <div class="container fade-in">
         <h2 class="section-title">Začnite s prírodným pestovaním ešte dnes</h2>
-        <a href="#produkty" class="btn btn-primary btn-lg">Objednať <span class="brand-name">OASIS EM-1</span></a>
+        <a href="#produkty" class="btn btn-primary btn-lg">Objednať <span class="brand-name">Oasis EM-1</span></a>
         <div class="trust-badges">
             <div class="trust-badge">
                 <svg viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
@@ -547,6 +578,7 @@
                     <li><a href="/static/downloads/oasis-em1-pribalovy-letak.pdf" target="_blank" rel="noopener noreferrer">Príbalový leták</a></li>
                     <li><a href="/static/downloads/oasis-em1-certifikat-uksup-2024.pdf" target="_blank" rel="noopener noreferrer">Certifikát ÚKSÚP</a></li>
                     <li><a href="/static/downloads/oasis-em1-ekologicka-vyroba.pdf" target="_blank" rel="noopener noreferrer">Ekologická výroba</a></li>
+                    <li><a href="/static/downloads/oasis-em1-produktovy-list.pdf" target="_blank" rel="noopener noreferrer">Produktový list Oasis EM-1</a></li>
                 </ul>
             </div>
         </div>

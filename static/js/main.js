@@ -151,14 +151,18 @@
             var priceFormatted = parseFloat(product.price_vat).toFixed(2).replace(".", ",");
             var vatNote = product.vat_rate ? "vrátane " + product.vat_rate + "% DPH" : "s DPH";
 
+            var isPromo = (product.sku && product.sku.indexOf('3PACK') !== -1) || (product.name && product.name.toLowerCase().indexOf('akcia') !== -1);
             html += '<div class="product-card fade-in' + (isRecommended ? " product-card--highlighted" : "") + '" data-sku="' + escapeHtml(product.sku) + '">';
             if (isRecommended) {
                 html += '<div class="product-badge">NAJLEPŠIA PONUKA</div>';
             }
+            if (isPromo) {
+                html += '<span class="product-badge-promo">AKCIA</span>';
+            }
             html += '<div class="product-image-wrap">';
             html += '<img src="/static/images/oasis-em1-product.jpg" alt="' + escapeHtml(product.name) + '" class="product-img">';
             html += "</div>";
-            var displayName = escapeHtml(product.name).replace(/Oasis EM-1/g, '<span class="brand-name">Oasis EM-1</span>').replace(/OASIS EM-1/g, '<span class="brand-name">OASIS EM-1</span>');
+            var displayName = escapeHtml(product.name).replace(/Oasis EM-1/gi, '<span class="brand-name">Oasis EM-1</span>');
             html += "<h3>" + displayName + "</h3>";
             html += '<p class="product-subtitle">' + escapeHtml(product.short_description || "") + "</p>";
             html += '<div class="product-price">';
@@ -376,13 +380,212 @@
         });
     }
 
+    // =========================================
+    // 8a. CHECKOUT STEPPER
+    // =========================================
+    var currentStep = 1;
+    var totalSteps = 4;
+    var stepLabels = ['Košík', 'Údaje', 'Platba', 'Súhrn'];
+    var stepIcons = ['🛒', '📋', '💳', '✅'];
+
+    function renderStepper() {
+        var container = document.getElementById('checkoutStepper');
+        if (!container) return;
+
+        var html = '';
+        for (var i = 1; i <= totalSteps; i++) {
+            var state = i < currentStep ? 'completed' : (i === currentStep ? 'active' : '');
+            var icon = i < currentStep ? '✓' : stepIcons[i - 1];
+
+            if (i > 1) {
+                var lineState = i <= currentStep ? 'completed' : '';
+                html += '<div class="stepper-line ' + lineState + '"></div>';
+            }
+
+            html += '<div class="stepper-step ' + state + '"' + (state === 'completed' ? ' onclick="goToStep(' + i + ')"' : '') + '>';
+            html += '<div class="stepper-circle">' + icon + '</div>';
+            html += '<span class="stepper-label">' + stepLabels[i - 1] + '</span>';
+            html += '</div>';
+        }
+        container.innerHTML = html;
+    }
+
+    // Expose to global scope for onclick handlers
+    window.goToStep = function (step) {
+        if (step > currentStep) return;
+        currentStep = step;
+        showCurrentStep();
+    };
+
+    window.nextStep = function () {
+        if (currentStep >= totalSteps) return;
+        // Validation before next step
+        if (currentStep === 1 && getCartItemCount() === 0) {
+            alert('Košík je prázdny');
+            return;
+        }
+        if (currentStep === 2 && !validateContactForm()) {
+            return;
+        }
+        if (currentStep === 3 && !validatePaymentSelection()) {
+            return;
+        }
+        currentStep++;
+        showCurrentStep();
+        // Build summary on step 4
+        if (currentStep === 4) {
+            buildOrderSummary();
+        }
+    };
+
+    window.prevStep = function () {
+        if (currentStep <= 1) return;
+        currentStep--;
+        showCurrentStep();
+    };
+
+    function showCurrentStep() {
+        for (var i = 1; i <= totalSteps; i++) {
+            var el = document.getElementById('step-' + i);
+            if (el) el.style.display = i === currentStep ? 'block' : 'none';
+        }
+        renderStepper();
+        var stepperEl = document.getElementById('checkoutStepper');
+        if (stepperEl) stepperEl.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function getCartItemCount() {
+        return cart.reduce(function (sum, item) { return sum + item.quantity; }, 0);
+    }
+
+    function validateContactForm() {
+        var valid = true;
+        // Clear previous errors
+        var errorSpans = document.querySelectorAll('#step-2 .field-error');
+        for (var e = 0; e < errorSpans.length; e++) errorSpans[e].textContent = '';
+        var errorGroups = document.querySelectorAll('#step-2 .form-group.error');
+        for (var g = 0; g < errorGroups.length; g++) errorGroups[g].classList.remove('error');
+
+        function setError(fieldId, message) {
+            valid = false;
+            var field = document.getElementById(fieldId);
+            if (field) {
+                var group = field.closest('.form-group');
+                if (group) {
+                    group.classList.add('error');
+                    var span = group.querySelector('.field-error');
+                    if (span) span.textContent = message;
+                }
+            }
+        }
+
+        var name = document.getElementById('customer_name').value.trim();
+        if (!name) setError('customer_name', 'Zadajte meno a priezvisko');
+
+        var email = document.getElementById('customer_email').value.trim();
+        if (!email) setError('customer_email', 'Zadajte e-mail');
+        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setError('customer_email', 'Neplatný formát e-mailu');
+
+        var phone = document.getElementById('customer_phone').value.trim();
+        if (!phone) setError('customer_phone', 'Zadajte telefón');
+        else if (!/^(\+|00)[0-9]{9,15}$/.test(phone.replace(/\s/g, ''))) setError('customer_phone', 'Neplatný formát (napr. +421901234567)');
+
+        var street = document.getElementById('billing_street').value.trim();
+        if (!street) setError('billing_street', 'Zadajte ulicu a číslo');
+
+        var city = document.getElementById('billing_city').value.trim();
+        if (!city) setError('billing_city', 'Zadajte mesto');
+
+        var zip = document.getElementById('billing_zip').value.trim();
+        if (!zip) setError('billing_zip', 'Zadajte PSČ');
+        else if (!/^[0-9]{5}$/.test(zip)) setError('billing_zip', 'PSČ musí mať 5 číslic');
+
+        // Shipping address if different
+        var sameShipping = document.getElementById('same_shipping').checked;
+        if (!sameShipping) {
+            if (!document.getElementById('shipping_name').value.trim()) setError('shipping_name', 'Zadajte meno');
+            if (!document.getElementById('shipping_street').value.trim()) setError('shipping_street', 'Zadajte ulicu');
+            if (!document.getElementById('shipping_city').value.trim()) setError('shipping_city', 'Zadajte mesto');
+            var sZip = document.getElementById('shipping_zip').value.trim();
+            if (!sZip) setError('shipping_zip', 'Zadajte PSČ');
+            else if (!/^[0-9]{5}$/.test(sZip)) setError('shipping_zip', 'PSČ musí mať 5 číslic');
+        }
+
+        return valid;
+    }
+
+    function validatePaymentSelection() {
+        var valid = true;
+        var checked = document.querySelector('input[name="payment_method"]:checked');
+        if (!checked) {
+            alert('Vyberte spôsob platby');
+            valid = false;
+        }
+        // Check terms agreement
+        var termsEl = document.getElementById('agree_terms');
+        if (termsEl && !termsEl.checked) {
+            var group = termsEl.closest('.form-group');
+            if (group) {
+                group.classList.add('error');
+                var span = group.querySelector('.field-error');
+                if (span) span.textContent = 'Musíte súhlasiť s VOP';
+            }
+            valid = false;
+        } else if (termsEl) {
+            var group2 = termsEl.closest('.form-group');
+            if (group2) {
+                group2.classList.remove('error');
+                var span2 = group2.querySelector('.field-error');
+                if (span2) span2.textContent = '';
+            }
+        }
+        return valid;
+    }
+
+    function buildOrderSummary() {
+        var container = document.getElementById('order-summary-final');
+        if (!container) return;
+
+        var total = 0;
+        var tableHtml = '<div class="summary-section"><h4>Objednané produkty</h4>';
+        tableHtml += '<table class="summary-table"><thead><tr><th>Produkt</th><th>Ks</th><th>Cena</th></tr></thead><tbody>';
+        for (var i = 0; i < cart.length; i++) {
+            var item = cart[i];
+            var lineTotal = item.price * item.quantity;
+            total += lineTotal;
+            tableHtml += '<tr><td>' + escapeHtml(item.name) + '</td><td>' + item.quantity + '</td><td>' + formatPrice(lineTotal) + '</td></tr>';
+        }
+        tableHtml += '</tbody></table>';
+        tableHtml += '<div class="summary-total">Celkom s DPH: ' + formatPrice(total) + '</div>';
+        tableHtml += '</div>';
+
+        // Contact info
+        tableHtml += '<div class="summary-section"><h4>Kontaktné údaje</h4>';
+        tableHtml += '<p><strong>' + escapeHtml(document.getElementById('customer_name').value.trim()) + '</strong></p>';
+        tableHtml += '<p>' + escapeHtml(document.getElementById('customer_email').value.trim()) + '</p>';
+        tableHtml += '<p>' + escapeHtml(document.getElementById('customer_phone').value.trim()) + '</p>';
+        tableHtml += '<p>' + escapeHtml(document.getElementById('billing_street').value.trim()) + ', ';
+        tableHtml += escapeHtml(document.getElementById('billing_zip').value.trim()) + ' ';
+        tableHtml += escapeHtml(document.getElementById('billing_city').value.trim()) + '</p>';
+        tableHtml += '</div>';
+
+        // Payment
+        var paymentMethod = document.querySelector('input[name="payment_method"]:checked');
+        var paymentLabel = paymentMethod && paymentMethod.value === 'CARD' ? 'Platba kartou' : 'Bankový prevod';
+        tableHtml += '<div class="summary-section"><h4>Spôsob platby</h4>';
+        tableHtml += '<p>' + paymentLabel + '</p>';
+        tableHtml += '</div>';
+
+        container.innerHTML = tableHtml;
+    }
+
     function showCheckout() {
         if (cart.length === 0) return;
         var checkoutSection = document.getElementById("checkout");
         if (!checkoutSection) return;
         checkoutSection.style.display = "block";
 
-        // Fill order summary
+        // Fill order summary for step 1
         var summary = document.getElementById("checkout-summary");
         var total = 0;
         var tableHtml = '<table class="checkout-table"><thead><tr><th>Produkt</th><th>Ks</th><th>Cena</th></tr></thead><tbody>';
@@ -396,72 +599,20 @@
         summary.innerHTML = tableHtml;
         document.getElementById("checkout-total-price").textContent = formatPrice(total);
 
+        // Reset to step 1
+        currentStep = 1;
+        showCurrentStep();
+
         // Smooth scroll to checkout
         checkoutSection.scrollIntoView({ behavior: "smooth" });
     }
 
-    // Form validation
+    // Form validation (called on final submit — stepper already validated per-step)
     function validateCheckoutForm() {
-        var valid = true;
-
-        // Clear previous errors
-        var errorSpans = document.querySelectorAll(".field-error");
-        for (var e = 0; e < errorSpans.length; e++) errorSpans[e].textContent = "";
-        var errorGroups = document.querySelectorAll(".form-group.error");
-        for (var g = 0; g < errorGroups.length; g++) errorGroups[g].classList.remove("error");
-
-        function setError(fieldId, message) {
-            valid = false;
-            var field = document.getElementById(fieldId);
-            if (field) {
-                var group = field.closest(".form-group");
-                if (group) {
-                    group.classList.add("error");
-                    var span = group.querySelector(".field-error");
-                    if (span) span.textContent = message;
-                }
-            }
-        }
-
-        // Required fields
-        var name = document.getElementById("customer_name").value.trim();
-        if (!name) setError("customer_name", "Zadajte meno a priezvisko");
-
-        var email = document.getElementById("customer_email").value.trim();
-        if (!email) setError("customer_email", "Zadajte e-mail");
-        else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setError("customer_email", "Neplatný formát e-mailu");
-
-        var phone = document.getElementById("customer_phone").value.trim();
-        if (!phone) setError("customer_phone", "Zadajte telefón");
-        else if (!/^(\+|00)[0-9]{9,15}$/.test(phone.replace(/\s/g, ""))) setError("customer_phone", "Neplatný formát (napr. +421901234567)");
-
-        var street = document.getElementById("billing_street").value.trim();
-        if (!street) setError("billing_street", "Zadajte ulicu a číslo");
-
-        var city = document.getElementById("billing_city").value.trim();
-        if (!city) setError("billing_city", "Zadajte mesto");
-
-        var zip = document.getElementById("billing_zip").value.trim();
-        if (!zip) setError("billing_zip", "Zadajte PSČ");
-        else if (!/^[0-9]{5}$/.test(zip)) setError("billing_zip", "PSČ musí mať 5 číslic");
-
-        // Shipping address if different
-        var sameShipping = document.getElementById("same_shipping").checked;
-        if (!sameShipping) {
-            if (!document.getElementById("shipping_name").value.trim()) setError("shipping_name", "Zadajte meno");
-            if (!document.getElementById("shipping_street").value.trim()) setError("shipping_street", "Zadajte ulicu");
-            if (!document.getElementById("shipping_city").value.trim()) setError("shipping_city", "Zadajte mesto");
-            var sZip = document.getElementById("shipping_zip").value.trim();
-            if (!sZip) setError("shipping_zip", "Zadajte PSČ");
-            else if (!/^[0-9]{5}$/.test(sZip)) setError("shipping_zip", "PSČ musí mať 5 číslic");
-        }
-
-        // Terms agreement
-        if (!document.getElementById("agree_terms").checked) {
-            setError("agree_terms", "Musíte súhlasiť s VOP");
-        }
-
-        return valid;
+        // Re-validate everything as a safety net
+        var contactOk = validateContactForm();
+        var paymentOk = validatePaymentSelection();
+        return contactOk && paymentOk;
     }
 
     // Submit order
