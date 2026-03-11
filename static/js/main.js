@@ -144,6 +144,14 @@
         var container = document.getElementById("products-container");
         if (!container) return;
 
+        // Sort: regular products first, promo 3PACK second
+        products.sort(function(a, b) {
+            var aIs3Pack = (a.sku || '').toUpperCase().indexOf('3PACK') !== -1;
+            var bIs3Pack = (b.sku || '').toUpperCase().indexOf('3PACK') !== -1;
+            if (aIs3Pack === bIs3Pack) return 0;
+            return aIs3Pack ? 1 : -1;
+        });
+
         var html = "";
         for (var i = 0; i < products.length; i++) {
             var product = products[i];
@@ -161,7 +169,15 @@
                 html += '<span class="product-badge-promo">AKCIA</span>';
             }
             html += '<div class="product-image-wrap">';
-            html += '<img src="/static/images/oasis-em1-product.jpg" alt="' + escapeHtml(product.name) + '" class="product-img">';
+            if (isPromo) {
+                html += '<div class="product-img-group">';
+                html += '<img src="/static/images/oasis-em1-product.jpg" alt="Oasis EM-1" class="product-img-small">';
+                html += '<img src="/static/images/oasis-em1-product.jpg" alt="Oasis EM-1" class="product-img-small">';
+                html += '<img src="/static/images/oasis-em1-product.jpg" alt="Oasis EM-1" class="product-img-small">';
+                html += '</div>';
+            } else {
+                html += '<img src="/static/images/oasis-em1-product.jpg" alt="' + escapeHtml(product.name) + '" class="product-img">';
+            }
             html += "</div>";
             var displayName = escapeHtml(product.name).replace(/Oasis EM-1/gi, '<span class="brand-name">Oasis EM-1</span>');
             html += "<h3>" + displayName + "</h3>";

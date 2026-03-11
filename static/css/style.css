@@ -1603,6 +1603,29 @@ ul {
     border-radius: var(--radius-sm);
 }
 
+/* 3-bottle group for 3PACK product card */
+.product-img-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    padding: 10px;
+    min-height: 200px;
+}
+
+.product-img-small {
+    max-height: 180px;
+    width: auto;
+    object-fit: contain;
+}
+
+/* Responsive — mobile */
+@media (max-width: 480px) {
+    .product-img-small {
+        max-height: 140px;
+    }
+}
+
 .price-original {
     text-decoration: line-through;
     color: var(--text-muted);
