@@ -1668,6 +1668,11 @@ ul {
     z-index: 10;
 }
 
+/* CSS safety net: hide promo badge on products without 3PACK in SKU */
+.product-card:not([data-sku*="3PACK"]) .product-badge-promo {
+    display: none !important;
+}
+
 /* ============================
    CHECKOUT STEPPER
    ============================ */
