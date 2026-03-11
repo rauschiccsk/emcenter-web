@@ -151,7 +151,7 @@
             var priceFormatted = parseFloat(product.price_vat).toFixed(2).replace(".", ",");
             var vatNote = product.vat_rate ? "vrátane " + product.vat_rate + "% DPH" : "s DPH";
 
-            var isPromo = (product.sku && product.sku.indexOf('3PACK') !== -1) || (product.name && product.name.toLowerCase().indexOf('akcia') !== -1);
+            var isPromo = product.sku && product.sku.toUpperCase().indexOf('3PACK') !== -1;
             html += '<div class="product-card fade-in' + (isRecommended ? " product-card--highlighted" : "") + '" data-sku="' + escapeHtml(product.sku) + '">';
             if (isRecommended) {
                 html += '<div class="product-badge">NAJLEPŠIA PONUKA</div>';
