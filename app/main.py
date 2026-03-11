@@ -117,6 +117,9 @@ def init_db():
 NEX_API_BASE = os.environ.get("ESHOP_API_URL", os.environ.get("NEX_API_BASE", "http://localhost:9110"))
 ESHOP_TOKEN = os.environ.get("ESHOP_API_TOKEN", os.environ.get("ESHOP_TOKEN", ""))
 
+UMAMI_WEBSITE_ID = os.environ.get("UMAMI_WEBSITE_ID", "")
+UMAMI_SCRIPT_URL = os.environ.get("UMAMI_SCRIPT_URL", "")
+
 SMTP_HOST = os.environ.get("SMTP_HOST", "")
 SMTP_PORT = int(os.environ.get("SMTP_PORT", "587"))
 SMTP_USER = os.environ.get("SMTP_USER", "")
@@ -216,7 +219,14 @@ def on_startup():
 @app.get("/", response_class=HTMLResponse)
 async def homepage(request: Request):
     """Render OASIS EM-1 conversion landing page."""
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(
+        "index.html",
+        {
+            "request": request,
+            "umami_website_id": UMAMI_WEBSITE_ID,
+            "umami_script_url": UMAMI_SCRIPT_URL,
+        },
+    )
 
 
 @app.get("/health")

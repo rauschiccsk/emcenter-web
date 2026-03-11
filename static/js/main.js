@@ -7,6 +7,13 @@
 (function () {
     "use strict";
 
+    // Umami analytics custom events
+    function trackEvent(eventName, eventData) {
+        if (typeof umami !== 'undefined') {
+            umami.track(eventName, eventData);
+        }
+    }
+
     // =========================================
     // 1. Header — always visible (fixed position via CSS)
     // =========================================
@@ -307,6 +314,7 @@
         if (!found) {
             cart.push({ sku: sku, name: name, price: price, quantity: quantity });
         }
+        trackEvent('add-to-cart', { sku: sku || '', name: name || '', price: price || 0 });
         updateCartDisplay();
     }
 
@@ -448,6 +456,8 @@
             return;
         }
         currentStep++;
+        var stepNames = {1: 'cart', 2: 'details', 3: 'payment', 4: 'summary'};
+        trackEvent('checkout-step', { step: currentStep, name: stepNames[currentStep] || 'unknown' });
         showCurrentStep();
         // Build summary on step 4
         if (currentStep === 4) {
@@ -684,9 +694,11 @@
             .then(function (result) {
                 if (result.ok && result.data.payment_url) {
                     // CARD payment — redirect to Comgate
+                    trackEvent('order-submitted', { order_number: result.data.order_number || 'unknown' });
                     window.location.href = result.data.payment_url;
                 } else if (result.ok && !result.data.payment_url) {
                     // BANK payment — show bank transfer info
+                    trackEvent('order-submitted', { order_number: result.data.order_number || 'unknown' });
                     document.getElementById("checkout-form").style.display = "none";
                     var bankInfo = document.getElementById("bank-transfer-info");
                     document.getElementById("bank-order-number").textContent = result.data.order_number || "";
@@ -749,6 +761,7 @@
                 document.getElementById("leadForm").style.display = "none";
                 document.getElementById("leadSuccess").style.display = "block";
                 document.getElementById("leadError").style.display = "none";
+                trackEvent('lead-registered', { source: 'ebook-popup' });
             } else if (resp.status === 409) {
                 showLeadError("Tento email je už zaregistrovaný. Skontrolujte svoj email.");
             } else {
