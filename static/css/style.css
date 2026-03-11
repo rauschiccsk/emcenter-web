@@ -1836,3 +1836,57 @@ ul {
     text-align: right;
     padding-top: 12px;
 }
+
+/* ============================
+   COMPANY FIELDS
+   ============================ */
+.company-fields {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 12px 0;
+}
+.company-fields h4 {
+    margin-top: 16px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* ============================
+   CHECKOUT CHECKBOXES
+   ============================ */
+.checkout-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0;
+    cursor: pointer;
+}
+.vop-consent {
+    margin-top: 16px;
+    font-size: 0.85rem;
+}
+.vop-consent a {
+    color: #007bff;
+    text-decoration: underline;
+}
+
+/* ============================
+   SITE FOOTER (legal links bar)
+   ============================ */
+.site-footer {
+    text-align: center;
+    padding: 24px;
+    margin-top: 48px;
+    border-top: 1px solid #eee;
+    font-size: 0.85rem;
+    color: #666;
+}
+.site-footer a {
+    color: #666;
+    text-decoration: none;
+}
+.site-footer a:hover {
+    text-decoration: underline;
+}

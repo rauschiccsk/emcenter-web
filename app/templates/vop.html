@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Všeobecné obchodné podmienky | EM Center</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32.png">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .legal-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 16px 60px;
+            line-height: 1.8;
+            color: #333;
+        }
+        .legal-content h1 { font-size: 1.8rem; margin-bottom: 24px; color: #1B5E20; }
+        .legal-content h2 { font-size: 1.3rem; margin-top: 32px; margin-bottom: 12px; color: #2E7D32; }
+        .legal-content p { margin-bottom: 12px; font-size: 0.95rem; }
+        .legal-content ul, .legal-content ol { margin-bottom: 12px; padding-left: 24px; }
+        .legal-content li { margin-bottom: 6px; font-size: 0.95rem; }
+        .legal-content strong { color: #333; }
+        .legal-content table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+        .legal-content th, .legal-content td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
+        .legal-content th { background: #f5f5f5; font-weight: 600; }
+        .legal-placeholder { text-align: center; padding: 60px 20px; color: #666; }
+        .legal-placeholder h1 { color: #2E7D32; }
+    </style>
+</head>
+<body>
+
+<!-- Sticky Header -->
+<header class="header">
+    <div class="container header-inner">
+        <a href="/" class="logo">EM Center</a>
+    </div>
+</header>
+
+<div class="legal-content">
+    {% if vop_content %}
+    {{ vop_content | safe }}
+    {% else %}
+    <div class="legal-placeholder">
+        <h1>EM-1 s.r.o.</h1>
+        <p>Všeobecné obchodné podmienky — pripravujú sa</p>
+    </div>
+    {% endif %}
+</div>
+
+<footer class="site-footer">
+    <a href="/vop">Obchodné podmienky</a> |
+    <a href="/ochrana-osobnych-udajov">Ochrana osobných údajov</a> |
+    <a href="/odstupenie-od-zmluvy">Odstúpenie od zmluvy</a>
+</footer>
+
+</body>
+</html>

@@ -7,9 +7,11 @@ import smtplib
 import time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from pathlib import Path
 from typing import Optional
 
 import httpx
+import markdown
 import pg8000
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -480,6 +482,181 @@ async def proxy_lead_validate(discount_code: str):
             status_code=502,
             content={"detail": "Backend service unavailable"},
         )
+
+
+# --- Customer Auth Proxy Endpoints ---
+
+
+@app.post("/api/eshop/customers/register")
+async def proxy_customer_register(request: Request):
+    """Proxy to NEX Automat — customer registration."""
+    try:
+        body = await request.json()
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(
+                f"{NEX_API_BASE}/api/eshop/customers/register",
+                headers={
+                    "X-Eshop-Token": ESHOP_TOKEN,
+                    "Content-Type": "application/json",
+                },
+                json=body,
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type="application/json",
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: POST /api/eshop/customers/register")
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+    except Exception as e:
+        logger.error("Proxy error POST /api/eshop/customers/register: %s", e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+
+
+@app.post("/api/eshop/customers/login")
+async def proxy_customer_login(request: Request):
+    """Proxy to NEX Automat — customer login."""
+    try:
+        body = await request.json()
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(
+                f"{NEX_API_BASE}/api/eshop/customers/login",
+                headers={
+                    "X-Eshop-Token": ESHOP_TOKEN,
+                    "Content-Type": "application/json",
+                },
+                json=body,
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type="application/json",
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: POST /api/eshop/customers/login")
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+    except Exception as e:
+        logger.error("Proxy error POST /api/eshop/customers/login: %s", e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+
+
+@app.get("/api/eshop/customers/profile")
+async def proxy_customer_profile(request: Request):
+    """Proxy to NEX Automat — customer profile."""
+    try:
+        fwd_headers = {"X-Eshop-Token": ESHOP_TOKEN}
+        auth = request.headers.get("Authorization")
+        if auth:
+            fwd_headers["Authorization"] = auth
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(
+                f"{NEX_API_BASE}/api/eshop/customers/profile",
+                headers=fwd_headers,
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type="application/json",
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: GET /api/eshop/customers/profile")
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+    except Exception as e:
+        logger.error("Proxy error GET /api/eshop/customers/profile: %s", e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+
+
+@app.get("/api/eshop/customers/orders")
+async def proxy_customer_orders(request: Request):
+    """Proxy to NEX Automat — customer orders."""
+    try:
+        fwd_headers = {"X-Eshop-Token": ESHOP_TOKEN}
+        auth = request.headers.get("Authorization")
+        if auth:
+            fwd_headers["Authorization"] = auth
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(
+                f"{NEX_API_BASE}/api/eshop/customers/orders",
+                headers=fwd_headers,
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type="application/json",
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: GET /api/eshop/customers/orders")
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+    except Exception as e:
+        logger.error("Proxy error GET /api/eshop/customers/orders: %s", e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+
+
+# --- Legal Pages ---
+
+# Path to knowledge base markdown files
+_KB_DIR = Path("/home/icc/knowledge/projects/emcenter-web")
+
+
+def _md_to_html(md_path: Path) -> str:
+    """Convert a markdown file to HTML, or return empty string if not found."""
+    if md_path.exists():
+        return markdown.markdown(md_path.read_text(encoding="utf-8"), extensions=["tables"])
+    return ""
+
+
+@app.get("/vop", response_class=HTMLResponse)
+async def vop_page(request: Request):
+    """Všeobecné obchodné podmienky."""
+    content = _md_to_html(_KB_DIR / "VOP.md")
+    return templates.TemplateResponse(
+        "vop.html",
+        {"request": request, "vop_content": content},
+    )
+
+
+@app.get("/ochrana-osobnych-udajov", response_class=HTMLResponse)
+async def privacy_page(request: Request):
+    """Ochrana osobných údajov."""
+    content = _md_to_html(_KB_DIR / "PRIVACY_POLICY.md")
+    return templates.TemplateResponse(
+        "privacy.html",
+        {"request": request, "privacy_content": content},
+    )
+
+
+@app.get("/odstupenie-od-zmluvy", response_class=HTMLResponse)
+async def withdrawal_page(request: Request):
+    """Odstúpenie od zmluvy — formulár."""
+    return templates.TemplateResponse(
+        "withdrawal.html",
+        {"request": request},
+    )
 
 
 @app.get("/payment/return")

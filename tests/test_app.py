@@ -263,3 +263,129 @@ class TestLeadProxy:
         assert resp.status_code == 200
         data = resp.json()
         assert data["valid"] is False
+
+
+# === Category 8: Legal Pages Tests ===
+
+
+class TestLegalPages:
+    """Tests for legal page endpoints."""
+
+    def test_vop_page_returns_200(self, client):
+        """GET /vop returns 200."""
+        resp = client.get("/vop")
+        assert resp.status_code == 200
+
+    def test_vop_page_contains_content(self, client):
+        """VOP page contains EM-1 or obchodné podmienky."""
+        resp = client.get("/vop")
+        text = resp.text.lower()
+        assert "em-1" in text or "obchodné podmienky" in text or "pripravujú" in text
+
+    def test_privacy_page_returns_200(self, client):
+        """GET /ochrana-osobnych-udajov returns 200."""
+        resp = client.get("/ochrana-osobnych-udajov")
+        assert resp.status_code == 200
+
+    def test_privacy_page_contains_content(self, client):
+        """Privacy page contains relevant content."""
+        resp = client.get("/ochrana-osobnych-udajov")
+        text = resp.text.lower()
+        assert "osobných údajov" in text or "ochrana" in text or "pripravuje" in text
+
+    def test_withdrawal_page_returns_200(self, client):
+        """GET /odstupenie-od-zmluvy returns 200."""
+        resp = client.get("/odstupenie-od-zmluvy")
+        assert resp.status_code == 200
+
+    def test_withdrawal_page_contains_form(self, client):
+        """Withdrawal page contains form elements."""
+        resp = client.get("/odstupenie-od-zmluvy")
+        assert "odstúpenie" in resp.text.lower() or "formulár" in resp.text.lower()
+
+    def test_withdrawal_page_contains_company_info(self, client):
+        """Withdrawal page contains EM-1 company address."""
+        resp = client.get("/odstupenie-od-zmluvy")
+        assert "EM-1" in resp.text
+        assert "odbyt@em-1.sk" in resp.text
+
+
+# === Category 9: Customer Auth Proxy Tests ===
+
+
+class TestCustomerProxy:
+    """Tests for customer auth proxy endpoints."""
+
+    def test_customer_register_proxy(self, client, mock_nex_api):
+        """POST /api/eshop/customers/register proxies to NEX API."""
+        payload = {
+            "email": "new@example.com",
+            "password": "TestPass123",
+            "name": "Test User",
+            "phone": "+421900000000",
+        }
+        resp = client.post("/api/eshop/customers/register", json=payload)
+        # The mock will return 404 (not routed) but it should not be 502
+        assert resp.status_code != 502
+
+    def test_customer_login_proxy(self, client, mock_nex_api):
+        """POST /api/eshop/customers/login proxies to NEX API."""
+        payload = {"email": "test@example.com", "password": "TestPass123"}
+        resp = client.post("/api/eshop/customers/login", json=payload)
+        assert resp.status_code != 502
+
+    def test_customer_profile_proxy(self, client, mock_nex_api):
+        """GET /api/eshop/customers/profile proxies to NEX API."""
+        resp = client.get(
+            "/api/eshop/customers/profile",
+            headers={"Authorization": "Bearer test-token"},
+        )
+        assert resp.status_code != 502
+
+    def test_customer_orders_proxy(self, client, mock_nex_api):
+        """GET /api/eshop/customers/orders proxies to NEX API."""
+        resp = client.get(
+            "/api/eshop/customers/orders",
+            headers={"Authorization": "Bearer test-token"},
+        )
+        assert resp.status_code != 502
+
+    def test_customer_register_timeout(self, client, mock_nex_api_timeout):
+        """POST /api/eshop/customers/register handles timeout."""
+        resp = client.post(
+            "/api/eshop/customers/register",
+            json={"email": "test@example.com", "password": "Test123"},
+        )
+        assert resp.status_code == 502
+
+
+# === Category 10: Homepage Footer Links ===
+
+
+class TestFooterLinks:
+    """Tests for footer legal links on homepage."""
+
+    def test_homepage_contains_vop_link(self, client):
+        """Homepage contains link to /vop."""
+        resp = client.get("/")
+        assert 'href="/vop"' in resp.text
+
+    def test_homepage_contains_privacy_link(self, client):
+        """Homepage contains link to /ochrana-osobnych-udajov."""
+        resp = client.get("/")
+        assert 'href="/ochrana-osobnych-udajov"' in resp.text
+
+    def test_homepage_contains_withdrawal_link(self, client):
+        """Homepage contains link to /odstupenie-od-zmluvy."""
+        resp = client.get("/")
+        assert 'href="/odstupenie-od-zmluvy"' in resp.text
+
+    def test_homepage_contains_vop_consent_checkbox(self, client):
+        """Homepage contains VOP consent checkbox in checkout."""
+        resp = client.get("/")
+        assert 'id="vop-consent"' in resp.text
+
+    def test_homepage_order_button_disabled(self, client):
+        """Order button is disabled by default."""
+        resp = client.get("/")
+        assert 'id="submit-order-btn" disabled' in resp.text

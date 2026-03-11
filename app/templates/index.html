@@ -337,20 +337,69 @@
                         </label>
                     </div>
                 </div>
-                <div id="company-fields" style="display: none;">
+                <div id="company-fields" class="company-fields" style="display: none;">
                     <div class="form-group-title">Firemné údaje</div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="company_name">Názov firmy *</label>
+                            <input type="text" id="company_name" name="company_name" placeholder="Názov firmy *">
+                            <span class="field-error"></span>
+                        </div>
+                    </div>
                     <div class="form-row three-cols">
                         <div class="form-group">
-                            <label for="company_ico">IČO</label>
-                            <input type="text" id="company_ico" name="company_ico">
+                            <label for="company_ico">IČO *</label>
+                            <input type="text" id="company_ico" name="company_ico" placeholder="IČO *">
+                            <span class="field-error"></span>
                         </div>
                         <div class="form-group">
                             <label for="company_dic">DIČ</label>
-                            <input type="text" id="company_dic" name="company_dic">
+                            <input type="text" id="company_dic" name="company_dic" placeholder="DIČ">
                         </div>
                         <div class="form-group">
                             <label for="company_ic_dph">IČ DPH</label>
-                            <input type="text" id="company_ic_dph" name="company_ic_dph">
+                            <input type="text" id="company_ic_dph" name="company_ic_dph" placeholder="IČ DPH">
+                        </div>
+                    </div>
+                    <h4>Fakturačná adresa (ak je odlišná od dodacej)</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="company_billing_street">Ulica a číslo</label>
+                            <input type="text" id="company_billing_street" name="company_billing_street" placeholder="Ulica a číslo">
+                        </div>
+                    </div>
+                    <div class="form-row two-cols">
+                        <div class="form-group">
+                            <label for="company_billing_city">Mesto</label>
+                            <input type="text" id="company_billing_city" name="company_billing_city" placeholder="Mesto">
+                        </div>
+                        <div class="form-group">
+                            <label for="company_billing_postal_code">PSČ</label>
+                            <input type="text" id="company_billing_postal_code" name="company_billing_postal_code" placeholder="PSČ">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vytvorenie účtu -->
+                <div class="form-row">
+                    <div class="form-group checkbox-group">
+                        <label class="checkout-checkbox">
+                            <input type="checkbox" id="create_account">
+                            Vytvoriť účet pre budúce nákupy
+                        </label>
+                    </div>
+                </div>
+                <div id="account-fields" style="display:none;">
+                    <div class="form-row two-cols">
+                        <div class="form-group">
+                            <label for="account_password">Heslo *</label>
+                            <input type="password" id="account_password" name="account_password" placeholder="Heslo *" minlength="8">
+                            <span class="field-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="account_password_confirm">Zopakovať heslo *</label>
+                            <input type="password" id="account_password_confirm" name="account_password_confirm" placeholder="Zopakovať heslo *">
+                            <span class="field-error"></span>
                         </div>
                     </div>
                 </div>
@@ -390,7 +439,7 @@
                     <div class="form-group checkbox-group">
                         <label>
                             <input type="checkbox" id="agree_terms" required>
-                            Súhlasím s <a href="#" target="_blank">VOP</a> a <a href="#" target="_blank">Reklamačným poriadkom</a> *
+                            Súhlasím s <a href="/vop" target="_blank">VOP</a> a <a href="/vop#7-reklamačný-poriadok" target="_blank">Reklamačným poriadkom</a> *
                         </label>
                         <span class="field-error"></span>
                     </div>
@@ -406,9 +455,19 @@
             <div id="step-4" class="checkout-step" style="display:none;">
                 <div id="order-summary-final"></div>
 
+                <div class="form-row">
+                    <div class="form-group checkbox-group">
+                        <label class="checkout-checkbox vop-consent">
+                            <input type="checkbox" id="vop-consent" onchange="toggleOrderButton()">
+                            Súhlasím s <a href="/vop" target="_blank">obchodnými podmienkami</a>
+                            a beriem na vedomie <a href="/ochrana-osobnych-udajov" target="_blank">zásady ochrany osobných údajov</a>.
+                        </label>
+                    </div>
+                </div>
+
                 <div class="step-nav">
                     <button type="button" class="btn-step-back" onclick="prevStep()">← Späť</button>
-                    <button type="submit" class="btn-step-next" id="submit-order-btn">
+                    <button type="submit" class="btn-step-next" id="submit-order-btn" disabled>
                         Objednať s povinnosťou platby
                     </button>
                 </div>
@@ -555,6 +614,13 @@
     </div>
 </section>
 
+<!-- Legal links bar -->
+<div class="site-footer">
+    <a href="/vop">Obchodné podmienky</a> |
+    <a href="/ochrana-osobnych-udajov">Ochrana osobných údajov</a> |
+    <a href="/odstupenie-od-zmluvy">Odstúpenie od zmluvy</a>
+</div>
+
 <!-- Footer -->
 <footer class="footer">
     <div class="container">
@@ -569,10 +635,10 @@
             <div class="footer-col">
                 <h4>Informácie</h4>
                 <ul>
-                    <li><a href="#">VOP</a></li>
-                    <li><a href="#">Reklamačný poriadok</a></li>
-                    <li><a href="#">Ochrana osobných údajov</a></li>
-                    <li><a href="#">Cookies</a></li>
+                    <li><a href="/vop">Obchodné podmienky</a></li>
+                    <li><a href="/vop#7-reklamačný-poriadok">Reklamačný poriadok</a></li>
+                    <li><a href="/ochrana-osobnych-udajov">Ochrana osobných údajov</a></li>
+                    <li><a href="/odstupenie-od-zmluvy">Odstúpenie od zmluvy</a></li>
                 </ul>
             </div>
             <div class="footer-col">

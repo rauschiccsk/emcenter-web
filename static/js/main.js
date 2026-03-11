@@ -405,6 +405,15 @@
         });
     }
 
+    // Toggle account creation fields
+    var createAccountEl = document.getElementById("create_account");
+    if (createAccountEl) {
+        createAccountEl.addEventListener("change", function () {
+            document.getElementById("account-fields").style.display =
+                this.checked ? "block" : "none";
+        });
+    }
+
     // =========================================
     // 8a. CHECKOUT STEPPER
     // =========================================
@@ -434,6 +443,14 @@
         }
         container.innerHTML = html;
     }
+
+    // Toggle VOP consent → enable/disable order button
+    window.toggleOrderButton = function () {
+        var btn = document.getElementById("submit-order-btn");
+        if (btn) {
+            btn.disabled = !document.getElementById("vop-consent").checked;
+        }
+    };
 
     // Expose to global scope for onclick handlers
     window.goToStep = function (step) {
@@ -536,6 +553,24 @@
             var sZip = document.getElementById('shipping_zip').value.trim();
             if (!sZip) setError('shipping_zip', 'Zadajte PSČ');
             else if (!/^[0-9]{5}$/.test(sZip)) setError('shipping_zip', 'PSČ musí mať 5 číslic');
+        }
+
+        // Company fields validation
+        var isCompanyChecked = document.getElementById('is_company') && document.getElementById('is_company').checked;
+        if (isCompanyChecked) {
+            var companyName = document.getElementById('company_name');
+            if (companyName && !companyName.value.trim()) setError('company_name', 'Zadajte názov firmy');
+            var companyIco = document.getElementById('company_ico');
+            if (companyIco && !companyIco.value.trim()) setError('company_ico', 'Zadajte IČO');
+        }
+
+        // Account creation validation
+        var createAccountChecked = document.getElementById('create_account') && document.getElementById('create_account').checked;
+        if (createAccountChecked) {
+            var pwd = document.getElementById('account_password');
+            var pwdConfirm = document.getElementById('account_password_confirm');
+            if (pwd && (!pwd.value || pwd.value.length < 8)) setError('account_password', 'Heslo musí mať minimálne 8 znakov');
+            if (pwd && pwdConfirm && pwd.value !== pwdConfirm.value) setError('account_password_confirm', 'Heslá sa nezhodujú');
         }
 
         return valid;
@@ -656,6 +691,7 @@
 
         var sameShipping = document.getElementById("same_shipping").checked;
         var isCompany = document.getElementById("is_company").checked;
+        var createAccount = document.getElementById("create_account") && document.getElementById("create_account").checked;
 
         var payload = {
             customer_name: document.getElementById("customer_name").value.trim(),
@@ -671,9 +707,17 @@
             shipping_city: sameShipping ? "" : document.getElementById("shipping_city").value.trim(),
             shipping_zip: sameShipping ? "" : document.getElementById("shipping_zip").value.trim(),
             shipping_country: sameShipping ? document.getElementById("billing_country").value : document.getElementById("shipping_country").value,
-            company_ico: isCompany ? document.getElementById("company_ico").value.trim() : "",
-            company_dic: isCompany ? document.getElementById("company_dic").value.trim() : "",
-            company_ic_dph: isCompany ? document.getElementById("company_ic_dph").value.trim() : "",
+            is_company_order: isCompany,
+            company_name: isCompany ? (document.getElementById("company_name") ? document.getElementById("company_name").value.trim() : "") : null,
+            company_ico: isCompany ? document.getElementById("company_ico").value.trim() : null,
+            company_dic: isCompany ? document.getElementById("company_dic").value.trim() : null,
+            company_ic_dph: isCompany ? document.getElementById("company_ic_dph").value.trim() : null,
+            company_billing_street: isCompany ? (document.getElementById("company_billing_street") ? document.getElementById("company_billing_street").value.trim() : "") : null,
+            company_billing_city: isCompany ? (document.getElementById("company_billing_city") ? document.getElementById("company_billing_city").value.trim() : "") : null,
+            company_billing_postal_code: isCompany ? (document.getElementById("company_billing_postal_code") ? document.getElementById("company_billing_postal_code").value.trim() : "") : null,
+            billing_country_company: "SK",
+            create_account: createAccount || false,
+            account_password: createAccount ? (document.getElementById("account_password") ? document.getElementById("account_password").value : null) : null,
             items: cart.map(function (item) { return { sku: item.sku, quantity: item.quantity }; }),
             payment_method: document.querySelector('input[name="payment_method"]:checked').value,
             note: document.getElementById("order_note").value.trim(),
@@ -695,10 +739,14 @@
                 if (result.ok && result.data.payment_url) {
                     // CARD payment — redirect to Comgate
                     trackEvent('order-submitted', { order_number: result.data.order_number || 'unknown' });
+                    if (isCompany) { trackEvent('company-order'); }
+                    if (createAccount) { trackEvent('account-created', { source: 'checkout' }); }
                     window.location.href = result.data.payment_url;
                 } else if (result.ok && !result.data.payment_url) {
                     // BANK payment — show bank transfer info
                     trackEvent('order-submitted', { order_number: result.data.order_number || 'unknown' });
+                    if (isCompany) { trackEvent('company-order'); }
+                    if (createAccount) { trackEvent('account-created', { source: 'checkout' }); }
                     document.getElementById("checkout-form").style.display = "none";
                     var bankInfo = document.getElementById("bank-transfer-info");
                     document.getElementById("bank-order-number").textContent = result.data.order_number || "";

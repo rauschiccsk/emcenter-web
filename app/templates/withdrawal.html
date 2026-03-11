@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odstúpenie od zmluvy | EM Center</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32.png">
+    <link rel="stylesheet" href="/static/css/style.css">
+    <style>
+        .legal-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 16px 60px;
+            line-height: 1.8;
+            color: #333;
+        }
+        .legal-content h1 { font-size: 1.8rem; margin-bottom: 8px; color: #1B5E20; }
+        .legal-content h2 { font-size: 1.3rem; margin-top: 24px; margin-bottom: 12px; color: #2E7D32; }
+        .legal-content p { margin-bottom: 12px; font-size: 0.95rem; }
+        .withdrawal-form {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 32px;
+            margin: 24px 0;
+        }
+        .withdrawal-form .form-field {
+            margin-bottom: 16px;
+        }
+        .withdrawal-form label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 4px;
+            font-size: 0.95rem;
+            color: #333;
+        }
+        .withdrawal-form input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        .withdrawal-form input:focus {
+            border-color: #2E7D32;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+        }
+        .withdrawal-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+        .withdrawal-actions .btn-print {
+            background: #2E7D32;
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .withdrawal-actions .btn-print:hover {
+            background: #1B5E20;
+        }
+        .withdrawal-actions .btn-email {
+            background: #e2e8f0;
+            color: #333;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        .withdrawal-actions .btn-email:hover {
+            background: #cbd5e0;
+        }
+        @media print {
+            .header, .site-footer, .withdrawal-actions { display: none !important; }
+            .withdrawal-form { border: none; padding: 0; background: none; }
+            .legal-content { padding: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sticky Header -->
+<header class="header">
+    <div class="container header-inner">
+        <a href="/" class="logo">EM Center</a>
+    </div>
+</header>
+
+<div class="legal-content">
+    <h1>VZOROVÝ FORMULÁR NA ODSTÚPENIE OD ZMLUVY</h1>
+    <p>(vyplňte a zašlite tento formulár len v prípade, že si želáte odstúpiť od zmluvy)</p>
+
+    <p><strong>Komu:</strong> EM-1 s.r.o., Vnútorná okružná 2944/61, 945 01 Komárno<br>
+    <strong>E-mail:</strong> <a href="mailto:odbyt@em-1.sk">odbyt@em-1.sk</a></p>
+
+    <div class="withdrawal-form">
+        <div class="form-field">
+            <label for="wd-order-number">Číslo objednávky</label>
+            <input type="text" id="wd-order-number" placeholder="napr. EM-2026-00001">
+        </div>
+        <div class="form-field">
+            <label for="wd-order-date">Dátum objednania</label>
+            <input type="date" id="wd-order-date">
+        </div>
+        <div class="form-field">
+            <label for="wd-receive-date">Dátum prevzatia</label>
+            <input type="date" id="wd-receive-date">
+        </div>
+        <div class="form-field">
+            <label for="wd-name">Meno a priezvisko</label>
+            <input type="text" id="wd-name" placeholder="Vaše meno a priezvisko">
+        </div>
+        <div class="form-field">
+            <label for="wd-address">Adresa</label>
+            <input type="text" id="wd-address" placeholder="Ulica, mesto, PSČ">
+        </div>
+        <div class="form-field">
+            <label for="wd-email">E-mail</label>
+            <input type="email" id="wd-email" placeholder="vas@email.sk">
+        </div>
+        <div class="form-field">
+            <label for="wd-date">Dátum</label>
+            <input type="date" id="wd-date">
+        </div>
+    </div>
+
+    <p>Týmto oznamujem, že odstupujem od kúpnej zmluvy na vyššie uvedený tovar.</p>
+    <p><strong>Tovar zašlite na adresu:</strong> Fullpost s.r.o. — EM1, Svätého Štefana 10, 943 01 Štúrovo (s poznámkou: Vrátenie tovaru — EM-1 s.r.o.)</p>
+
+    <div class="withdrawal-actions">
+        <button class="btn-print" onclick="window.print()">Vytlačiť</button>
+        <a class="btn-email" id="mailto-link" href="mailto:odbyt@em-1.sk?subject=Odst%C3%BApenie%20od%20zmluvy">Odoslať emailom</a>
+    </div>
+</div>
+
+<footer class="site-footer">
+    <a href="/vop">Obchodné podmienky</a> |
+    <a href="/ochrana-osobnych-udajov">Ochrana osobných údajov</a> |
+    <a href="/odstupenie-od-zmluvy">Odstúpenie od zmluvy</a>
+</footer>
+
+<script>
+    // Auto-fill today's date
+    document.addEventListener('DOMContentLoaded', function() {
+        var today = new Date().toISOString().split('T')[0];
+        var dateField = document.getElementById('wd-date');
+        if (dateField && !dateField.value) dateField.value = today;
+    });
+
+    // Update mailto link with form data
+    document.getElementById('mailto-link').addEventListener('click', function(e) {
+        var orderNum = document.getElementById('wd-order-number').value || '';
+        var name = document.getElementById('wd-name').value || '';
+        var email = document.getElementById('wd-email').value || '';
+        var subject = encodeURIComponent('Odstúpenie od zmluvy — ' + orderNum);
+        var body = encodeURIComponent(
+            'Číslo objednávky: ' + orderNum + '\n' +
+            'Dátum objednania: ' + (document.getElementById('wd-order-date').value || '') + '\n' +
+            'Dátum prevzatia: ' + (document.getElementById('wd-receive-date').value || '') + '\n' +
+            'Meno: ' + name + '\n' +
+            'Adresa: ' + (document.getElementById('wd-address').value || '') + '\n' +
+            'E-mail: ' + email + '\n' +
+            'Dátum: ' + (document.getElementById('wd-date').value || '') + '\n\n' +
+            'Týmto oznamujem, že odstupujem od kúpnej zmluvy na vyššie uvedený tovar.'
+        );
+        this.href = 'mailto:odbyt@em-1.sk?subject=' + subject + '&body=' + body;
+    });
+</script>
+
+</body>
+</html>

@@ -427,3 +427,158 @@ def test_brand_font(page: Page, base_url: str):
         # Might be hex or other format
         assert "2e7d32" in color.lower() or "rgb" in color.lower(), \
             f"Unexpected color format: {color}"
+
+
+# ===========================================================================
+# SCENARIO 11: Company fields toggle
+# ===========================================================================
+@pytest.mark.e2e
+def test_company_fields_toggle(page: Page, base_url: str):
+    """Check 'Nakupujem na firmu' → company fields show/hide."""
+    _open_and_wait_for_products(page, base_url)
+    _add_product_to_cart(page, "EM-500")
+    page.wait_for_timeout(500)
+    _open_checkout(page)
+
+    # Navigate to step 2
+    page.locator("#step-1 .btn-step-next").click()
+    page.wait_for_timeout(500)
+
+    company_fields = page.locator("#company-fields")
+    checkbox = page.locator("#is_company")
+
+    # Initially hidden
+    assert company_fields.evaluate("el => el.style.display") in ("none", ""), \
+        "Company fields should be hidden initially"
+
+    # Check → should become visible
+    checkbox.check()
+    page.wait_for_timeout(300)
+    assert company_fields.evaluate("el => el.style.display") == "block", \
+        "Company fields should be visible after checking"
+
+    # Uncheck → should hide again
+    checkbox.uncheck()
+    page.wait_for_timeout(300)
+    assert company_fields.evaluate("el => el.style.display") == "none", \
+        "Company fields should be hidden after unchecking"
+
+
+# ===========================================================================
+# SCENARIO 12: Account fields toggle
+# ===========================================================================
+@pytest.mark.e2e
+def test_account_fields_toggle(page: Page, base_url: str):
+    """Check 'Vytvoriť účet' → account fields show/hide."""
+    _open_and_wait_for_products(page, base_url)
+    _add_product_to_cart(page, "EM-500")
+    page.wait_for_timeout(500)
+    _open_checkout(page)
+
+    # Navigate to step 2
+    page.locator("#step-1 .btn-step-next").click()
+    page.wait_for_timeout(500)
+
+    account_fields = page.locator("#account-fields")
+    checkbox = page.locator("#create_account")
+
+    # Initially hidden
+    assert account_fields.evaluate("el => el.style.display") in ("none", ""), \
+        "Account fields should be hidden initially"
+
+    # Check → should become visible
+    checkbox.check()
+    page.wait_for_timeout(300)
+    assert account_fields.evaluate("el => el.style.display") == "block", \
+        "Account fields should be visible after checking"
+
+
+# ===========================================================================
+# SCENARIO 13: VOP page
+# ===========================================================================
+@pytest.mark.e2e
+def test_vop_page(page: Page, base_url: str):
+    """GET /vop → 200, contains 'EM-1' or 'obchodné podmienky'."""
+    resp = page.goto(f"{base_url}/vop", wait_until="domcontentloaded")
+    assert resp.status == 200, f"VOP page returned {resp.status}"
+    text = page.content().lower()
+    assert "em-1" in text or "obchodné podmienky" in text or "pripravujú" in text, \
+        "VOP page missing expected content"
+
+
+# ===========================================================================
+# SCENARIO 14: Privacy page
+# ===========================================================================
+@pytest.mark.e2e
+def test_privacy_page(page: Page, base_url: str):
+    """GET /ochrana-osobnych-udajov → 200."""
+    resp = page.goto(f"{base_url}/ochrana-osobnych-udajov", wait_until="domcontentloaded")
+    assert resp.status == 200, f"Privacy page returned {resp.status}"
+
+
+# ===========================================================================
+# SCENARIO 15: Withdrawal page
+# ===========================================================================
+@pytest.mark.e2e
+def test_withdrawal_page(page: Page, base_url: str):
+    """GET /odstupenie-od-zmluvy → 200, contains 'odstúpenie'."""
+    resp = page.goto(f"{base_url}/odstupenie-od-zmluvy", wait_until="domcontentloaded")
+    assert resp.status == 200, f"Withdrawal page returned {resp.status}"
+    text = page.content().lower()
+    assert "odstúpenie" in text or "formulár" in text, \
+        "Withdrawal page missing expected content"
+
+
+# ===========================================================================
+# SCENARIO 16: Footer links
+# ===========================================================================
+@pytest.mark.e2e
+def test_footer_links(page: Page, base_url: str):
+    """Homepage contains links to /vop, /ochrana-osobnych-udajov, /odstupenie-od-zmluvy."""
+    page.goto(base_url, wait_until="domcontentloaded")
+    page.wait_for_timeout(500)
+
+    content = page.content()
+    assert '/vop' in content, "Missing /vop link"
+    assert '/ochrana-osobnych-udajov' in content, "Missing /ochrana-osobnych-udajov link"
+    assert '/odstupenie-od-zmluvy' in content, "Missing /odstupenie-od-zmluvy link"
+
+
+# ===========================================================================
+# SCENARIO 17: VOP consent required for order
+# ===========================================================================
+@pytest.mark.e2e
+def test_vop_consent_required(page: Page, base_url: str):
+    """Order button is disabled without VOP checkbox, enabled after checking."""
+    _open_and_wait_for_products(page, base_url)
+    _add_product_to_cart(page, "EM-500")
+    page.wait_for_timeout(500)
+    _open_checkout(page)
+
+    # Step 1 → Step 2
+    page.locator("#step-1 .btn-step-next").click()
+    page.wait_for_timeout(500)
+
+    # Fill step 2
+    page.fill("#customer_name", "E2E Test")
+    page.fill("#customer_email", "e2e@example.com")
+    page.fill("#customer_phone", "+421900000000")
+    page.fill("#billing_street", "Testová 1")
+    page.fill("#billing_city", "Bratislava")
+    page.fill("#billing_zip", "81101")
+    page.locator("#step-2 .btn-step-next").click()
+    page.wait_for_timeout(500)
+
+    # Step 3 — check terms, go to step 4
+    page.locator("#agree_terms").check()
+    page.locator("#step-3 .btn-step-next").click()
+    page.wait_for_timeout(500)
+
+    # Step 4 — order button should be disabled
+    submit_btn = page.locator("#submit-order-btn")
+    assert submit_btn.is_disabled(), "Order button should be disabled without VOP consent"
+
+    # Check VOP consent
+    page.locator("#vop-consent").check()
+    page.wait_for_timeout(300)
+    assert not submit_btn.is_disabled(), "Order button should be enabled after VOP consent"
