@@ -418,9 +418,9 @@
     // 8a. CHECKOUT STEPPER
     // =========================================
     var currentStep = 1;
-    var totalSteps = 4;
-    var stepLabels = ['Košík', 'Údaje', 'Platba', 'Súhrn'];
-    var stepIcons = ['🛒', '📋', '💳', '✅'];
+    var totalSteps = 5;
+    var stepLabels = ['Košík', 'Doprava', 'Údaje', 'Platba', 'Súhrn'];
+    var stepIcons = ['🛒', '🚚', '📋', '💳', '✅'];
 
     function renderStepper() {
         var container = document.getElementById('checkoutStepper');
@@ -466,18 +466,21 @@
             alert('Košík je prázdny');
             return;
         }
-        if (currentStep === 2 && !validateContactForm()) {
+        if (currentStep === 2 && !validateDeliveryStep()) {
             return;
         }
-        if (currentStep === 3 && !validatePaymentSelection()) {
+        if (currentStep === 3 && !validateContactForm()) {
+            return;
+        }
+        if (currentStep === 4 && !validatePaymentSelection()) {
             return;
         }
         currentStep++;
-        var stepNames = {1: 'cart', 2: 'details', 3: 'payment', 4: 'summary'};
+        var stepNames = {1: 'cart', 2: 'delivery', 3: 'details', 4: 'payment', 5: 'summary'};
         trackEvent('checkout-step', { step: currentStep, name: stepNames[currentStep] || 'unknown' });
         showCurrentStep();
-        // Build summary on step 4
-        if (currentStep === 4) {
+        // Build summary on step 5
+        if (currentStep === 5) {
             buildOrderSummary();
         }
     };
@@ -505,9 +508,9 @@
     function validateContactForm() {
         var valid = true;
         // Clear previous errors
-        var errorSpans = document.querySelectorAll('#step-2 .field-error');
+        var errorSpans = document.querySelectorAll('#step-3 .field-error');
         for (var e = 0; e < errorSpans.length; e++) errorSpans[e].textContent = '';
-        var errorGroups = document.querySelectorAll('#step-2 .form-group.error');
+        var errorGroups = document.querySelectorAll('#step-3 .form-group.error');
         for (var g = 0; g < errorGroups.length; g++) errorGroups[g].classList.remove('error');
 
         function setError(fieldId, message) {
@@ -631,6 +634,16 @@
         tableHtml += escapeHtml(document.getElementById('billing_city').value.trim()) + '</p>';
         tableHtml += '</div>';
 
+        // Delivery
+        var deliveryData = getDeliveryData();
+        var deliveryLabel = deliveryData.delivery_method === 'packeta_point' ? 'Výdajné miesto Packeta' : 'Kuriér na adresu';
+        tableHtml += '<div class="summary-section"><h4>Spôsob dopravy</h4>';
+        tableHtml += '<p>' + deliveryLabel + '</p>';
+        if (deliveryData.packeta_point_name) {
+            tableHtml += '<p>' + escapeHtml(deliveryData.packeta_point_name) + '</p>';
+        }
+        tableHtml += '</div>';
+
         // Payment
         var paymentMethod = document.querySelector('input[name="payment_method"]:checked');
         var paymentLabel = paymentMethod && paymentMethod.value === 'CARD' ? 'Platba kartou' : 'Bankový prevod';
@@ -722,7 +735,10 @@
             payment_method: document.querySelector('input[name="payment_method"]:checked').value,
             note: document.getElementById("order_note").value.trim(),
             discount_code: null,
-            lang: "sk"
+            lang: "sk",
+            delivery_method: getDeliveryData().delivery_method,
+            packeta_point_id: getDeliveryData().packeta_point_id,
+            packeta_point_name: getDeliveryData().packeta_point_name
         };
 
         fetch("/api/orders", {
@@ -834,7 +850,109 @@
     // =========================================
 
     // =========================================
-    // 11. Init — load products on DOMContentLoaded
+    // 11. PACKETA WIDGET + DELIVERY SELECTION
+    // =========================================
+    var PACKETA_API_KEY = "0c3c778ce0bb1857";
+    var selectedPacketaPoint = null;
+
+    // Delivery option click handlers
+    var courierRadio = document.getElementById('delivery-courier');
+    var packetaRadio = document.getElementById('delivery-packeta');
+    var selectPointBtn = document.getElementById('select-packeta-point');
+    var deliveryContinueBtn = document.getElementById('delivery-continue-btn');
+    var courierOption = document.getElementById('delivery-option-courier');
+    var packetaOption = document.getElementById('delivery-option-packeta');
+
+    if (courierRadio) {
+        courierRadio.addEventListener('change', function () {
+            if (this.checked) {
+                if (selectPointBtn) selectPointBtn.style.display = 'none';
+                document.getElementById('selected-packeta-point').style.display = 'none';
+                selectedPacketaPoint = null;
+                if (deliveryContinueBtn) deliveryContinueBtn.disabled = false;
+                if (courierOption) courierOption.classList.add('selected');
+                if (packetaOption) packetaOption.classList.remove('selected');
+                trackEvent('delivery-selected', { method: 'courier' });
+            }
+        });
+    }
+
+    if (packetaRadio) {
+        packetaRadio.addEventListener('change', function () {
+            if (this.checked) {
+                if (selectPointBtn) selectPointBtn.style.display = 'inline-block';
+                if (deliveryContinueBtn) deliveryContinueBtn.disabled = !selectedPacketaPoint;
+                if (packetaOption) packetaOption.classList.add('selected');
+                if (courierOption) courierOption.classList.remove('selected');
+                if (selectedPacketaPoint) {
+                    document.getElementById('selected-packeta-point').style.display = 'block';
+                }
+            }
+        });
+    }
+
+    if (selectPointBtn) {
+        selectPointBtn.addEventListener('click', function () {
+            if (typeof Packeta === 'undefined' || !Packeta.Widget) {
+                alert('Packeta widget sa načítava, skúste znova o chvíľu.');
+                return;
+            }
+            Packeta.Widget.pick(PACKETA_API_KEY, function (point) {
+                if (point) {
+                    selectedPacketaPoint = {
+                        id: point.id,
+                        name: point.nameStreet || point.name,
+                        city: point.city,
+                        zip: point.zip
+                    };
+                    document.getElementById('packeta-point-name').textContent =
+                        selectedPacketaPoint.name + ', ' + selectedPacketaPoint.zip + ' ' + selectedPacketaPoint.city;
+                    document.getElementById('selected-packeta-point').style.display = 'block';
+                    if (deliveryContinueBtn) deliveryContinueBtn.disabled = false;
+                    trackEvent('delivery-selected', {
+                        method: 'packeta_point',
+                        point_id: String(selectedPacketaPoint.id)
+                    });
+                }
+            }, {
+                country: "sk",
+                language: "sk"
+            });
+        });
+    }
+
+    function validateDeliveryStep() {
+        var checked = document.querySelector('input[name="delivery_method"]:checked');
+        if (!checked) {
+            alert('Vyberte spôsob dopravy.');
+            return false;
+        }
+        if (checked.value === 'packeta_point' && !selectedPacketaPoint) {
+            alert('Prosím, vyberte výdajné miesto Packeta.');
+            return false;
+        }
+        return true;
+    }
+
+    function getDeliveryData() {
+        var checked = document.querySelector('input[name="delivery_method"]:checked');
+        var method = checked ? checked.value : 'courier';
+        if (method === 'packeta_point' && selectedPacketaPoint) {
+            return {
+                delivery_method: 'packeta_point',
+                packeta_point_id: selectedPacketaPoint.id,
+                packeta_point_name: selectedPacketaPoint.name + ', ' + selectedPacketaPoint.zip + ' ' + selectedPacketaPoint.city
+            };
+        }
+        return {
+            delivery_method: 'courier',
+            packeta_point_id: null,
+            packeta_point_name: null
+        };
+    }
+
+    // =========================================
+    // 12. Init — load products on DOMContentLoaded
     // =========================================
     loadProducts();
 

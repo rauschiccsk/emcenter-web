@@ -15,6 +15,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css?v=1773226719">
+    <script src="https://widget.packeta.com/v6/www/js/library.js"></script>
     {% if umami_website_id %}
     <script defer src="{{ umami_script_url }}" data-website-id="{{ umami_website_id }}"></script>
     {% endif %}
@@ -227,8 +228,53 @@
                 </div>
             </div>
 
-            <!-- STEP 2: Údaje -->
+            <!-- STEP 2: Doprava -->
             <div id="step-2" class="checkout-step" style="display:none;">
+                <div class="form-group-title">Spôsob dopravy</div>
+
+                <div class="delivery-options">
+                    <div class="delivery-option selected" data-method="courier" id="delivery-option-courier">
+                        <label for="delivery-courier">
+                            <input type="radio" id="delivery-courier" name="delivery_method" value="courier" checked>
+                            <span class="delivery-option-inner">
+                                <span class="icon">📦</span>
+                                <span class="option-content">
+                                    <strong>Kuriér na adresu</strong>
+                                    <span class="option-description">Doručenie kuriérom na vašu adresu (1-3 pracovné dni)</span>
+                                </span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="delivery-option" data-method="packeta_point" id="delivery-option-packeta">
+                        <label for="delivery-packeta">
+                            <input type="radio" id="delivery-packeta" name="delivery_method" value="packeta_point">
+                            <span class="delivery-option-inner">
+                                <span class="icon">📍</span>
+                                <span class="option-content">
+                                    <strong>Výdajné miesto Packeta</strong>
+                                    <span class="option-description">Vyzdvihnutie na výdajnom mieste Packeta / Z-BOX</span>
+                                </span>
+                            </span>
+                        </label>
+                        <button type="button" id="select-packeta-point" class="btn-secondary btn-select-point" style="display: none;">
+                            Vybrať výdajné miesto
+                        </button>
+                        <div id="selected-packeta-point" class="selected-point" style="display: none;">
+                            <strong>Vybrané miesto:</strong>
+                            <p id="packeta-point-name"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-nav">
+                    <button type="button" class="btn-step-back" onclick="prevStep()">← Späť do košíka</button>
+                    <button type="button" class="btn-step-next" id="delivery-continue-btn" onclick="nextStep()">Pokračovať →</button>
+                </div>
+            </div>
+
+            <!-- STEP 3: Údaje -->
+            <div id="step-3" class="checkout-step" style="display:none;">
                 <!-- Kontaktné údaje -->
                 <div class="form-group-title">Kontaktné údaje</div>
                 <div class="form-row">
@@ -418,8 +464,8 @@
                 </div>
             </div>
 
-            <!-- STEP 3: Platba -->
-            <div id="step-3" class="checkout-step" style="display:none;">
+            <!-- STEP 4: Platba -->
+            <div id="step-4" class="checkout-step" style="display:none;">
                 <div class="form-group-title">Spôsob platby</div>
                 <div class="form-row">
                     <div class="form-group radio-group">
@@ -451,8 +497,8 @@
                 </div>
             </div>
 
-            <!-- STEP 4: Súhrn -->
-            <div id="step-4" class="checkout-step" style="display:none;">
+            <!-- STEP 5: Súhrn -->
+            <div id="step-5" class="checkout-step" style="display:none;">
                 <div id="order-summary-final"></div>
 
                 <div class="form-row">
