@@ -1,0 +1,50 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deploy target'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+        default: 'staging'
+
+jobs:
+  deploy-staging:
+    if: github.event.inputs.environment == 'staging'
+    runs-on: [self-hosted, andros]
+    steps:
+      - uses: actions/checkout@v6
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+      - name: Deploy to Staging
+        run: |
+          cd /opt/emcenter-web-src
+          ./deploy-staging.sh
+
+      - name: Health Check
+        run: |
+          sleep 5
+          curl -f http://localhost:9163/health || exit 1
+
+  deploy-production:
+    if: github.event.inputs.environment == 'production'
+    runs-on: [self-hosted, andros]
+    steps:
+      - uses: actions/checkout@v6
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+      - name: Deploy to Production
+        run: |
+          cd /opt/emcenter-web-src
+          ./deploy-production.sh
+
+      - name: Health Check
+        run: |
+          sleep 5
+          curl -f http://localhost:9162/health || exit 1
