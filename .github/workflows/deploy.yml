@@ -15,7 +15,7 @@ on:
 jobs:
   deploy-staging:
     if: github.event.inputs.environment == 'staging'
-    runs-on: [self-hosted, andros]
+    runs-on: [self-hosted, andros-ubuntu-emcenter]
     steps:
       - uses: actions/checkout@v6
         env:
@@ -33,7 +33,7 @@ jobs:
 
   deploy-production:
     if: github.event.inputs.environment == 'production'
-    runs-on: [self-hosted, andros]
+    runs-on: [self-hosted, andros-ubuntu-emcenter]
     steps:
       - uses: actions/checkout@v6
         env:
