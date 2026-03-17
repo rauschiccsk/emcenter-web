@@ -1456,37 +1456,15 @@ ul {
     text-decoration: underline;
 }
 
-/* Bank transfer details */
-.success-icon {
-    text-align: center;
-    margin-bottom: 16px;
+/* Payment icons */
+.payment-icons img {
+    height: 32px;
+    opacity: 0.8;
+    transition: opacity var(--transition);
 }
 
-.bank-details {
-    background: #f0f7f0;
-    padding: 1.5rem;
-    border-radius: var(--radius-sm);
-    margin: 1rem 0;
-    text-align: left;
-}
-
-.bank-details p {
-    margin: 0.5rem 0;
-}
-
-#bank-transfer-info {
-    text-align: center;
-}
-
-#bank-transfer-info h3 {
-    font-size: 1.4rem;
-    color: var(--text);
-    margin-bottom: 12px;
-}
-
-#bank-transfer-info p {
-    margin-bottom: 8px;
-    color: var(--text-light);
+.payment-icons img:hover {
+    opacity: 1;
 }
 
 .btn-secondary {

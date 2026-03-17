@@ -581,11 +581,7 @@
 
     function validatePaymentSelection() {
         var valid = true;
-        var checked = document.querySelector('input[name="payment_method"]:checked');
-        if (!checked) {
-            alert('Vyberte spôsob platby');
-            valid = false;
-        }
+        // Payment method is now hardcoded to CARD — no radio selection needed
         // Check terms agreement
         var termsEl = document.getElementById('agree_terms');
         if (termsEl && !termsEl.checked) {
@@ -644,11 +640,9 @@
         }
         tableHtml += '</div>';
 
-        // Payment
-        var paymentMethod = document.querySelector('input[name="payment_method"]:checked');
-        var paymentLabel = paymentMethod && paymentMethod.value === 'CARD' ? 'Platba kartou' : 'Bankový prevod';
+        // Payment — only CARD via Comgate
         tableHtml += '<div class="summary-section"><h4>Spôsob platby</h4>';
-        tableHtml += '<p>' + paymentLabel + '</p>';
+        tableHtml += '<p>Platba kartou (Comgate)</p>';
         tableHtml += '</div>';
 
         container.innerHTML = tableHtml;
@@ -732,7 +726,7 @@
             create_account: createAccount || false,
             account_password: createAccount ? (document.getElementById("account_password") ? document.getElementById("account_password").value : null) : null,
             items: cart.map(function (item) { return { sku: item.sku, quantity: item.quantity }; }),
-            payment_method: document.querySelector('input[name="payment_method"]:checked').value,
+            payment_method: "CARD",
             note: document.getElementById("order_note").value.trim(),
             discount_code: null,
             lang: "sk",
@@ -758,18 +752,6 @@
                     if (isCompany) { trackEvent('company-order'); }
                     if (createAccount) { trackEvent('account-created', { source: 'checkout' }); }
                     window.location.href = result.data.payment_url;
-                } else if (result.ok && !result.data.payment_url) {
-                    // BANK payment — show bank transfer info
-                    trackEvent('order-submitted', { order_number: result.data.order_number || 'unknown' });
-                    if (isCompany) { trackEvent('company-order'); }
-                    if (createAccount) { trackEvent('account-created', { source: 'checkout' }); }
-                    document.getElementById("checkout-form").style.display = "none";
-                    var bankInfo = document.getElementById("bank-transfer-info");
-                    document.getElementById("bank-order-number").textContent = result.data.order_number || "";
-                    document.getElementById("bank-amount").textContent = formatPrice(result.data.total_amount_vat || 0);
-                    document.getElementById("bank-vs").textContent = result.data.order_number || "";
-                    bankInfo.style.display = "block";
-                    bankInfo.scrollIntoView({ behavior: "smooth" });
                 } else {
                     showOrderError(result.data.detail || "Chyba pri vytváraní objednávky.");
                 }

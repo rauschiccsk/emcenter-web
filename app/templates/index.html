@@ -467,17 +467,13 @@
             <!-- STEP 4: Platba -->
             <div id="step-4" class="checkout-step" style="display:none;">
                 <div class="form-group-title">Spôsob platby</div>
-                <div class="form-row">
-                    <div class="form-group radio-group">
-                        <label class="radio-label">
-                            <input type="radio" name="payment_method" value="CARD" checked>
-                            <span>Platba kartou</span>
-                        </label>
-                        <label class="radio-label">
-                            <input type="radio" name="payment_method" value="BANK">
-                            <span>Bankový prevod</span>
-                        </label>
-                    </div>
+                <p style="color: var(--text-light); margin-bottom: 1rem;">Platba prebieha bezpečne cez platobnú bránu Comgate. Po potvrdení objednávky budete presmerovaní na platobnú bránu.</p>
+
+                <div class="payment-icons" style="display: flex; gap: 12px; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                    <img src="/static/images/visa.svg" alt="Visa" style="height: 32px;">
+                    <img src="/static/images/mastercard.svg" alt="Mastercard" style="height: 32px;">
+                    <img src="/static/images/apple-pay.svg" alt="Apple Pay" style="height: 32px;">
+                    <img src="/static/images/google-pay.svg" alt="Google Pay" style="height: 32px;">
                 </div>
 
                 <!-- Súhlas -->
@@ -523,21 +519,6 @@
             <div id="order-error" class="order-error" style="display: none;"></div>
         </form>
 
-        <!-- Bank transfer info (shown after successful BANK order) -->
-        <div id="bank-transfer-info" style="display: none;">
-            <div class="success-icon">
-                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2"><rect x="3" y="3" width="18" height="14" rx="2"/><path d="M3 8h18"/><path d="M7 14h4"/></svg>
-            </div>
-            <h3>Objednávka bola vytvorená</h3>
-            <p>Číslo objednávky: <strong id="bank-order-number"></strong></p>
-            <p>Uhraďte prosím sumu <strong id="bank-amount"></strong> na účet:</p>
-            <div class="bank-details">
-                <p>IBAN: <strong>SK...</strong></p>
-                <p>Variabilný symbol: <strong id="bank-vs"></strong></p>
-            </div>
-            <p>Po pripísaní platby vám odošleme tovar.</p>
-            <a href="/" class="btn btn-secondary">Späť na hlavnú stránku</a>
-        </div>
     </div>
 </section>
 
