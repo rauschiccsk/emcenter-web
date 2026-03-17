@@ -8,7 +8,7 @@ on:
 
 jobs:
   lint:
-    runs-on: andros-ubuntu-emcenter
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -20,7 +20,7 @@ jobs:
         run: python -m ruff check app/
 
   build:
-    runs-on: andros-ubuntu-emcenter
+    runs-on: ubuntu-latest
     needs: lint
     steps:
       - uses: actions/checkout@v4
@@ -28,15 +28,17 @@ jobs:
         run: docker build -t emcenter-web:test .
 
   deploy:
-    runs-on: andros-ubuntu-emcenter
+    runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     steps:
       - uses: actions/checkout@v4
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 100.107.134.104 >> ~/.ssh/known_hosts
       - name: Deploy to Production
         run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ secrets.DEPLOY_SSH_KEY }} icc@100.107.134.104 "cd /opt/emcenter-web-src && ./deploy-production.sh"
-      - name: Verify health
-        run: |
-          sleep 5
-          curl -f http://localhost:9162/health
+          ssh -i ~/.ssh/id_rsa icc@100.107.134.104 "cd /opt/emcenter-web-src && ./deploy-production.sh"
