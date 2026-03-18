@@ -104,6 +104,8 @@ MOCK_LEAD_VALIDATION_INVALID = {
     "message": "Discount code is expired or invalid",
 }
 
+MOCK_CALLBACK_OK = b"code=0&message=OK"
+
 MOCK_ORDER_PAYLOAD = {
     "customer_name": "Test User",
     "customer_email": "test@example.com",
@@ -142,6 +144,14 @@ def _make_error_response(status_code: int, detail: str = "Error") -> MagicMock:
 def _route_request(url: str, method: str = "GET", **kwargs) -> MagicMock:
     """Route mock requests by URL pattern and return appropriate response."""
     url = str(url)
+
+    if "/api/eshop/payment/callback" in url and method == "POST":
+        resp = MagicMock()
+        resp.status_code = 200
+        resp.content = MOCK_CALLBACK_OK
+        resp.headers = {"content-type": "text/plain"}
+        resp.text = "code=0&message=OK"
+        return resp
 
     if "/api/eshop/payment/return" in url:
         # Check params for payment return

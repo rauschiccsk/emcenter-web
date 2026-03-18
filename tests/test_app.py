@@ -172,6 +172,41 @@ class TestPaymentReturn:
         assert "EM-2026-00001" in resp.text
 
 
+# === Category 4b: Comgate Callback Proxy Tests ===
+
+
+class TestPaymentCallback:
+    """Tests for Comgate payment callback proxy."""
+
+    def test_callback_route_exists(self, client, mock_nex_api):
+        """POST /api/eshop/payment/callback is not 404/405."""
+        resp = client.post(
+            "/api/eshop/payment/callback",
+            data="merchant=508764&test=true&price=100&curr=EUR&label=test&refId=TEST001&transId=ABC123&secret=test&email=test@test.com&status=PAID",
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+        assert resp.status_code not in (404, 405)
+
+    def test_callback_proxies_form_data(self, client, mock_nex_api):
+        """Callback proxies form-urlencoded body to NEX API."""
+        resp = client.post(
+            "/api/eshop/payment/callback",
+            data="merchant=508764&transId=ABC123&status=PAID",
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+        assert resp.status_code == 200
+        assert b"code=0" in resp.content
+
+    def test_callback_handles_timeout(self, client, mock_nex_api_timeout):
+        """Callback handles NEX API timeout gracefully."""
+        resp = client.post(
+            "/api/eshop/payment/callback",
+            data="merchant=508764&transId=ABC123&status=PAID",
+            headers={"Content-Type": "application/x-www-form-urlencoded"},
+        )
+        assert resp.status_code == 502
+
+
 # === Category 5: Static Files Tests ===
 
 

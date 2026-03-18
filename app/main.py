@@ -679,6 +679,40 @@ async def withdrawal_page(request: Request):
     )
 
 
+@app.post("/api/eshop/payment/callback")
+async def payment_callback(request: Request):
+    """Comgate payment callback proxy (public, no auth).
+
+    Comgate sends POST with application/x-www-form-urlencoded body.
+    We forward it as-is to the NEX Automat backend and return the response.
+    Expected backend response: ``code=0&message=OK``
+    """
+    try:
+        body = await request.body()
+        fwd_headers = {
+            "Content-Type": request.headers.get(
+                "content-type", "application/x-www-form-urlencoded"
+            ),
+        }
+        async with httpx.AsyncClient(timeout=15.0) as client:
+            resp = await client.post(
+                f"{NEX_API_BASE}/api/eshop/payment/callback",
+                headers=fwd_headers,
+                content=body,
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type=resp.headers.get("content-type", "text/plain"),
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: POST /api/eshop/payment/callback")
+        return Response(content=b"code=1&message=Backend unavailable", status_code=502)
+    except Exception as e:
+        logger.error("Proxy error POST /api/eshop/payment/callback: %s", e)
+        return Response(content=b"code=1&message=Proxy error", status_code=502)
+
+
 @app.get("/payment/return")
 async def payment_return(request: Request):
     """Comgate redirect after payment — show thank you or failure page."""
