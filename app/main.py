@@ -119,6 +119,8 @@ def init_db():
 NEX_API_BASE = os.environ.get("ESHOP_API_URL", os.environ.get("NEX_API_BASE", "http://localhost:9110"))
 ESHOP_TOKEN = os.environ.get("ESHOP_API_TOKEN", os.environ.get("ESHOP_TOKEN", ""))
 
+ENVIRONMENT = os.environ.get("ENVIRONMENT", "production")
+
 UMAMI_WEBSITE_ID = os.environ.get("UMAMI_WEBSITE_ID", "")
 UMAMI_SCRIPT_URL = os.environ.get("UMAMI_SCRIPT_URL", "")
 
@@ -377,6 +379,12 @@ async def create_order(request: Request):
     """Proxy to NEX Automat — create order."""
     try:
         body = await request.json()
+        # Staging test marker — automaticky pridaj order_notes na non-production
+        if ENVIRONMENT != "production":
+            body.setdefault(
+                "order_notes",
+                "TESTOVACIA OBJEDNAVKA – emcenter.isnex.eu staging",
+            )
         async with httpx.AsyncClient(timeout=30.0) as client:
             resp = await client.post(
                 f"{NEX_API_BASE}/api/eshop/orders",
