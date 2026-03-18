@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Všeobecné obchodné podmienky | EM Center</title>
+    <meta name="description" content="Všeobecné obchodné podmienky internetového obchodu emcenter.sk prevádzkovaného spoločnosťou EM-1 s.r.o.">
     <link rel="icon" type="image/png" sizes="32x32" href="/static/images/favicon-32.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
@@ -16,16 +20,184 @@
     </div>
 </header>
 
-<div class="legal-content">
-    {% if vop_content %}
-    {{ vop_content | safe }}
-    {% else %}
-    <div class="legal-placeholder">
-        <h1>EM-1 s.r.o.</h1>
-        <p>Všeobecné obchodné podmienky — pripravujú sa</p>
+<!-- Legal Content -->
+<section class="legal-content">
+    <div class="container">
+        <h1 class="legal-title">Všeobecné obchodné podmienky internetového obchodu emcenter.sk</h1>
+        <p class="legal-subtitle"><strong>Platné od: [DÁTUM SPUSTENIA]</strong></p>
+
+        <div class="legal-sections">
+
+            <!-- 1. Úvodné ustanovenia -->
+            <div class="legal-section">
+                <h2>1. Úvodné ustanovenia</h2>
+                <div class="legal-paragraphs">
+                    <p>1.1. Tieto Všeobecné obchodné podmienky (ďalej len „VOP") upravujú práva a povinnosti zmluvných strán vyplývajúce z kúpnej zmluvy uzatvorenej medzi predávajúcim a kupujúcim prostredníctvom internetového obchodu prevádzkovaného na webovej stránke emcenter.sk.</p>
+
+                    <p>1.2. <strong>Predávajúci (prevádzkovateľ e-shopu):</strong><br>
+                    EM-1 s.r.o.<br>
+                    Sídlo: Vnútorná okružná 2944/61, 945 01 Komárno, Slovenská republika<br>
+                    IČO: 50 671 146<br>
+                    DIČ: 2120419334<br>
+                    IČ DPH: SK2120419334<br>
+                    Zapísaná v Obchodnom registri Okresného súdu Nitra, oddiel: Sro, vložka č. 62698/N<br>
+                    Štatutárny orgán: Tibor Rausch, konateľ<br>
+                    E-mail: <a href="mailto:odbyt@em-1.sk">odbyt@em-1.sk</a><br>
+                    Telefón: +421 905 354 537</p>
+
+                    <p>1.3. <strong>Kupujúcim</strong> je každá fyzická alebo právnická osoba, ktorá odošle objednávku prostredníctvom internetového obchodu emcenter.sk. Pre účely týchto VOP sa kupujúcim rozumie aj spotrebiteľ v zmysle § 2 písm. a) zákona č. 250/2007 Z. z. o ochrane spotrebiteľa.</p>
+
+                    <p>1.4. Odoslaním objednávky kupujúci potvrdzuje, že sa oboznámil s týmito VOP a že s nimi súhlasí.</p>
+
+                    <p>1.5. Orgán dozoru: Slovenská obchodná inšpekcia (SOI), Inšpektorát SOI pre Nitriansky kraj, Staničná 9, P.O. BOX 49A, 950 50 Nitra 1, odbor technickej kontroly výrobkov a ochrany spotrebiteľa. Tel.: 037/772 02 16, e-mail: <a href="mailto:nr@soi.sk">nr@soi.sk</a>.</p>
+                </div>
+            </div>
+
+            <!-- 2. Registrácia a zákaznícky účet -->
+            <div class="legal-section">
+                <h2>2. Registrácia a zákaznícky účet</h2>
+                <div class="legal-paragraphs">
+                    <p>2.1. Kupujúci má možnosť dobrovoľne si vytvoriť zákaznícky účet na stránke emcenter.sk. Registrácia umožňuje sledovanie stavu objednávok, zobrazenie histórie nákupov a zjednodušenie budúcich objednávok predvyplnením údajov.</p>
+
+                    <p>2.2. Vytvorenie zákazníckeho účtu nie je podmienkou na uskutočnenie nákupu. Kupujúci môže uskutočniť objednávku aj bez registrácie prostredníctvom objednávkového formulára (režim hosťa).</p>
+
+                    <p>2.3. Kupujúci je povinný uvádzať pri registrácii správne a pravdivé údaje a pri akejkoľvek zmene ich bezodkladne aktualizovať.</p>
+
+                    <p>2.4. Kupujúci je zodpovedný za zachovanie dôvernosti prihlasovacích údajov a za všetky aktivity vykonané prostredníctvom svojho účtu.</p>
+
+                    <p>2.5. Kupujúci môže kedykoľvek požiadať o zrušenie zákazníckeho účtu zaslaním e-mailu na adresu <a href="mailto:odbyt@em-1.sk">odbyt@em-1.sk</a>. Prevádzkovateľ účet zruší bez zbytočného odkladu.</p>
+                </div>
+            </div>
+
+            <!-- 3. Objednávka a uzatvorenie kúpnej zmluvy -->
+            <div class="legal-section">
+                <h2>3. Objednávka a uzatvorenie kúpnej zmluvy</h2>
+                <div class="legal-paragraphs">
+                    <p>3.1. Kupujúci si objedná tovar vyplnením objednávkového formulára na webovej stránke emcenter.sk, a to buď prostredníctvom zákazníckeho účtu alebo bez registrácie (režim hosťa). Objednávka obsahuje najmä: označenie tovaru, množstvo, cenu, dodacie a fakturačné údaje kupujúceho a spôsob platby.</p>
+
+                    <p>3.2. Odoslaním objednávky kupujúci podáva predávajúcemu návrh na uzatvorenie kúpnej zmluvy. Kúpna zmluva je uzatvorená momentom potvrdenia objednávky predávajúcim, a to zaslaním potvrdzujúceho e-mailu na e-mailovú adresu kupujúceho.</p>
+
+                    <p>3.3. Predávajúci si vyhradzuje právo nepotvrdiť objednávku alebo jej časť v prípade, že tovar sa už nevyrába, nedodáva alebo sa výrazným spôsobom zmenila jeho cena. V takom prípade predávajúci kontaktuje kupujúceho za účelom dohody o ďalšom postupe.</p>
+
+                    <p>3.4. Všetky ceny tovaru v internetovom obchode sú uvedené vrátane DPH.</p>
+                </div>
+            </div>
+
+            <!-- 4. Platobné podmienky -->
+            <div class="legal-section">
+                <h2>4. Platobné podmienky</h2>
+                <div class="legal-paragraphs">
+                    <p>4.1. Kupujúci môže uhradiť kúpnu cenu nasledovnými spôsobmi:</p>
+                    <ul>
+                        <li><strong>Platba platobnou kartou</strong> — prostredníctvom platobnej brány Comgate, a.s. (Visa, Mastercard)</li>
+                    </ul>
+
+                    <p>4.2. Pri platbe platobnou kartou je kupujúci presmerovaný na zabezpečenú platobnú stránku poskytovateľa platobných služieb Comgate, a.s. Predávajúci nemá prístup k údajom platobnej karty kupujúceho.</p>
+
+                    <p>4.3. Predávajúci si vyhradzuje právo rozšíriť ponuku platobných metód.</p>
+                </div>
+            </div>
+
+            <!-- 5. Dodacie podmienky -->
+            <div class="legal-section">
+                <h2>5. Dodacie podmienky</h2>
+                <div class="legal-paragraphs">
+                    <p>5.1. Predávajúci zabezpečuje doručenie tovaru prostredníctvom zmluvného logistického partnera Fullpost s.r.o. (fulfilment centrum), ktorý odovzdáva zásielky kuriérskym spoločnostiam.</p>
+
+                    <p>5.2. Tovar je odoslaný najneskôr v nasledujúci pracovný deň po potvrdení objednávky a prijatí platby. Dodacia lehota závisí od kuriérskej spoločnosti, spravidla 1–3 pracovné dni od odoslania.</p>
+
+                    <p>5.3. <strong>Cena dopravy:</strong></p>
+                    <ul>
+                        <li>Pri objednávke v hodnote <strong>35,00 € a viac</strong> (vrátane DPH): <strong>doprava zadarmo</strong></li>
+                        <li>Pri objednávke v hodnote <strong>menej ako 35,00 €</strong>: <strong>[X.XX €]</strong> vrátane DPH</li>
+                    </ul>
+
+                    <p>5.4. Doručenie je dostupné výlučne na území <strong>Slovenskej republiky</strong>.</p>
+
+                    <p>5.5. Predávajúci si vyhradzuje právo rozšíriť územie doručenia o ďalšie krajiny.</p>
+
+                    <p>5.6. Kupujúci je povinný zásielku pri prevzatí skontrolovať. V prípade viditeľného poškodenia obalu je kupujúci oprávnený zásielku odmietnuť a spísať s kuriérom zápis o škode.</p>
+                </div>
+            </div>
+
+            <!-- 6. Odstúpenie od zmluvy -->
+            <div class="legal-section">
+                <h2>6. Odstúpenie od zmluvy</h2>
+                <div class="legal-paragraphs">
+                    <p>6.1. Kupujúci — spotrebiteľ má právo odstúpiť od kúpnej zmluvy bez udania dôvodu v lehote <strong>14 dní</strong> odo dňa prevzatia tovaru, v súlade s § 7 zákona č. 102/2014 Z. z. o ochrane spotrebiteľa pri predaji tovaru na diaľku.</p>
+
+                    <p>6.2. Kupujúci môže uplatniť právo na odstúpenie od zmluvy zaslaním jednoznačného vyhlásenia na e-mailovú adresu: <strong><a href="mailto:odbyt@em-1.sk">odbyt@em-1.sk</a></strong>. Kupujúci môže na tento účel použiť vzorový formulár pre odstúpenie od zmluvy, ktorý je dostupný na stránke emcenter.sk.</p>
+
+                    <p>6.3. Kupujúci je povinný najneskôr do 14 dní odo dňa odstúpenia od zmluvy zaslať tovar späť na adresu:</p>
+
+                    <p><strong>Fullpost s.r.o. — EM1, Svätého Štefana 10, 943 01 Štúrovo</strong><br>
+                    (s poznámkou: Vrátenie tovaru — EM-1 s.r.o.)</p>
+
+                    <p>6.4. Tovar musí byť vrátený v pôvodnom obale, nepoškodený, nepoužitý a kompletný. Kupujúci znáša náklady na vrátenie tovaru.</p>
+
+                    <p>6.5. Predávajúci vráti kupujúcemu všetky platby prijaté od kupujúceho na základe zmluvy alebo v súvislosti s ňou, vrátane nákladov na dopravu, dodanie a poštovné (okrem dodatočných nákladov ak si kupujúci zvolil iný spôsob doručenia ako najlacnejší), a to najneskôr do <strong>14 dní</strong> odo dňa doručenia oznámenia o odstúpení od zmluvy. Predávajúci nie je povinný vrátiť platby skôr, ako mu je tovar doručený alebo kým kupujúci nepreukáže zaslanie tovaru.</p>
+
+                    <p>6.6. Vrátenie platby sa uskutoční rovnakým spôsobom, aký kupujúci použil pri platbe, pokiaľ sa kupujúci s predávajúcim nedohodne inak.</p>
+                </div>
+            </div>
+
+            <!-- 7. Reklamačný poriadok -->
+            <div class="legal-section">
+                <h2>7. Reklamačný poriadok</h2>
+                <div class="legal-paragraphs">
+                    <p>7.1. Predávajúci zodpovedá za vady tovaru v zmysle § 619 a nasl. Občianskeho zákonníka. Záručná doba je <strong>24 mesiacov</strong> odo dňa prevzatia tovaru kupujúcim.</p>
+
+                    <p>7.2. Kupujúci uplatní reklamáciu zaslaním e-mailu na adresu <strong><a href="mailto:odbyt@em-1.sk">odbyt@em-1.sk</a></strong> s uvedením čísla objednávky, popisu vady a priložením fotografickej dokumentácie (ak je to možné).</p>
+
+                    <p>7.3. Reklamovaný tovar kupujúci zašle na adresu:</p>
+
+                    <p><strong>Fullpost s.r.o. — EM1, Svätého Štefana 10, 943 01 Štúrovo</strong><br>
+                    (s poznámkou: Reklamácia — EM-1 s.r.o., číslo objednávky: [XXX])</p>
+
+                    <p>7.4. Predávajúci rozhodne o reklamácii ihneď, v zložitejších prípadoch do <strong>3 pracovných dní</strong>. V odôvodnených prípadoch, najmä ak sa vyžaduje technické posúdenie tovaru, najneskôr do <strong>30 dní</strong> odo dňa uplatnenia reklamácie.</p>
+
+                    <p>7.5. Náklady na doručenie reklamovaného tovaru predávajúcemu znáša kupujúci. V prípade oprávnenej reklamácie má kupujúci právo na úhradu účelne vynaložených nákladov spojených s uplatnením reklamácie.</p>
+                </div>
+            </div>
+
+            <!-- 8. Alternatívne riešenie sporov -->
+            <div class="legal-section">
+                <h2>8. Alternatívne riešenie sporov</h2>
+                <div class="legal-paragraphs">
+                    <p>8.1. Kupujúci — spotrebiteľ má právo obrátiť sa na predávajúceho so žiadosťou o nápravu, ak nie je spokojný so spôsobom, ktorým predávajúci vybavil jeho reklamáciu, alebo ak sa domnieva, že predávajúci porušil jeho práva.</p>
+
+                    <p>8.2. Ak predávajúci na žiadosť kupujúceho odpovie zamietavo alebo na ňu neodpovie do 30 dní, kupujúci má právo podať návrh na začatie alternatívneho riešenia sporu (ARS) podľa zákona č. 391/2015 Z. z.</p>
+
+                    <p>8.3. Subjektom ARS je Slovenská obchodná inšpekcia (<a href="https://www.soi.sk" target="_blank" rel="noopener">www.soi.sk</a>) alebo iný príslušný subjekt zapísaný v zozname subjektov ARS vedenom Ministerstvom hospodárstva SR (<a href="https://www.mhsr.sk" target="_blank" rel="noopener">www.mhsr.sk</a>).</p>
+
+                    <p>8.4. Kupujúci môže na podanie návrhu na ARS použiť platformu riešenia sporov online (RSO) na adrese: <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener">https://ec.europa.eu/consumers/odr/</a></p>
+                </div>
+            </div>
+
+            <!-- 9. Záverečné ustanovenia -->
+            <div class="legal-section">
+                <h2>9. Záverečné ustanovenia</h2>
+                <div class="legal-paragraphs">
+                    <p>9.1. Tieto VOP nadobúdajú platnosť a účinnosť dňom ich zverejnenia na webovej stránke emcenter.sk.</p>
+
+                    <p>9.2. Predávajúci si vyhradzuje právo na zmenu týchto VOP. Zmeny VOP nadobúdajú účinnosť dňom ich zverejnenia na stránke emcenter.sk. Pre kupujúceho sú záväzné VOP platné v čase odoslania objednávky.</p>
+
+                    <p>9.3. Vzťahy neupravené týmito VOP sa riadia príslušnými ustanoveniami Občianskeho zákonníka, zákona č. 250/2007 Z. z. o ochrane spotrebiteľa, zákona č. 102/2014 Z. z. o ochrane spotrebiteľa pri predaji tovaru na diaľku a ďalšími všeobecne záväznými právnymi predpismi Slovenskej republiky.</p>
+
+                    <p>9.4. Ak sa niektoré ustanovenie týchto VOP stane neplatným alebo neúčinným, nedotýka sa to platnosti ostatných ustanovení.</p>
+
+                    <p>V Komárne, dňa [DÁTUM SPUSTENIA]<br>
+                    EM-1 s.r.o.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="legal-back">
+            <a href="/">← Späť na hlavnú stránku</a>
+        </div>
     </div>
-    {% endif %}
-</div>
+</section>
 
 <footer class="site-footer">
     <a href="/vop">Obchodné podmienky</a> |
