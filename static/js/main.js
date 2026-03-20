@@ -7,6 +7,12 @@
 (function () {
     "use strict";
 
+    // Shipping prices (EUR incl. VAT)
+    var SHIPPING_PRICES = {
+        courier: 3.50,
+        packeta_point: 2.50
+    };
+
     // Umami analytics custom events
     function trackEvent(eventName, eventData) {
         if (typeof umami !== 'undefined') {
@@ -617,6 +623,18 @@
             tableHtml += '<tr><td>' + escapeHtml(item.name) + '</td><td>' + item.quantity + '</td><td>' + formatPrice(lineTotal) + '</td></tr>';
         }
         tableHtml += '</tbody></table>';
+
+        // Shipping row
+        var deliveryData = getDeliveryData();
+        var shippingLabel = deliveryData.delivery_method === 'packeta_point' ? 'Packeta vydajne miesto' : 'Kurier na adresu';
+        tableHtml += '<div class="summary-row shipping-row">';
+        tableHtml += '<span>' + shippingLabel + '</span>';
+        tableHtml += '<span>' + deliveryData.shipping_price.toFixed(2).replace('.', ',') + ' \u20ac</span>';
+        tableHtml += '</div>';
+
+        // Add shipping to total
+        total = total + deliveryData.shipping_price;
+
         tableHtml += '<div class="summary-total">Celkom s DPH: ' + formatPrice(total) + '</div>';
         tableHtml += '</div>';
 
@@ -732,7 +750,8 @@
             lang: "sk",
             delivery_method: getDeliveryData().delivery_method,
             packeta_point_id: getDeliveryData().packeta_point_id,
-            packeta_point_name: getDeliveryData().packeta_point_name
+            packeta_point_name: getDeliveryData().packeta_point_name,
+            shipping_price: getDeliveryData().shipping_price
         };
 
         fetch("/api/orders", {
@@ -923,13 +942,15 @@
             return {
                 delivery_method: 'packeta_point',
                 packeta_point_id: selectedPacketaPoint.id,
-                packeta_point_name: selectedPacketaPoint.name + ', ' + selectedPacketaPoint.zip + ' ' + selectedPacketaPoint.city
+                packeta_point_name: selectedPacketaPoint.name + ', ' + selectedPacketaPoint.zip + ' ' + selectedPacketaPoint.city,
+                shipping_price: SHIPPING_PRICES.packeta_point
             };
         }
         return {
             delivery_method: 'courier',
             packeta_point_id: null,
-            packeta_point_name: null
+            packeta_point_name: null,
+            shipping_price: SHIPPING_PRICES.courier
         };
     }
 
