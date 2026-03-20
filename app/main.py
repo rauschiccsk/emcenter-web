@@ -4,6 +4,7 @@ import logging
 import os
 import re
 import smtplib
+import subprocess
 import time
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -229,6 +230,7 @@ async def homepage(request: Request):
             "request": request,
             "umami_website_id": UMAMI_WEBSITE_ID,
             "umami_script_url": UMAMI_SCRIPT_URL,
+            "version": _get_git_version(),
         },
     )
 
@@ -249,6 +251,37 @@ async def privacy(request: Request):
 async def health():
     """Health check endpoint."""
     return {"status": "ok", "service": "emcenter-web"}
+
+
+# --- Version ---
+def _get_git_version() -> str:
+    """Get latest git tag (version)."""
+    try:
+        return subprocess.check_output(
+            ["git", "describe", "--tags", "--abbrev=0"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return "0.1.0"
+
+
+def _get_git_commit() -> str:
+    """Get short git commit hash."""
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        ).strip()
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return "unknown"
+
+
+@app.get("/version")
+async def get_version():
+    """Return current version from git tag + commit hash."""
+    return {"version": _get_git_version(), "commit": _get_git_commit()}
 
 
 @app.post("/api/contact")
