@@ -41,8 +41,16 @@ jobs:
     needs: [lint, test]
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Docker build test
-        run: docker build -t emcenter-web:test .
+        run: |
+          VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.1.0")
+          COMMIT=$(git rev-parse --short HEAD)
+          docker build \
+            --build-arg APP_VERSION=$VERSION \
+            --build-arg APP_COMMIT=$COMMIT \
+            -t emcenter-web:test .
 
   deploy:
     runs-on: andros-ubuntu-emcenter
@@ -56,8 +64,11 @@ jobs:
         run: |
           cd /opt/emcenter-web-src
           git pull origin main
+          export APP_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "0.1.0")
+          export APP_COMMIT=$(git rev-parse --short HEAD)
           docker compose down
-          docker compose up -d --build
+          docker compose build --build-arg APP_VERSION=$APP_VERSION --build-arg APP_COMMIT=$APP_COMMIT
+          docker compose up -d
       - name: Verify health
         run: |
           sleep 5

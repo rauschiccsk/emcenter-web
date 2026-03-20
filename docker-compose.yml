@@ -1,6 +1,10 @@
 services:
   emcenter-web:
-    build: .
+    build:
+      context: .
+      args:
+        APP_VERSION: ${APP_VERSION:-dev}
+        APP_COMMIT: ${APP_COMMIT:-unknown}
     container_name: emcenter-web-staging
     ports:
       - "9163:8000"
