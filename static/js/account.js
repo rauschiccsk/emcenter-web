@@ -6,15 +6,15 @@
     "use strict";
 
     var STATUS_MAP = {
-        "new": "Nova",
-        "pending": "Caka na platbu",
-        "paid": "Zaplatena",
-        "processing": "Spracovava sa",
-        "shipped": "Odoslana",
-        "delivered": "Dorucena",
-        "cancelled": "Zrusena",
-        "failed": "Neuspesna",
-        "refunded": "Vratena"
+        "new": "Nová",
+        "pending": "Čaká na platbu",
+        "paid": "Zaplatená",
+        "processing": "Spracováva sa",
+        "shipped": "Odoslaná",
+        "delivered": "Doručená",
+        "cancelled": "Zrušená",
+        "failed": "Neúspešná",
+        "refunded": "Vrátená"
     };
 
     function translateStatus(status) {
@@ -249,6 +249,178 @@
         });
     }
 
+    // --- Expandable order detail state ---
+    var expandedOrders = {};
+
+    function loadOrderDetail(orderNumber) {
+        return fetch("/api/eshop/customers/orders/" + orderNumber, {
+            headers: { "Authorization": "Bearer " + token }
+        })
+        .then(function (resp) {
+            if (!resp.ok) throw new Error("Failed to load order detail");
+            return resp.json();
+        })
+        .catch(function (err) {
+            console.error("Error loading order detail:", err);
+            return null;
+        });
+    }
+
+    window.retryPayment = function (orderNumber, btn) {
+        btn.disabled = true;
+        btn.textContent = "Presmerovávam na platbu...";
+
+        fetch("/api/eshop/customers/orders/" + orderNumber + "/pay", {
+            method: "POST",
+            headers: {
+                "Authorization": "Bearer " + token,
+                "Content-Type": "application/json"
+            }
+        })
+        .then(function (resp) {
+            return resp.json().then(function (data) {
+                if (resp.ok && data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert(data.detail || "Chyba pri vytváraní platby");
+                    btn.disabled = false;
+                    btn.textContent = "Zaplatiť objednávku";
+                }
+            });
+        })
+        .catch(function () {
+            alert("Chyba pri vytváraní platby");
+            btn.disabled = false;
+            btn.textContent = "Zaplatiť objednávku";
+        });
+    };
+
+    function buildOrderDetailHTML(order) {
+        var html = '<div class="order-detail-content">';
+
+        // Items table
+        html += '<h4>Objednané produkty</h4>';
+        html += '<table class="order-items-table">';
+        html += '<thead><tr><th>Produkt</th><th>Množstvo</th><th>Cena</th></tr></thead>';
+        html += '<tbody>';
+
+        var items = order.items || [];
+        for (var i = 0; i < items.length; i++) {
+            var item = items[i];
+            var itemPrice = (item.total_price_vat !== undefined && item.total_price_vat !== null)
+                ? parseFloat(item.total_price_vat).toFixed(2).replace(".", ",")
+                : "-";
+            html += '<tr>';
+            html += '<td>' + escapeHtml(item.product_name || "-") + '</td>';
+            html += '<td class="text-center">' + (item.quantity || 1) + '</td>';
+            html += '<td class="text-right">' + itemPrice + ' €</td>';
+            html += '</tr>';
+        }
+
+        html += '</tbody></table>';
+
+        // Addresses
+        html += '<div class="order-addresses">';
+
+        html += '<div class="address-block">';
+        html += '<h4>Dodacia adresa</h4>';
+        html += '<p>';
+        html += escapeHtml((order.shipping_first_name || "") + " " + (order.shipping_last_name || "")) + '<br>';
+        html += escapeHtml(order.shipping_street || "") + '<br>';
+        html += escapeHtml((order.shipping_postal_code || "") + " " + (order.shipping_city || "")) + '<br>';
+        html += escapeHtml(order.shipping_country || "");
+        html += '</p>';
+        html += '</div>';
+
+        if ((order.billing_street && order.billing_street !== order.shipping_street) ||
+            (order.billing_city && order.billing_city !== order.shipping_city)) {
+            html += '<div class="address-block">';
+            html += '<h4>Fakturačná adresa</h4>';
+            html += '<p>';
+            html += escapeHtml((order.billing_first_name || "") + " " + (order.billing_last_name || "")) + '<br>';
+            html += escapeHtml(order.billing_street || "") + '<br>';
+            html += escapeHtml((order.billing_postal_code || "") + " " + (order.billing_city || "")) + '<br>';
+            html += escapeHtml(order.billing_country || "");
+            html += '</p>';
+            html += '</div>';
+        }
+
+        html += '</div>'; // .order-addresses
+
+        // Company details
+        if (order.company_name) {
+            html += '<div class="company-details">';
+            html += '<h4>Firemné údaje</h4>';
+            html += '<p>';
+            html += '<strong>' + escapeHtml(order.company_name) + '</strong><br>';
+            html += 'IČO: ' + escapeHtml(order.company_ico || "-") + '<br>';
+            html += 'DIČ: ' + escapeHtml(order.company_dic || "-") + '<br>';
+            html += 'IČ DPH: ' + escapeHtml(order.company_ic_dph || "-");
+            html += '</p>';
+            html += '</div>';
+        }
+
+        // Order notes
+        if (order.order_notes) {
+            html += '<div class="order-notes">';
+            html += '<h4>Poznámka k objednávke</h4>';
+            html += '<p>' + escapeHtml(order.order_notes) + '</p>';
+            html += '</div>';
+        }
+
+        // Shipping & Payment
+        html += '<div class="order-meta">';
+        var shippingLabel = order.shipping_method === "courier" ? "Kuriér na adresu" : (order.shipping_method === "packeta" ? "Packeta výdajné miesto" : (order.shipping_method || "-"));
+        var paymentLabel = order.payment_method === "card" ? "Platobná karta" : (order.payment_method || "-");
+        html += '<p><strong>Doprava:</strong> ' + escapeHtml(shippingLabel) + '</p>';
+        html += '<p><strong>Platba:</strong> ' + escapeHtml(paymentLabel) + '</p>';
+        html += '</div>';
+
+        // Retry payment button
+        if (order.payment_status === "pending" || order.status === "new") {
+            html += '<button class="btn btn-primary" onclick="retryPayment(\'' + escapeHtml(order.order_number) + '\', this)">Zaplatiť objednávku</button>';
+        }
+
+        html += '</div>'; // .order-detail-content
+
+        return html;
+    }
+
+    window.toggleOrderDetail = function (orderNumber, rowElement) {
+        var detailRow = rowElement.nextElementSibling;
+
+        if (expandedOrders[orderNumber]) {
+            // Collapse
+            delete expandedOrders[orderNumber];
+            if (detailRow && detailRow.classList.contains("order-detail-row")) {
+                detailRow.remove();
+            }
+            rowElement.classList.remove("expanded");
+        } else {
+            // Expand
+            expandedOrders[orderNumber] = true;
+            rowElement.classList.add("expanded");
+
+            // Insert loading row
+            var loadingRow = document.createElement("tr");
+            loadingRow.className = "order-detail-row";
+            loadingRow.innerHTML = '<td colspan="4"><div class="order-detail-content"><p>Načítavam...</p></div></td>';
+            rowElement.after(loadingRow);
+
+            loadOrderDetail(orderNumber).then(function (detail) {
+                if (!detail) {
+                    alert("Chyba pri načítaní detailu objednávky");
+                    delete expandedOrders[orderNumber];
+                    rowElement.classList.remove("expanded");
+                    loadingRow.remove();
+                    return;
+                }
+
+                loadingRow.innerHTML = '<td colspan="4">' + buildOrderDetailHTML(detail) + '</td>';
+            });
+        }
+    };
+
     // --- Load Orders ---
     function loadOrders() {
         fetch("/api/eshop/customers/orders", {
@@ -266,22 +438,23 @@
 
             var orders = data.orders || data;
             if (!Array.isArray(orders) || orders.length === 0) {
-                ordersEl.innerHTML = "<p>Zatial nemate ziadne objednavky.</p>";
+                ordersEl.innerHTML = "<p>Zatiaľ nemáte žiadne objednávky.</p>";
                 return;
             }
 
             var html = '<div class="orders-table-wrap"><table class="orders-table">';
-            html += "<thead><tr><th>Cislo</th><th>Datum</th><th>Suma</th><th>Stav</th></tr></thead><tbody>";
+            html += '<thead><tr><th>Číslo</th><th>Dátum</th><th>Suma</th><th>Stav</th></tr></thead><tbody>';
 
             for (var i = 0; i < orders.length; i++) {
                 var order = orders[i];
+                var orderNum = order.order_number || order.id || "-";
                 var date = order.created_at ? new Date(order.created_at).toLocaleDateString("sk-SK") : "-";
                 var total = formatPrice(order.total_amount_vat || order.total_amount || order.total_price, order.currency === "EUR" ? "\u20ac" : order.currency);
                 var rawStatus = order.payment_status || order.status || "-";
                 var status = escapeHtml(translateStatus(rawStatus));
 
-                html += "<tr>";
-                html += "<td>" + escapeHtml(order.order_number || order.id || "-") + "</td>";
+                html += '<tr class="order-row" data-order-number="' + escapeHtml(orderNum) + '">';
+                html += '<td><a href="#" class="order-number-link" onclick="event.preventDefault(); toggleOrderDetail(\'' + escapeHtml(orderNum) + '\', this.closest(\'tr\'));"><span class="expand-indicator">▶</span> ' + escapeHtml(orderNum) + '</a></td>';
                 html += "<td>" + date + "</td>";
                 html += "<td>" + total + "</td>";
                 html += "<td><span class='order-status order-status--" + escapeHtml(rawStatus) + "'>" + status + "</span></td>";
@@ -294,7 +467,7 @@
         .catch(function (err) {
             console.error("Error loading orders:", err);
             var ordersEl = document.getElementById("orders-data");
-            if (ordersEl) ordersEl.innerHTML = "<p>Nepodarilo sa nacitat objednavky.</p>";
+            if (ordersEl) ordersEl.innerHTML = "<p>Nepodarilo sa načítať objednávky.</p>";
         });
     }
 

@@ -2733,3 +2733,101 @@ ul {
         padding: 1.25rem;
     }
 }
+
+/* ============================
+   ORDER DETAIL — EXPANDABLE ROW
+   ============================ */
+.order-row {
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.order-row:hover {
+    background-color: #f8f9fa;
+}
+
+.order-row.expanded {
+    background-color: #e9ecef;
+}
+
+.order-number-link {
+    color: #2d5f2e;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.order-number-link:hover {
+    text-decoration: underline;
+}
+
+.expand-indicator {
+    display: inline-block;
+    transition: transform 0.2s;
+    margin-right: 5px;
+}
+
+.order-row.expanded .expand-indicator {
+    transform: rotate(90deg);
+}
+
+.order-detail-row {
+    background-color: #f8f9fa;
+}
+
+.order-detail-content {
+    padding: 20px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background: white;
+}
+
+.order-detail-content h4 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #2d5f2e;
+    font-size: 1.1rem;
+}
+
+.order-detail-content h4:first-child {
+    margin-top: 0;
+}
+
+.order-items-table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+}
+
+.order-items-table th {
+    background-color: #f8f9fa;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.order-items-table td {
+    padding: 10px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.order-addresses {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.address-block,
+.company-details,
+.order-notes,
+.order-meta {
+    margin-bottom: 15px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
