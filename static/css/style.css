@@ -479,6 +479,10 @@ ul {
     text-align: center;
     position: relative;
     transition: transform var(--transition), box-shadow var(--transition);
+    /* Equal height fix */
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
 .product-card:hover {
@@ -509,12 +513,15 @@ ul {
     font-weight: 700;
     color: var(--text);
     margin-bottom: 4px;
+    min-height: 2rem;
 }
 
 .product-subtitle {
     font-size: 0.9rem;
     color: var(--text-light);
     margin-bottom: 16px;
+    /* Equal height: push content below to bottom */
+    flex: 1;
 }
 
 .product-price {
@@ -1725,6 +1732,11 @@ ul {
 .product-image-wrap {
     text-align: center;
     margin-bottom: 16px;
+    /* Fixed height for consistent card alignment */
+    height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .product-img {
@@ -1756,6 +1768,15 @@ ul {
 @media (max-width: 480px) {
     .product-img-small {
         max-height: 140px;
+    }
+    .product-image-wrap {
+        height: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .product-image-wrap {
+        height: 220px;
     }
 }
 
