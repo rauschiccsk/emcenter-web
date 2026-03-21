@@ -80,6 +80,12 @@ ul {
     color: var(--primary) !important;
 }
 
+/* Brand name inside buttons should inherit button text color */
+.btn-primary .brand-name,
+.btn-white .brand-name {
+    color: inherit !important;
+}
+
 /* === Fade-in Animation === */
 .fade-in {
     opacity: 0;

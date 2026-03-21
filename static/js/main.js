@@ -450,13 +450,7 @@
         container.innerHTML = html;
     }
 
-    // Toggle VOP consent → enable/disable order button
-    window.toggleOrderButton = function () {
-        var btn = document.getElementById("submit-order-btn");
-        if (btn) {
-            btn.disabled = !document.getElementById("vop-consent").checked;
-        }
-    };
+    // VOP consent is handled in step 4 (agree_terms) — no duplicate in step 5
 
     // Expose to global scope for onclick handlers
     window.goToStep = function (step) {
