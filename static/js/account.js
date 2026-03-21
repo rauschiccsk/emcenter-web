@@ -636,6 +636,40 @@
                         alert("Niektoré produkty neboli pridané do košíka:\n\n" + unavailable.join("\n"));
                     }
 
+                    // Save reorder data for checkout prefill
+                    var shippingTypeMap = {
+                        "Kuriér na adresu": "courier",
+                        "kuriér na adresu": "courier",
+                        "courier": "courier",
+                        "Packeta": "packeta_point",
+                        "packeta_point": "packeta_point",
+                        "Výdajné miesto Packeta": "packeta_point"
+                    };
+                    var reorderData = {
+                        customer_name: detail.customer_name || detail.billing_name || "",
+                        customer_email: detail.customer_email || "",
+                        customer_phone: detail.customer_phone || "",
+                        billing_street: detail.billing_street || "",
+                        billing_city: detail.billing_city || "",
+                        billing_zip: detail.billing_zip || "",
+                        billing_country: detail.billing_country || "SK",
+                        shipping_different: !!(detail.shipping_street && detail.shipping_street !== detail.billing_street),
+                        shipping_name: detail.shipping_name || "",
+                        shipping_street: detail.shipping_street || "",
+                        shipping_city: detail.shipping_city || "",
+                        shipping_zip: detail.shipping_zip || "",
+                        shipping_country: detail.shipping_country || "SK",
+                        is_company: !!(detail.company_name),
+                        company_name: detail.company_name || "",
+                        company_ico: detail.company_ico || detail.ico || "",
+                        company_dic: detail.company_dic || detail.dic || "",
+                        company_ic_dph: detail.company_ic_dph || detail.eu_vat_number || "",
+                        delivery_method: shippingTypeMap[detail.shipping_type] || "courier",
+                        order_note: detail.note || ""
+                    };
+                    sessionStorage.setItem("emcenter_reorder", JSON.stringify(reorderData));
+                    console.log("Reorder data saved:", reorderData);
+
                     // Redirect to main page — main.js will pick up the cart
                     window.location.href = "/?reorder=1";
                 });

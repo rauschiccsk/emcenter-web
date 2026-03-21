@@ -1070,6 +1070,96 @@
         .catch(function () { /* silently fail — prefill is a convenience */ });
     }
 
+    // =========================================
+    // 12b. Reorder Prefill — from sessionStorage (higher priority than profile)
+    // =========================================
+    function prefillFromReorder() {
+        var reorderJson = sessionStorage.getItem('emcenter_reorder');
+        if (!reorderJson) return false;
+
+        var data;
+        try {
+            data = JSON.parse(reorderJson);
+        } catch (e) {
+            sessionStorage.removeItem('emcenter_reorder');
+            return false;
+        }
+        sessionStorage.removeItem('emcenter_reorder'); // One-time use
+        console.log('Prefilling checkout from reorder data:', data);
+
+        // Contact details
+        var nameEl = document.getElementById('customer_name');
+        var emailEl = document.getElementById('customer_email');
+        var phoneEl = document.getElementById('customer_phone');
+        if (nameEl && data.customer_name) nameEl.value = data.customer_name;
+        if (emailEl && data.customer_email) emailEl.value = data.customer_email;
+        if (phoneEl && data.customer_phone) phoneEl.value = data.customer_phone;
+
+        // Billing address
+        var streetEl = document.getElementById('billing_street');
+        var cityEl = document.getElementById('billing_city');
+        var zipEl = document.getElementById('billing_zip');
+        var countryEl = document.getElementById('billing_country');
+        if (streetEl && data.billing_street) streetEl.value = data.billing_street;
+        if (cityEl && data.billing_city) cityEl.value = data.billing_city;
+        if (zipEl && data.billing_zip) zipEl.value = data.billing_zip;
+        if (countryEl && data.billing_country) countryEl.value = data.billing_country;
+
+        // Shipping address (if different)
+        if (data.shipping_different) {
+            var sameShippingCb = document.getElementById('same_shipping');
+            if (sameShippingCb) {
+                sameShippingCb.checked = false;
+                var shippingFields = document.getElementById('shipping-address-fields');
+                if (shippingFields) shippingFields.style.display = 'block';
+            }
+            var shipName = document.getElementById('shipping_name');
+            var shipStreet = document.getElementById('shipping_street');
+            var shipCity = document.getElementById('shipping_city');
+            var shipZip = document.getElementById('shipping_zip');
+            var shipCountry = document.getElementById('shipping_country');
+            if (shipName && data.shipping_name) shipName.value = data.shipping_name;
+            if (shipStreet && data.shipping_street) shipStreet.value = data.shipping_street;
+            if (shipCity && data.shipping_city) shipCity.value = data.shipping_city;
+            if (shipZip && data.shipping_zip) shipZip.value = data.shipping_zip;
+            if (shipCountry && data.shipping_country) shipCountry.value = data.shipping_country;
+        }
+
+        // Company details
+        if (data.is_company && data.company_name) {
+            var compCheckbox = document.getElementById('is_company');
+            if (compCheckbox) {
+                compCheckbox.checked = true;
+                var compFields = document.getElementById('company-fields');
+                if (compFields) compFields.style.display = 'block';
+            }
+            var compName = document.getElementById('company_name');
+            var compIco = document.getElementById('company_ico');
+            var compDic = document.getElementById('company_dic');
+            var compIcDph = document.getElementById('company_ic_dph');
+            if (compName && data.company_name) compName.value = data.company_name;
+            if (compIco && data.company_ico) compIco.value = data.company_ico;
+            if (compDic && data.company_dic) compDic.value = data.company_dic;
+            if (compIcDph && data.company_ic_dph) compIcDph.value = data.company_ic_dph;
+        }
+
+        // Delivery method (Step 2)
+        if (data.delivery_method) {
+            var radioId = data.delivery_method === 'packeta_point' ? 'delivery-packeta' : 'delivery-courier';
+            var radio = document.getElementById(radioId);
+            if (radio) {
+                radio.checked = true;
+                radio.dispatchEvent(new Event('change'));
+            }
+        }
+
+        // Order note
+        var noteEl = document.getElementById('order_note');
+        if (noteEl && data.order_note) noteEl.value = data.order_note;
+
+        return true;
+    }
+
     // Update user icon state on page load
     updateUserIcon();
 
@@ -1086,8 +1176,11 @@
         loadCartState();
         if (cart.length > 0) {
             showCheckout();
-            // Pre-fill customer data from profile if logged in
-            prefillCheckoutFromProfile();
+            // Pre-fill: reorder data has priority, then profile
+            var didReorderPrefill = prefillFromReorder();
+            if (!didReorderPrefill) {
+                prefillCheckoutFromProfile();
+            }
         }
     } else {
         // On main page, restore cart display if items exist
