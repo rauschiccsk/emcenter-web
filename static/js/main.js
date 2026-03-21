@@ -643,52 +643,40 @@
         var container = document.getElementById('order-summary-final');
         if (!container) return;
 
-        var total = 0;
-        var tableHtml = '<div class="summary-section"><h4>Objednané produkty</h4>';
-        tableHtml += '<table class="summary-table"><thead><tr><th>Produkt</th><th>Ks</th><th>Cena</th></tr></thead><tbody>';
-        for (var i = 0; i < cart.length; i++) {
-            var item = cart[i];
-            var lineTotal = item.price * item.quantity;
-            total += lineTotal;
-            tableHtml += '<tr><td>' + escapeHtml(item.name) + '</td><td>' + item.quantity + '</td><td>' + formatPrice(lineTotal) + '</td></tr>';
-        }
-        tableHtml += '</tbody></table>';
-
-        // Shipping row
         var deliveryData = getDeliveryData();
-        var shippingLabel = deliveryData.delivery_method === 'packeta_point' ? 'Packeta vydajne miesto' : 'Kurier na adresu';
-        tableHtml += '<div class="summary-row shipping-row">';
-        tableHtml += '<span>' + shippingLabel + '</span>';
-        tableHtml += '<span>' + deliveryData.shipping_price.toFixed(2).replace('.', ',') + ' \u20ac</span>';
-        tableHtml += '</div>';
+        var shippingLabel = deliveryData.delivery_method === 'packeta_point' ? 'Packeta výdajné miesto' : 'Kuriér na adresu';
 
-        // Add shipping to total
-        total = total + deliveryData.shipping_price;
-
-        tableHtml += '<div class="summary-total">Celkom s DPH: ' + formatPrice(total) + '</div>';
-        tableHtml += '</div>';
-
-        // Contact info
-        tableHtml += '<div class="summary-section"><h4>Kontaktné údaje</h4>';
+        // 1) Kontaktné údaje
+        var tableHtml = '<div class="summary-section"><h4>Kontaktné údaje</h4>';
         tableHtml += '<p><strong>' + escapeHtml(document.getElementById('customer_name').value.trim()) + '</strong></p>';
         tableHtml += '<p>' + escapeHtml(document.getElementById('customer_email').value.trim()) + '</p>';
         tableHtml += '<p>' + escapeHtml(document.getElementById('customer_phone').value.trim()) + '</p>';
         tableHtml += '<p>' + escapeHtml(document.getElementById('billing_street').value.trim()) + ', ';
         tableHtml += escapeHtml(document.getElementById('billing_zip').value.trim()) + ' ';
         tableHtml += escapeHtml(document.getElementById('billing_city').value.trim()) + '</p>';
-        tableHtml += '</div>';
-
-        // Delivery
-        var deliveryData = getDeliveryData();
-        var deliveryLabel = deliveryData.delivery_method === 'packeta_point' ? 'Výdajné miesto Packeta' : 'Kuriér na adresu';
-        tableHtml += '<div class="summary-section"><h4>Spôsob dopravy</h4>';
-        tableHtml += '<p>' + deliveryLabel + '</p>';
         if (deliveryData.packeta_point_name) {
-            tableHtml += '<p>' + escapeHtml(deliveryData.packeta_point_name) + '</p>';
+            tableHtml += '<p>Výdajné miesto: ' + escapeHtml(deliveryData.packeta_point_name) + '</p>';
         }
         tableHtml += '</div>';
 
-        // Payment — only CARD via Comgate
+        // 2) Objednané produkty + shipping ako riadok tabuľky
+        var total = 0;
+        tableHtml += '<div class="summary-section"><h4>Objednané produkty</h4>';
+        tableHtml += '<table class="summary-table"><thead><tr><th>Produkt</th><th class="text-center">Ks</th><th class="text-end">Cena</th></tr></thead><tbody>';
+        for (var i = 0; i < cart.length; i++) {
+            var item = cart[i];
+            var lineTotal = item.price * item.quantity;
+            total += lineTotal;
+            tableHtml += '<tr><td>' + escapeHtml(item.name) + '</td><td class="text-center">' + item.quantity + '</td><td class="text-end">' + formatPrice(lineTotal) + '</td></tr>';
+        }
+        // Shipping as proper table row
+        tableHtml += '<tr><td>' + shippingLabel + '</td><td class="text-center">1</td><td class="text-end">' + formatPrice(deliveryData.shipping_price) + '</td></tr>';
+        total += deliveryData.shipping_price;
+        tableHtml += '</tbody></table>';
+        tableHtml += '<div class="summary-total">Celkom s DPH: ' + formatPrice(total) + '</div>';
+        tableHtml += '</div>';
+
+        // 3) Spôsob platby
         tableHtml += '<div class="summary-section"><h4>Spôsob platby</h4>';
         tableHtml += '<p>Platba kartou (Comgate)</p>';
         tableHtml += '</div>';
