@@ -276,12 +276,34 @@
     }
 
     // =========================================
-    // 7. Cart Functionality
+    // 7. Cart Functionality (sessionStorage persisted)
     // =========================================
     var cart = [];
     var cartSection = document.getElementById("kosik");
     var cartBody = document.getElementById("cart-body");
     var cartTotalPrice = document.getElementById("cart-total-price");
+
+    // --- Cart persistence via sessionStorage ---
+    function saveCartState() {
+        try {
+            sessionStorage.setItem('emcenter_cart', JSON.stringify(cart));
+        } catch (e) { /* quota exceeded or private mode */ }
+    }
+
+    function loadCartState() {
+        try {
+            var saved = sessionStorage.getItem('emcenter_cart');
+            if (saved) {
+                var parsed = JSON.parse(saved);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    cart = parsed;
+                }
+            }
+        } catch (e) { /* corrupted data */ }
+    }
+
+    // Load cart from sessionStorage on init
+    loadCartState();
 
     function updateCartBadge() {
         var badge = document.getElementById("cartBadge");
@@ -292,11 +314,17 @@
         }
     }
 
-    // Header cart click — scroll to checkout/cart
+    // Header cart click — scroll to checkout/cart or navigate
     var headerCartEl = document.getElementById("headerCart");
     if (headerCartEl) {
         headerCartEl.addEventListener("click", function (e) {
             e.preventDefault();
+            if (window.location.pathname === '/checkout') {
+                // Already on checkout — scroll to stepper
+                var stepperEl = document.getElementById('checkoutStepper');
+                if (stepperEl) stepperEl.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
             var target = document.getElementById("kosik");
             if (target && target.style.display !== "none") {
                 target.scrollIntoView({ behavior: "smooth" });
@@ -320,17 +348,20 @@
         if (!found) {
             cart.push({ sku: sku, name: name, price: price, quantity: quantity });
         }
+        saveCartState();
         trackEvent('add-to-cart', { sku: sku || '', name: name || '', price: price || 0 });
         updateCartDisplay();
     }
 
     function removeFromCart(sku) {
         cart = cart.filter(function (item) { return item.sku !== sku; });
+        saveCartState();
         updateCartDisplay();
     }
 
     function updateCartDisplay() {
         updateCartBadge();
+        if (!cartSection || !cartBody) return; // Not on main page (e.g. /checkout)
         if (cart.length === 0) {
             cartSection.style.display = "none";
             // Hide checkout if cart is empty
@@ -381,11 +412,12 @@
         return div.innerHTML;
     }
 
-    // Checkout button — scroll to checkout form
+    // Checkout button — navigate to standalone checkout page
     var checkoutBtn = document.getElementById("checkout-btn");
     if (checkoutBtn) {
         checkoutBtn.addEventListener("click", function () {
-            showCheckout();
+            saveCartState();
+            window.location.href = '/checkout';
         });
     }
 
@@ -486,7 +518,11 @@
     };
 
     window.prevStep = function () {
-        if (currentStep <= 1) return;
+        if (currentStep <= 1) {
+            // Step 1 back → return to main page
+            window.location.href = '/';
+            return;
+        }
         currentStep--;
         showCurrentStep();
     };
@@ -661,13 +697,22 @@
     }
 
     function showCheckout() {
-        if (cart.length === 0) return;
+        if (cart.length === 0) {
+            // If on checkout page with empty cart, redirect to main
+            if (window.location.pathname === '/checkout') {
+                window.location.href = '/';
+            }
+            return;
+        }
+        // On main page, show the inline checkout section
         var checkoutSection = document.getElementById("checkout");
-        if (!checkoutSection) return;
-        checkoutSection.style.display = "block";
+        if (checkoutSection) {
+            checkoutSection.style.display = "block";
+        }
 
         // Fill order summary for step 1
         var summary = document.getElementById("checkout-summary");
+        if (!summary) return;
         var total = 0;
         var tableHtml = '<table class="checkout-table"><thead><tr><th>Produkt</th><th>Ks</th><th>Cena</th></tr></thead><tbody>';
         for (var i = 0; i < cart.length; i++) {
@@ -684,8 +729,9 @@
         currentStep = 1;
         showCurrentStep();
 
-        // Smooth scroll to checkout
-        checkoutSection.scrollIntoView({ behavior: "smooth" });
+        // Smooth scroll to checkout (stepper or section)
+        var scrollTarget = document.getElementById("checkoutStepper") || checkoutSection;
+        if (scrollTarget) scrollTarget.scrollIntoView({ behavior: "smooth" });
     }
 
     // Form validation (called on final submit — stepper already validated per-step)
@@ -764,6 +810,8 @@
                     trackEvent('order-submitted', { order_number: result.data.order_number || 'unknown' });
                     if (isCompany) { trackEvent('company-order'); }
                     if (createAccount) { trackEvent('account-created', { source: 'checkout' }); }
+                    // Clear cart from sessionStorage after successful order
+                    try { sessionStorage.removeItem('emcenter_cart'); } catch (e) {}
                     window.location.href = result.data.payment_url;
                 } else {
                     showOrderError(result.data.detail || "Chyba pri vytváraní objednávky.");
@@ -952,5 +1000,21 @@
     // 12. Init — load products on DOMContentLoaded
     // =========================================
     loadProducts();
+
+    // =========================================
+    // 13. Auto-init checkout on /checkout page
+    // =========================================
+    if (window.location.pathname === '/checkout') {
+        // Restore cart from sessionStorage and auto-show checkout
+        loadCartState();
+        if (cart.length > 0) {
+            showCheckout();
+        }
+    } else {
+        // On main page, restore cart display if items exist
+        if (cart.length > 0) {
+            updateCartDisplay();
+        }
+    }
 
 })();

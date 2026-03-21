@@ -235,6 +235,19 @@ async def homepage(request: Request):
     )
 
 
+@app.get("/checkout", response_class=HTMLResponse)
+async def checkout_page(request: Request):
+    """Standalone checkout page — minimal header/footer, no marketing content."""
+    return templates.TemplateResponse(
+        "checkout.html",
+        {
+            "request": request,
+            "umami_website_id": UMAMI_WEBSITE_ID,
+            "umami_script_url": UMAMI_SCRIPT_URL,
+        },
+    )
+
+
 @app.get("/terms", response_class=HTMLResponse)
 async def terms(request: Request):
     """Render terms and conditions page."""

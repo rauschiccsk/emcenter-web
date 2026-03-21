@@ -17,6 +17,8 @@ services:
       - DB_USER=${DB_USER}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - NEX_API_BASE=${NEX_API_BASE}
+      - UMAMI_WEBSITE_ID=${UMAMI_WEBSITE_ID}
+      - UMAMI_SCRIPT_URL=${UMAMI_SCRIPT_URL}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]

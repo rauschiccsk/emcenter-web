@@ -2291,3 +2291,113 @@ ul {
     .withdrawal-form { border: none; padding: 0; background: none; }
     .legal-content { padding: 0; }
 }
+
+/* ============================
+   CHECKOUT PAGE (standalone /checkout)
+   ============================ */
+.checkout-page {
+    padding-top: 0;
+    background-color: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.checkout-header {
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0;
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+}
+
+.checkout-header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+}
+
+.checkout-header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.checkout-phone {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.checkout-phone:hover {
+    text-decoration: underline;
+}
+
+.checkout-main {
+    flex: 1;
+    padding: 40px 0;
+}
+
+.checkout-main .container {
+    max-width: 720px;
+}
+
+/* On checkout page, show the checkout section by default */
+.checkout-page .checkout-section {
+    display: block !important;
+    padding: 0;
+    background: transparent;
+}
+
+.checkout-footer {
+    background-color: var(--primary-dark);
+    color: #ffffff;
+    padding: 20px 0;
+    margin-top: auto;
+}
+
+.checkout-footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.checkout-footer p {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+.checkout-footer-links {
+    display: flex;
+    gap: 16px;
+}
+
+.checkout-footer-links a {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+.checkout-footer-links a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .checkout-footer-inner {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .checkout-phone {
+        font-size: 0.9rem;
+    }
+}
