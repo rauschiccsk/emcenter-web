@@ -402,10 +402,19 @@
         html += '<p><strong>Platba:</strong> ' + escapeHtml(paymentLabel) + '</p>';
         html += '</div>';
 
+        // Action buttons
+        html += '<div class="order-detail-actions">';
+
         // Retry payment button
         if (order.payment_status === "pending" || order.status === "new") {
             html += '<button class="btn btn-primary" onclick="retryPayment(\'' + escapeHtml(order.order_number) + '\', this)">Zaplatiť objednávku</button>';
         }
+
+        // Reorder button — always visible
+        html += '<button class="btn btn-reorder" onclick="reorderOrder(\'' + escapeHtml(order.order_number) + '\', this)">';
+        html += '\uD83D\uDD04 Objednať znova</button>';
+
+        html += '</div>'; // .order-detail-actions
 
         html += '</div>'; // .order-detail-content
 
@@ -537,6 +546,106 @@
             window.location.href = "/";
         });
     }
+
+    // --- Reorder: add order items to cart with CURRENT prices ---
+    window.reorderOrder = function (orderNumber, btn) {
+        btn.disabled = true;
+        var originalText = btn.textContent;
+        btn.textContent = "Načítavam\u2026";
+
+        // We may already have detail cached in the DOM, but fetch fresh to be safe
+        loadOrderDetail(orderNumber).then(function (detail) {
+            if (!detail || !detail.items) {
+                alert("Nepodarilo sa načítať detail objednávky");
+                btn.disabled = false;
+                btn.textContent = originalText;
+                return;
+            }
+
+            // Fetch current product catalog
+            return fetch("/api/products")
+                .then(function (resp) {
+                    if (!resp.ok) throw new Error("HTTP " + resp.status);
+                    return resp.json();
+                })
+                .then(function (data) {
+                    var products = data.products || data;
+                    if (!Array.isArray(products)) {
+                        throw new Error("Invalid products response");
+                    }
+
+                    // Build SKU → product map
+                    var productMap = {};
+                    for (var i = 0; i < products.length; i++) {
+                        productMap[products[i].sku] = products[i];
+                    }
+
+                    // Build new cart with CURRENT prices
+                    var cart = [];
+                    var unavailable = [];
+
+                    var orderItems = detail.items.filter(function (item) {
+                        return item.item_type !== "shipping";
+                    });
+
+                    for (var j = 0; j < orderItems.length; j++) {
+                        var item = orderItems[j];
+                        var product = productMap[item.sku];
+
+                        if (!product || !product.is_active) {
+                            unavailable.push(item.name || item.sku);
+                            continue;
+                        }
+
+                        if (product.stock_quantity !== undefined && product.stock_quantity !== null && product.stock_quantity < item.quantity) {
+                            if (product.stock_quantity <= 0) {
+                                unavailable.push(item.name || item.sku);
+                                continue;
+                            }
+                            // Partial: add what's available
+                            cart.push({
+                                sku: product.sku,
+                                name: product.name,
+                                price: product.price_vat,
+                                quantity: product.stock_quantity
+                            });
+                            unavailable.push((item.name || item.sku) + " (len " + product.stock_quantity + " ks)");
+                            continue;
+                        }
+
+                        cart.push({
+                            sku: product.sku,
+                            name: product.name,
+                            price: product.price_vat,
+                            quantity: item.quantity
+                        });
+                    }
+
+                    if (cart.length === 0) {
+                        alert("Žiadny produkt z tejto objednávky nie je momentálne dostupný.");
+                        btn.disabled = false;
+                        btn.textContent = originalText;
+                        return;
+                    }
+
+                    // Replace cart in sessionStorage (key = emcenter_cart)
+                    sessionStorage.setItem("emcenter_cart", JSON.stringify(cart));
+
+                    // Notify about unavailable products
+                    if (unavailable.length > 0) {
+                        alert("Niektoré produkty neboli pridané do košíka:\n\n" + unavailable.join("\n"));
+                    }
+
+                    // Redirect to main page — main.js will pick up the cart
+                    window.location.href = "/?reorder=1";
+                });
+        }).catch(function (err) {
+            console.error("Reorder error:", err);
+            alert("Nastala chyba pri opakovaní objednávky");
+            btn.disabled = false;
+            btn.textContent = originalText;
+        });
+    };
 
     // --- Init ---
     loadProfile();
