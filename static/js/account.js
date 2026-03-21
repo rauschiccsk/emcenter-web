@@ -298,49 +298,73 @@
     function buildOrderDetailHTML(order) {
         var html = '<div class="order-detail-content">';
 
-        // Items table
+        // Items table — filter out shipping items
+        var items = (order.items || []).filter(function (item) {
+            return item.item_type !== "shipping";
+        });
         html += '<h4>Objednané produkty</h4>';
         html += '<table class="order-items-table">';
         html += '<thead><tr><th>Produkt</th><th>Množstvo</th><th>Cena</th></tr></thead>';
         html += '<tbody>';
 
-        var items = order.items || [];
         for (var i = 0; i < items.length; i++) {
             var item = items[i];
-            var itemPrice = (item.total_price_vat !== undefined && item.total_price_vat !== null)
-                ? parseFloat(item.total_price_vat).toFixed(2).replace(".", ",")
+            var itemTotal = (item.unit_price_vat !== undefined && item.unit_price_vat !== null)
+                ? (parseFloat(item.unit_price_vat) * (item.quantity || 1)).toFixed(2).replace(".", ",")
                 : "-";
             html += '<tr>';
-            html += '<td>' + escapeHtml(item.product_name || "-") + '</td>';
+            html += '<td>' + escapeHtml(item.name || item.product_name || "-") + '</td>';
             html += '<td class="text-center">' + (item.quantity || 1) + '</td>';
-            html += '<td class="text-right">' + itemPrice + ' €</td>';
+            html += '<td class="text-right">' + itemTotal + ' €</td>';
             html += '</tr>';
         }
 
         html += '</tbody></table>';
 
-        // Addresses
-        html += '<div class="order-addresses">';
+        // Shipping address (use shipping_name or fallback to billing)
+        var shipName = (order.shipping_name || order.shipping_first_name || "").trim();
+        var shipName2 = (order.shipping_name2 || order.shipping_last_name || "").trim();
+        var shipStreet = order.shipping_street || "";
+        var shipCity = order.shipping_city || "";
+        var shipZip = order.shipping_zip || order.shipping_postal_code || "";
+        var shipCountry = order.shipping_country || "";
 
+        // If shipping address is empty, fall back to billing
+        if (!shipName && !shipStreet) {
+            shipName = (order.billing_name || order.billing_first_name || "").trim();
+            shipName2 = (order.billing_name2 || order.billing_last_name || "").trim();
+            shipStreet = order.billing_street || "";
+            shipCity = order.billing_city || "";
+            shipZip = order.billing_zip || order.billing_postal_code || "";
+            shipCountry = order.billing_country || "";
+        }
+
+        html += '<div class="order-addresses">';
         html += '<div class="address-block">';
         html += '<h4>Dodacia adresa</h4>';
         html += '<p>';
-        html += escapeHtml((order.shipping_first_name || "") + " " + (order.shipping_last_name || "")) + '<br>';
-        html += escapeHtml(order.shipping_street || "") + '<br>';
-        html += escapeHtml((order.shipping_postal_code || "") + " " + (order.shipping_city || "")) + '<br>';
-        html += escapeHtml(order.shipping_country || "");
+        html += escapeHtml((shipName + " " + shipName2).trim()) + '<br>';
+        if (shipStreet) html += escapeHtml(shipStreet) + '<br>';
+        html += escapeHtml((shipZip + " " + shipCity).trim()) + '<br>';
+        html += escapeHtml(shipCountry);
         html += '</p>';
         html += '</div>';
 
-        if ((order.billing_street && order.billing_street !== order.shipping_street) ||
-            (order.billing_city && order.billing_city !== order.shipping_city)) {
+        // Billing address — show if different from shipping
+        var billName = (order.billing_name || order.billing_first_name || "").trim();
+        var billStreet = order.billing_street || "";
+        var billCity = order.billing_city || "";
+        var billZip = order.billing_zip || order.billing_postal_code || "";
+        var billCountry = order.billing_country || "";
+
+        if (billStreet && (billStreet !== shipStreet || billCity !== shipCity)) {
             html += '<div class="address-block">';
             html += '<h4>Fakturačná adresa</h4>';
             html += '<p>';
-            html += escapeHtml((order.billing_first_name || "") + " " + (order.billing_last_name || "")) + '<br>';
-            html += escapeHtml(order.billing_street || "") + '<br>';
-            html += escapeHtml((order.billing_postal_code || "") + " " + (order.billing_city || "")) + '<br>';
-            html += escapeHtml(order.billing_country || "");
+            html += escapeHtml((billName + " " + (order.billing_name2 || "")).trim()) + '<br>';
+            html += escapeHtml(billStreet) + '<br>';
+            html += escapeHtml((billZip + " " + billCity).trim()) + '<br>';
+            html += escapeHtml(billCountry);
             html += '</p>';
             html += '</div>';
         }
@@ -353,25 +377,27 @@
             html += '<h4>Firemné údaje</h4>';
             html += '<p>';
             html += '<strong>' + escapeHtml(order.company_name) + '</strong><br>';
-            html += 'IČO: ' + escapeHtml(order.company_ico || "-") + '<br>';
-            html += 'DIČ: ' + escapeHtml(order.company_dic || "-") + '<br>';
-            html += 'IČ DPH: ' + escapeHtml(order.company_ic_dph || "-");
+            html += 'IČO: ' + escapeHtml(order.company_ico || order.ico || "-") + '<br>';
+            html += 'DIČ: ' + escapeHtml(order.company_dic || order.dic || "-") + '<br>';
+            html += 'IČ DPH: ' + escapeHtml(order.company_ic_dph || order.eu_vat_number || "-");
             html += '</p>';
             html += '</div>';
         }
 
         // Order notes
-        if (order.order_notes) {
+        var notes = order.note || order.order_notes || "";
+        if (notes) {
             html += '<div class="order-notes">';
             html += '<h4>Poznámka k objednávke</h4>';
-            html += '<p>' + escapeHtml(order.order_notes) + '</p>';
+            html += '<p>' + escapeHtml(notes) + '</p>';
             html += '</div>';
         }
 
         // Shipping & Payment
         html += '<div class="order-meta">';
-        var shippingLabel = order.shipping_method === "courier" ? "Kuriér na adresu" : (order.shipping_method === "packeta" ? "Packeta výdajné miesto" : (order.shipping_method || "-"));
-        var paymentLabel = order.payment_method === "card" ? "Platobná karta" : (order.payment_method || "-");
+        var shippingLabel = order.shipping_type || order.shipping_method || "-";
+        var paymentLabel = order.payment_method || "-";
+        if (paymentLabel === "CARD" || paymentLabel === "card") paymentLabel = "Platobná karta";
         html += '<p><strong>Doprava:</strong> ' + escapeHtml(shippingLabel) + '</p>';
         html += '<p><strong>Platba:</strong> ' + escapeHtml(paymentLabel) + '</p>';
         html += '</div>';
