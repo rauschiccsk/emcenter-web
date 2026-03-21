@@ -49,7 +49,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["GET", "POST"],
+    allow_methods=["GET", "POST", "PUT"],
     allow_headers=["*"],
 )
 
@@ -735,6 +735,74 @@ async def proxy_customer_orders(request: Request):
         return JSONResponse(
             status_code=502,
             content={"detail": "Backend service unavailable"},
+        )
+
+
+@app.put("/api/eshop/customers/profile")
+async def proxy_update_customer_profile(request: Request):
+    """Proxy PUT request to backend — update customer profile."""
+    try:
+        body = await request.json()
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            resp = await client.put(
+                f"{NEX_API_BASE}/api/eshop/customers/profile",
+                json=body,
+                headers={
+                    "Content-Type": "application/json",
+                    "X-Eshop-Token": ESHOP_TOKEN,
+                    "Authorization": request.headers.get("Authorization", ""),
+                },
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type="application/json",
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: PUT /api/eshop/customers/profile")
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+    except Exception as e:
+        logger.error("Proxy error PUT /api/eshop/customers/profile: %s", e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Proxy error"},
+        )
+
+
+@app.put("/api/eshop/customers/password")
+async def proxy_change_customer_password(request: Request):
+    """Proxy PUT request to backend — change customer password."""
+    try:
+        body = await request.json()
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            resp = await client.put(
+                f"{NEX_API_BASE}/api/eshop/customers/password",
+                json=body,
+                headers={
+                    "Content-Type": "application/json",
+                    "X-Eshop-Token": ESHOP_TOKEN,
+                    "Authorization": request.headers.get("Authorization", ""),
+                },
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type="application/json",
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: PUT /api/eshop/customers/password")
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+    except Exception as e:
+        logger.error("Proxy error PUT /api/eshop/customers/password: %s", e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Proxy error"},
         )
 
 

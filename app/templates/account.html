@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css?v=33c14f0">
+    <link rel="stylesheet" href="/static/css/style.css?v=profile-edit">
     {% if umami_website_id %}
     <script defer src="{{ umami_script_url }}" data-website-id="{{ umami_website_id }}"></script>
     {% endif %}
@@ -31,20 +31,127 @@
     <div class="container account-page">
         <h1>Môj účet</h1>
 
-        <section class="profile-section">
+        <!-- Success/Error messages -->
+        <div id="profile-message" class="message" style="display: none;"></div>
+        <div id="password-message" class="message" style="display: none;"></div>
+
+        <!-- Personal Details Form -->
+        <section class="account-section">
             <h2>Osobné údaje</h2>
-            <div id="profile-data">
-                <p class="loading-text">Načítavam údaje...</p>
-            </div>
+            <form id="profile-form">
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="first_name">Meno *</label>
+                        <input type="text" id="first_name" name="first_name" required lang="sk">
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Priezvisko *</label>
+                        <input type="text" id="last_name" name="last_name" required lang="sk">
+                    </div>
+                </div>
+
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Telefón</label>
+                        <input type="tel" id="phone" name="phone" lang="sk">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="street">Ulica a číslo</label>
+                    <input type="text" id="street" name="street" lang="sk">
+                </div>
+
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="city">Mesto</label>
+                        <input type="text" id="city" name="city" lang="sk">
+                    </div>
+                    <div class="form-group">
+                        <label for="postal_code">PSČ</label>
+                        <input type="text" id="postal_code" name="postal_code" lang="sk">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="country">Krajina</label>
+                    <input type="text" id="country" name="country" value="SK" readonly>
+                </div>
+            </form>
         </section>
 
-        <section class="orders-section">
+        <!-- Company Details Form (optional) -->
+        <section class="account-section">
+            <h2>Firemné údaje</h2>
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="is_company">
+                    Nakupujem na firmu
+                </label>
+            </div>
+
+            <div id="company-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="company_name">Názov firmy *</label>
+                    <input type="text" id="company_name" name="company_name" lang="sk">
+                </div>
+
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="company_ico">IČO *</label>
+                        <input type="text" id="company_ico" name="company_ico" lang="sk">
+                    </div>
+                    <div class="form-group">
+                        <label for="company_dic">DIČ</label>
+                        <input type="text" id="company_dic" name="company_dic" lang="sk">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="company_ic_dph">IČ DPH</label>
+                    <input type="text" id="company_ic_dph" name="company_ic_dph" lang="sk">
+                </div>
+            </div>
+
+            <button type="button" id="save-profile-btn" class="btn btn-primary" style="margin-top: 1.5rem;">Uložiť údaje</button>
+        </section>
+
+        <!-- Password Change Form -->
+        <section class="account-section">
+            <h2>Zmena hesla</h2>
+            <form id="password-form">
+                <div class="form-group">
+                    <label for="current_password">Aktuálne heslo *</label>
+                    <input type="password" id="current_password" name="current_password" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="new_password">Nové heslo * <small>(min. 8 znakov)</small></label>
+                    <input type="password" id="new_password" name="new_password" required minlength="8">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">Zopakovať nové heslo *</label>
+                    <input type="password" id="confirm_password" name="confirm_password" required minlength="8">
+                </div>
+
+                <button type="submit" id="change-password-btn" class="btn btn-primary" style="margin-top: 1rem;">Zmeniť heslo</button>
+            </form>
+        </section>
+
+        <!-- Order History -->
+        <section class="account-section">
             <h2>Moje objednávky</h2>
             <div id="orders-data">
                 <p class="loading-text">Načítavam objednávky...</p>
             </div>
         </section>
 
+        <!-- Action buttons -->
         <div class="account-actions">
             <a href="/" class="btn btn-outline">Späť do obchodu</a>
             <a href="#" id="logout-btn" class="btn btn-secondary">Odhlásiť sa</a>
@@ -63,6 +170,6 @@
     </div>
 </footer>
 
-<script src="/static/js/account.js?v=2"></script>
+<script src="/static/js/account.js?v=profile-edit"></script>
 </body>
 </html>
