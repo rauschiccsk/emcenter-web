@@ -248,6 +248,45 @@ async def checkout_page(request: Request):
     )
 
 
+@app.get("/login", response_class=HTMLResponse)
+async def login_page(request: Request):
+    """Customer login page."""
+    return templates.TemplateResponse(
+        "login.html",
+        {
+            "request": request,
+            "umami_website_id": UMAMI_WEBSITE_ID,
+            "umami_script_url": UMAMI_SCRIPT_URL,
+        },
+    )
+
+
+@app.get("/register", response_class=HTMLResponse)
+async def register_page(request: Request):
+    """Customer registration page."""
+    return templates.TemplateResponse(
+        "register.html",
+        {
+            "request": request,
+            "umami_website_id": UMAMI_WEBSITE_ID,
+            "umami_script_url": UMAMI_SCRIPT_URL,
+        },
+    )
+
+
+@app.get("/account", response_class=HTMLResponse)
+async def account_page(request: Request):
+    """Customer account page (profile + orders)."""
+    return templates.TemplateResponse(
+        "account.html",
+        {
+            "request": request,
+            "umami_website_id": UMAMI_WEBSITE_ID,
+            "umami_script_url": UMAMI_SCRIPT_URL,
+        },
+    )
+
+
 @app.get("/terms", response_class=HTMLResponse)
 async def terms(request: Request):
     """Render terms and conditions page."""

@@ -1012,18 +1012,82 @@
     }
 
     // =========================================
-    // 12. Init — load products on DOMContentLoaded
+    // 12. Auth State — User Icon + Checkout Pre-fill
+    // =========================================
+    function updateUserIcon() {
+        var token = sessionStorage.getItem('auth_token');
+        var userName = sessionStorage.getItem('customer_name');
+        var userIcon = document.getElementById('user-icon');
+        var userNameSpan = document.getElementById('user-name');
+
+        if (!userIcon) return;
+
+        if (token && userName) {
+            // Logged in
+            userIcon.href = '/account';
+            userIcon.title = 'Môj účet';
+            if (userNameSpan) {
+                userNameSpan.textContent = userName;
+                userNameSpan.style.display = 'inline';
+            }
+        } else {
+            // Not logged in
+            userIcon.href = '/login';
+            userIcon.title = 'Prihlásenie';
+            if (userNameSpan) {
+                userNameSpan.style.display = 'none';
+            }
+        }
+    }
+
+    function prefillCheckoutFromProfile() {
+        var token = sessionStorage.getItem('auth_token');
+        if (!token) return;
+
+        fetch('/api/eshop/customers/profile', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        })
+        .then(function (res) {
+            if (!res.ok) return null;
+            return res.json();
+        })
+        .then(function (profile) {
+            if (!profile) return;
+            var nameEl = document.getElementById('customer_name');
+            var emailEl = document.getElementById('customer_email');
+            var phoneEl = document.getElementById('customer_phone');
+            var streetEl = document.getElementById('billing_street');
+            var cityEl = document.getElementById('billing_city');
+            var zipEl = document.getElementById('billing_zip');
+
+            if (nameEl && !nameEl.value && profile.name) nameEl.value = profile.name;
+            if (emailEl && !emailEl.value && profile.email) emailEl.value = profile.email;
+            if (phoneEl && !phoneEl.value && profile.phone) phoneEl.value = profile.phone;
+            if (streetEl && !streetEl.value && profile.billing_street) streetEl.value = profile.billing_street;
+            if (cityEl && !cityEl.value && profile.billing_city) cityEl.value = profile.billing_city;
+            if (zipEl && !zipEl.value && profile.billing_zip) zipEl.value = profile.billing_zip;
+        })
+        .catch(function () { /* silently fail — prefill is a convenience */ });
+    }
+
+    // Update user icon state on page load
+    updateUserIcon();
+
+    // =========================================
+    // 13. Init — load products on DOMContentLoaded
     // =========================================
     loadProducts();
 
     // =========================================
-    // 13. Auto-init checkout on /checkout page
+    // 14. Auto-init checkout on /checkout page
     // =========================================
     if (window.location.pathname === '/checkout') {
         // Restore cart from sessionStorage and auto-show checkout
         loadCartState();
         if (cart.length > 0) {
             showCheckout();
+            // Pre-fill customer data from profile if logged in
+            prefillCheckoutFromProfile();
         }
     } else {
         // On main page, restore cart display if items exist
