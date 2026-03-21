@@ -83,7 +83,8 @@
             .then(function (result) {
                 if (result.ok && result.data.token) {
                     sessionStorage.setItem("auth_token", result.data.token);
-                    sessionStorage.setItem("customer_name", result.data.name || "");
+                    var customerName = result.data.name || ((result.data.first_name || "") + " " + (result.data.last_name || "")).trim();
+                    sessionStorage.setItem("customer_name", customerName);
                     sessionStorage.setItem("customer_email", result.data.email || email);
                     window.location.href = "/account";
                 } else {
@@ -135,11 +136,17 @@
             submitBtn.disabled = true;
             submitBtn.textContent = "Registrácia...";
 
+            // Split "Meno a priezvisko" into first_name / last_name
+            var nameParts = name.split(/\s+/);
+            var firstName = nameParts[0] || "";
+            var lastName = nameParts.slice(1).join(" ") || "";
+
             fetch("/api/eshop/customers/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    name: name,
+                    first_name: firstName,
+                    last_name: lastName,
                     email: email,
                     phone: phone || null,
                     password: password
@@ -154,7 +161,8 @@
                 if (result.ok && result.data.token) {
                     // Auto-login after registration
                     sessionStorage.setItem("auth_token", result.data.token);
-                    sessionStorage.setItem("customer_name", result.data.name || name);
+                    var regName = result.data.name || ((result.data.first_name || "") + " " + (result.data.last_name || "")).trim() || name;
+                    sessionStorage.setItem("customer_name", regName);
                     sessionStorage.setItem("customer_email", result.data.email || email);
                     window.location.href = "/account";
                 } else if (result.status === 409) {
