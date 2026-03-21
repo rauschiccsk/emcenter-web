@@ -6,6 +6,27 @@
     "use strict";
 
     // --- Helpers ---
+
+    /**
+     * Extracts a human-readable error message from API response data.
+     * Handles: string detail, array of validation errors, message field.
+     */
+    function extractErrorMessage(data, fallback) {
+        if (!data) return fallback || "Nastala neočakávaná chyba.";
+        // FastAPI string detail (e.g. 409 duplicate)
+        if (typeof data.detail === "string") return data.detail;
+        // FastAPI validation errors — array of {msg, loc, type}
+        if (Array.isArray(data.detail)) {
+            return data.detail.map(function (e) {
+                if (typeof e === "string") return e;
+                return e.msg || e.message || JSON.stringify(e);
+            }).join(", ");
+        }
+        if (typeof data.error === "string") return data.error;
+        if (typeof data.message === "string") return data.message;
+        return fallback || "Nastala neočakávaná chyba.";
+    }
+
     function showError(containerId, message) {
         var el = document.getElementById(containerId);
         if (el) {
@@ -88,7 +109,7 @@
                     sessionStorage.setItem("customer_email", result.data.email || email);
                     window.location.href = "/account";
                 } else {
-                    showError("login-error", result.data.detail || result.data.error || "Nesprávny email alebo heslo");
+                    showError("login-error", extractErrorMessage(result.data, "Nesprávny email alebo heslo"));
                     submitBtn.disabled = false;
                     submitBtn.textContent = "Prihlásiť sa";
                 }
@@ -170,7 +191,7 @@
                     submitBtn.disabled = false;
                     submitBtn.textContent = "Zaregistrovať sa";
                 } else {
-                    showError("register-error", result.data.detail || result.data.error || "Chyba pri registrácii");
+                    showError("register-error", extractErrorMessage(result.data, "Chyba pri registrácii"));
                     submitBtn.disabled = false;
                     submitBtn.textContent = "Zaregistrovať sa";
                 }
