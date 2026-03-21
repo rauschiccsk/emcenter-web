@@ -5,6 +5,30 @@
 (function () {
     "use strict";
 
+    var STATUS_MAP = {
+        "new": "Nová",
+        "pending": "Čaká na platbu",
+        "paid": "Zaplatená",
+        "processing": "Spracováva sa",
+        "shipped": "Odoslaná",
+        "delivered": "Doručená",
+        "cancelled": "Zrušená",
+        "failed": "Neúspešná",
+        "refunded": "Vrátená"
+    };
+
+    function translateStatus(status) {
+        if (!status) return "-";
+        return STATUS_MAP[status.toLowerCase()] || status;
+    }
+
+    function formatPrice(amount, currency) {
+        if (amount === null || amount === undefined) return "-";
+        var num = parseFloat(amount);
+        if (isNaN(num)) return "-";
+        return num.toFixed(2).replace(".", ",") + " " + (currency || "€");
+    }
+
     var token = sessionStorage.getItem("auth_token");
 
     // Redirect to login if not authenticated
@@ -36,22 +60,25 @@
         .then(function (profile) {
             if (!profile) return;
 
+            // Build full name from first_name + last_name
+            var fullName = ((profile.first_name || "") + " " + (profile.last_name || "")).trim();
+
             // Update header
             var nameDisplay = document.getElementById("user-name-display");
-            if (nameDisplay) nameDisplay.textContent = profile.name || "";
+            if (nameDisplay) nameDisplay.textContent = fullName;
 
             // Update profile section
             var profileEl = document.getElementById("profile-data");
             if (profileEl) {
                 var html = "";
-                html += "<p><strong>Meno:</strong> " + escapeHtml(profile.name) + "</p>";
+                html += "<p><strong>Meno:</strong> " + escapeHtml(fullName) + "</p>";
                 html += "<p><strong>Email:</strong> " + escapeHtml(profile.email) + "</p>";
                 if (profile.phone) {
                     html += "<p><strong>Telefón:</strong> " + escapeHtml(profile.phone) + "</p>";
                 }
-                if (profile.billing_street) {
-                    html += "<p><strong>Adresa:</strong> " + escapeHtml(profile.billing_street);
-                    if (profile.billing_city) html += ", " + escapeHtml(profile.billing_zip || "") + " " + escapeHtml(profile.billing_city);
+                if (profile.street) {
+                    html += "<p><strong>Adresa:</strong> " + escapeHtml(profile.street);
+                    if (profile.city) html += ", " + escapeHtml(profile.postal_code || "") + " " + escapeHtml(profile.city);
                     html += "</p>";
                 }
                 profileEl.innerHTML = html;
@@ -91,14 +118,15 @@
             for (var i = 0; i < orders.length; i++) {
                 var order = orders[i];
                 var date = order.created_at ? new Date(order.created_at).toLocaleDateString("sk-SK") : "-";
-                var total = order.total_price ? parseFloat(order.total_price).toFixed(2).replace(".", ",") + " \u20ac" : "-";
-                var status = escapeHtml(order.payment_status || order.status || "-");
+                var total = formatPrice(order.total_amount_vat || order.total_amount || order.total_price, order.currency === "EUR" ? "€" : order.currency);
+                var rawStatus = order.payment_status || order.status || "-";
+                var status = escapeHtml(translateStatus(rawStatus));
 
                 html += "<tr>";
                 html += "<td>" + escapeHtml(order.order_number || order.id || "-") + "</td>";
                 html += "<td>" + date + "</td>";
                 html += "<td>" + total + "</td>";
-                html += "<td><span class='order-status order-status--" + escapeHtml(order.payment_status || "unknown") + "'>" + status + "</span></td>";
+                html += "<td><span class='order-status order-status--" + escapeHtml(rawStatus) + "'>" + status + "</span></td>";
                 html += "</tr>";
             }
 
