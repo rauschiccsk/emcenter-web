@@ -659,6 +659,33 @@
         }
         tableHtml += '</div>';
 
+        // 1b) Firemné údaje (only if company order)
+        var isCompanySummary = document.getElementById('is_company') && document.getElementById('is_company').checked;
+        if (isCompanySummary) {
+            var companyNameVal = document.getElementById('company_name') ? document.getElementById('company_name').value.trim() : '';
+            if (companyNameVal) {
+                tableHtml += '<div class="summary-section"><h4>Firemné údaje</h4>';
+                tableHtml += '<p><strong>' + escapeHtml(companyNameVal) + '</strong></p>';
+                var icoVal = document.getElementById('company_ico') ? document.getElementById('company_ico').value.trim() : '';
+                var dicVal = document.getElementById('company_dic') ? document.getElementById('company_dic').value.trim() : '';
+                var icDphVal = document.getElementById('company_ic_dph') ? document.getElementById('company_ic_dph').value.trim() : '';
+                if (icoVal) tableHtml += '<p>IČO: ' + escapeHtml(icoVal) + '</p>';
+                if (dicVal) tableHtml += '<p>DIČ: ' + escapeHtml(dicVal) + '</p>';
+                if (icDphVal) tableHtml += '<p>IČ DPH: ' + escapeHtml(icDphVal) + '</p>';
+
+                // Fakturačná adresa firmy (ak je vyplnená)
+                var cbStreet = document.getElementById('company_billing_street') ? document.getElementById('company_billing_street').value.trim() : '';
+                var cbCity = document.getElementById('company_billing_city') ? document.getElementById('company_billing_city').value.trim() : '';
+                var cbZip = document.getElementById('company_billing_postal_code') ? document.getElementById('company_billing_postal_code').value.trim() : '';
+                if (cbStreet || cbCity || cbZip) {
+                    tableHtml += '<div class="mt-2"><strong>Fakturačná adresa</strong></div>';
+                    if (cbStreet) tableHtml += '<p>' + escapeHtml(cbStreet) + '</p>';
+                    if (cbZip || cbCity) tableHtml += '<p>' + escapeHtml(cbZip) + ' ' + escapeHtml(cbCity) + '</p>';
+                }
+                tableHtml += '</div>';
+            }
+        }
+
         // 2) Objednané produkty + shipping ako riadok tabuľky
         var total = 0;
         tableHtml += '<div class="summary-section"><h4>Objednané produkty</h4>';
