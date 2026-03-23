@@ -1025,23 +1025,56 @@
         var userName = sessionStorage.getItem('customer_name');
         var userIcon = document.getElementById('user-icon');
         var userNameSpan = document.getElementById('user-name');
+        var userDropdown = document.getElementById('user-dropdown');
+        var logoutLink = document.getElementById('logout-link');
 
         if (!userIcon) return;
 
         if (token && userName) {
-            // Logged in
-            userIcon.href = '/account';
-            userIcon.title = 'Môj účet';
+            // Logged in — click toggles dropdown
+            userIcon.href = '#';
+            userIcon.title = userName;
             if (userNameSpan) {
                 userNameSpan.textContent = userName;
                 userNameSpan.style.display = 'inline';
             }
+            userIcon.onclick = function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                if (userDropdown) {
+                    userDropdown.style.display = userDropdown.style.display === 'none' ? 'block' : 'none';
+                }
+            };
+            // Logout handler
+            if (logoutLink) {
+                logoutLink.onclick = function (e) {
+                    e.preventDefault();
+                    sessionStorage.removeItem('auth_token');
+                    sessionStorage.removeItem('customer_name');
+                    sessionStorage.removeItem('customer_email');
+                    sessionStorage.removeItem('customerProfile');
+                    window.location.href = '/';
+                };
+            }
+            // Close dropdown on outside click
+            document.addEventListener('click', function (e) {
+                if (userDropdown && userDropdown.style.display !== 'none') {
+                    var menu = document.getElementById('user-menu');
+                    if (menu && !menu.contains(e.target)) {
+                        userDropdown.style.display = 'none';
+                    }
+                }
+            });
         } else {
-            // Not logged in
+            // Not logged in — link to login
             userIcon.href = '/login';
             userIcon.title = 'Prihlásenie';
+            userIcon.onclick = null;
             if (userNameSpan) {
                 userNameSpan.style.display = 'none';
+            }
+            if (userDropdown) {
+                userDropdown.style.display = 'none';
             }
         }
     }

@@ -2461,6 +2461,49 @@ ul {
     color: var(--primary);
 }
 
+/* User Menu Dropdown */
+.user-menu {
+    position: relative;
+}
+
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.5rem;
+    min-width: 180px;
+    background: var(--bg-white);
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: var(--shadow-lg);
+    z-index: 1000;
+    overflow: hidden;
+}
+
+.user-dropdown-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: background var(--transition);
+}
+
+.user-dropdown-item:hover {
+    background: var(--bg);
+    color: var(--primary);
+}
+
+.user-dropdown-logout {
+    border-top: 1px solid #e0e0e0;
+    color: var(--text-light);
+}
+
+.user-dropdown-logout:hover {
+    color: #c62828;
+    background: #fff5f5;
+}
+
 /* ============================
    AUTH PAGES (Login / Register)
    ============================ */
