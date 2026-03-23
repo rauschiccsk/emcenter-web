@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css?v=invoice2">
+    <link rel="stylesheet" href="/static/css/style.css?v=ui-fixes1">
     {% if umami_website_id %}
     <script defer src="{{ umami_script_url }}" data-website-id="{{ umami_website_id }}"></script>
     {% endif %}
@@ -22,7 +22,6 @@
         <a href="/" class="logo">EM-1 s.r.o.</a>
         <div class="checkout-header-right">
             <span id="user-name-display" class="user-name-display"></span>
-            <a href="tel:+421905354537" class="checkout-phone">+421 905 354 537</a>
         </div>
     </div>
 </header>
@@ -35,7 +34,7 @@
         <div id="profile-message" class="message" style="display: none;"></div>
         <div id="password-message" class="message" style="display: none;"></div>
 
-        <!-- Personal Details Form -->
+        <!-- Personal Details -->
         <section class="account-section">
             <h2>Osobné údaje</h2>
             <form id="profile-form">
@@ -60,41 +59,43 @@
                         <input type="tel" id="phone" name="phone" lang="sk">
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label for="street">Ulica a číslo</label>
-                    <input type="text" id="street" name="street" lang="sk">
-                </div>
-
-                <div class="form-row two-cols">
-                    <div class="form-group">
-                        <label for="city">Mesto</label>
-                        <input type="text" id="city" name="city" lang="sk">
-                    </div>
-                    <div class="form-group">
-                        <label for="postal_code">PSČ</label>
-                        <input type="text" id="postal_code" name="postal_code" lang="sk">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="country">Krajina</label>
-                    <input type="text" id="country" name="country" value="SK" readonly>
-                </div>
             </form>
         </section>
 
-        <!-- Company Details Form (optional) -->
+        <!-- Billing Address + Company Details -->
         <section class="account-section">
-            <h2>Firemné údaje</h2>
+            <h2>Fakturačná adresa</h2>
+
             <div class="form-group">
+                <label for="street">Ulica a číslo</label>
+                <input type="text" id="street" name="street" lang="sk">
+            </div>
+
+            <div class="form-row two-cols">
+                <div class="form-group">
+                    <label for="city">Mesto</label>
+                    <input type="text" id="city" name="city" lang="sk">
+                </div>
+                <div class="form-group">
+                    <label for="postal_code">PSČ</label>
+                    <input type="text" id="postal_code" name="postal_code" lang="sk">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="country">Krajina</label>
+                <input type="text" id="country" name="country" value="SK" readonly>
+            </div>
+
+            <!-- Company toggle inside billing -->
+            <div class="form-group" style="margin-top: 1.5rem;">
                 <label class="checkbox-label">
                     <input type="checkbox" id="is_company">
                     Nakupujem na firmu
                 </label>
             </div>
 
-            <div id="company-fields" style="display: none;">
+            <div id="company-fields" class="company-fields" style="display: none;">
                 <div class="form-group">
                     <label for="company_name">Názov firmy *</label>
                     <input type="text" id="company_name" name="company_name" lang="sk">
@@ -114,6 +115,40 @@
                 <div class="form-group">
                     <label for="company_ic_dph">IČ DPH</label>
                     <input type="text" id="company_ic_dph" name="company_ic_dph" lang="sk">
+                </div>
+            </div>
+        </section>
+
+        <!-- Shipping Address -->
+        <section class="account-section">
+            <h2>Dodacia adresa</h2>
+            <div class="form-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="same_shipping" checked>
+                    Dodacia adresa je rovnaká ako fakturačná
+                </label>
+            </div>
+
+            <div id="shipping-address-fields" style="display: none;">
+                <div class="form-group">
+                    <label for="shipping_street">Ulica a číslo</label>
+                    <input type="text" id="shipping_street" name="shipping_street" lang="sk">
+                </div>
+
+                <div class="form-row two-cols">
+                    <div class="form-group">
+                        <label for="shipping_city">Mesto</label>
+                        <input type="text" id="shipping_city" name="shipping_city" lang="sk">
+                    </div>
+                    <div class="form-group">
+                        <label for="shipping_postal_code">PSČ</label>
+                        <input type="text" id="shipping_postal_code" name="shipping_postal_code" lang="sk">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="shipping_country">Krajina</label>
+                    <input type="text" id="shipping_country" name="shipping_country" value="SK" readonly>
                 </div>
             </div>
 
@@ -156,6 +191,14 @@
             <a href="/" class="btn btn-outline">Späť do obchodu</a>
             <a href="#" id="logout-btn" class="btn btn-secondary">Odhlásiť sa</a>
         </div>
+
+        <!-- Account Deletion -->
+        <section class="account-section account-danger-zone">
+            <h2>Zmazanie účtu</h2>
+            <p>Po zmazaní účtu stratíte prístup k histórii objednávok a uloženým údajom. Táto akcia je nevratná.</p>
+            <div id="delete-account-message" class="message" style="display: none;"></div>
+            <button type="button" id="delete-account-btn" class="btn btn-danger">Zmazať môj účet</button>
+        </section>
     </div>
 </main>
 
@@ -163,6 +206,7 @@
 <footer class="checkout-footer">
     <div class="container checkout-footer-inner">
         <p>&copy; 2026 EM-1 s.r.o.</p>
+        <a href="tel:+421905354537" class="checkout-footer-phone">+421 905 354 537</a>
         <nav class="checkout-footer-links">
             <a href="/vop" target="_blank">VOP</a>
             <a href="/ochrana-osobnych-udajov" target="_blank">Ochrana osobných údajov</a>
@@ -170,6 +214,6 @@
     </div>
 </footer>
 
-<script src="/static/js/account.js?v=invoice2"></script>
+<script src="/static/js/account.js?v=ui-fixes1"></script>
 </body>
 </html>

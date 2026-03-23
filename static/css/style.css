@@ -2346,18 +2346,6 @@ ul {
     gap: 16px;
 }
 
-.checkout-phone {
-    color: var(--primary);
-    font-weight: 600;
-    font-size: 0.95rem;
-    text-decoration: none;
-    white-space: nowrap;
-}
-
-.checkout-phone:hover {
-    text-decoration: underline;
-}
-
 .checkout-main {
     flex: 1;
     padding: 40px 0;
@@ -2412,14 +2400,23 @@ ul {
     text-decoration: underline;
 }
 
+.checkout-footer-phone {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: color var(--transition);
+}
+
+.checkout-footer-phone:hover {
+    color: #ffffff;
+}
+
 @media (max-width: 480px) {
     .checkout-footer-inner {
         flex-direction: column;
         text-align: center;
-    }
-
-    .checkout-phone {
-        font-size: 0.9rem;
     }
 }
 
@@ -2784,6 +2781,37 @@ ul {
     .account-section {
         padding: 1.25rem;
     }
+}
+
+.account-danger-zone {
+    border: 1px solid #f5c6cb;
+    background: #fff5f5;
+    margin-top: 3rem;
+}
+
+.account-danger-zone h2 {
+    color: #c0392b;
+}
+
+.account-danger-zone p {
+    color: var(--text-light);
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.btn-danger {
+    background-color: #c0392b;
+    color: #fff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color var(--transition);
+}
+
+.btn-danger:hover {
+    background-color: #a93226;
 }
 
 /* ============================

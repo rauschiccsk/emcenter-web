@@ -84,6 +84,20 @@
                 setValue("company_ic_dph", profile.company_ic_dph);
                 toggleCompanyFields();
             }
+
+            // Fill shipping address
+            var sameShipping = profile.shipping_same_as_billing !== false;
+            var sameCheckbox = document.getElementById("same_shipping");
+            if (sameCheckbox) {
+                sameCheckbox.checked = sameShipping;
+                toggleShippingFields();
+            }
+            if (!sameShipping) {
+                setValue("shipping_street", profile.shipping_street);
+                setValue("shipping_city", profile.shipping_city);
+                setValue("shipping_postal_code", profile.shipping_postal_code);
+                setValue("shipping_country", profile.shipping_country || "SK");
+            }
         })
         .catch(function (err) {
             console.error("Error loading profile:", err);
@@ -112,6 +126,21 @@
         }
     }
 
+    // --- Toggle Shipping Fields ---
+    function toggleShippingFields() {
+        var sameShipping = document.getElementById("same_shipping").checked;
+        var shippingFields = document.getElementById("shipping-address-fields");
+        if (shippingFields) {
+            shippingFields.style.display = sameShipping ? "none" : "block";
+        }
+        if (sameShipping) {
+            setValue("shipping_street", "");
+            setValue("shipping_city", "");
+            setValue("shipping_postal_code", "");
+            setValue("shipping_country", "SK");
+        }
+    }
+
     // --- Save Profile ---
     function saveProfile() {
         var btn = document.getElementById("save-profile-btn");
@@ -119,6 +148,8 @@
         btn.textContent = "Ukladam...";
 
         var isCompany = document.getElementById("is_company").checked;
+
+        var sameShipping = document.getElementById("same_shipping").checked;
 
         var data = {
             first_name: getVal("first_name"),
@@ -131,7 +162,12 @@
             company_name: isCompany ? getVal("company_name") : null,
             company_ico: isCompany ? getVal("company_ico") : null,
             company_dic: isCompany ? getVal("company_dic") : null,
-            company_ic_dph: isCompany ? getVal("company_ic_dph") : null
+            company_ic_dph: isCompany ? getVal("company_ic_dph") : null,
+            shipping_same_as_billing: sameShipping,
+            shipping_street: sameShipping ? null : getVal("shipping_street"),
+            shipping_city: sameShipping ? null : getVal("shipping_city"),
+            shipping_postal_code: sameShipping ? null : getVal("shipping_postal_code"),
+            shipping_country: sameShipping ? null : getVal("shipping_country")
         };
 
         // Validation
@@ -591,6 +627,11 @@
         companyCheckbox.addEventListener("change", toggleCompanyFields);
     }
 
+    var sameShippingCheckbox = document.getElementById("same_shipping");
+    if (sameShippingCheckbox) {
+        sameShippingCheckbox.addEventListener("change", toggleShippingFields);
+    }
+
     var saveBtn = document.getElementById("save-profile-btn");
     if (saveBtn) {
         saveBtn.addEventListener("click", saveProfile);
@@ -746,6 +787,49 @@
             btn.textContent = originalText;
         });
     };
+
+    // --- Delete Account ---
+    var deleteBtn = document.getElementById("delete-account-btn");
+    if (deleteBtn) {
+        deleteBtn.addEventListener("click", function () {
+            var confirmed = confirm(
+                "Naozaj chcete zmazať svoj účet?\n\n" +
+                "Stratíte prístup k histórii objednávok a uloženým údajom.\n" +
+                "Táto akcia je nevratná."
+            );
+            if (!confirmed) return;
+
+            deleteBtn.disabled = true;
+            deleteBtn.textContent = "Mažem účet...";
+
+            fetch("/api/eshop/customers/account", {
+                method: "DELETE",
+                headers: { "Authorization": "Bearer " + token }
+            })
+            .then(function (resp) {
+                return resp.json().then(function (data) {
+                    return { ok: resp.ok, status: resp.status, data: data };
+                });
+            })
+            .then(function (result) {
+                if (result.ok) {
+                    sessionStorage.clear();
+                    alert("Váš účet bol zmazaný.");
+                    window.location.href = "/";
+                } else {
+                    var msg = result.data.detail || "Chyba pri mazaní účtu";
+                    showMessage("delete-account-message", msg, "error");
+                    deleteBtn.disabled = false;
+                    deleteBtn.textContent = "Zmazať môj účet";
+                }
+            })
+            .catch(function () {
+                showMessage("delete-account-message", "Chyba pri mazaní účtu", "error");
+                deleteBtn.disabled = false;
+                deleteBtn.textContent = "Zmazať môj účet";
+            });
+        });
+    }
 
     // --- Init ---
     loadProfile();

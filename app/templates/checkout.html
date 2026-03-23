@@ -35,7 +35,6 @@
                     <a href="#" id="logout-link" class="user-dropdown-item user-dropdown-logout">Odhlásiť sa</a>
                 </div>
             </div>
-            <a href="tel:+421905354537" class="checkout-phone">+421 905 354 537</a>
         </div>
     </div>
 </header>
@@ -162,6 +161,57 @@
                     </div>
                 </div>
 
+                <!-- Firemné údaje (inside billing section) -->
+                <div class="form-row">
+                    <div class="form-group checkbox-group">
+                        <label>
+                            <input type="checkbox" id="is_company">
+                            Nakupujem na firmu
+                        </label>
+                    </div>
+                </div>
+                <div id="company-fields" class="company-fields" style="display: none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="company_name">Názov firmy *</label>
+                            <input type="text" id="company_name" name="company_name" placeholder="Názov firmy *">
+                            <span class="field-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row three-cols">
+                        <div class="form-group">
+                            <label for="company_ico">IČO *</label>
+                            <input type="text" id="company_ico" name="company_ico" placeholder="IČO *">
+                            <span class="field-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="company_dic">DIČ</label>
+                            <input type="text" id="company_dic" name="company_dic" placeholder="DIČ">
+                        </div>
+                        <div class="form-group">
+                            <label for="company_ic_dph">IČ DPH</label>
+                            <input type="text" id="company_ic_dph" name="company_ic_dph" placeholder="IČ DPH">
+                        </div>
+                    </div>
+                    <h4>Fakturačná adresa firmy (ak je odlišná)</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="company_billing_street">Ulica a číslo</label>
+                            <input type="text" id="company_billing_street" name="company_billing_street" placeholder="Ulica a číslo">
+                        </div>
+                    </div>
+                    <div class="form-row two-cols">
+                        <div class="form-group">
+                            <label for="company_billing_city">Mesto</label>
+                            <input type="text" id="company_billing_city" name="company_billing_city" placeholder="Mesto">
+                        </div>
+                        <div class="form-group">
+                            <label for="company_billing_postal_code">PSČ</label>
+                            <input type="text" id="company_billing_postal_code" name="company_billing_postal_code" placeholder="PSČ">
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Dodacia adresa -->
                 <div class="form-row">
                     <div class="form-group checkbox-group">
@@ -204,58 +254,6 @@
                                 <option value="SK" selected>Slovensko</option>
                             </select>
                             <input type="hidden" name="shipping_country" value="SK">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Firemné údaje -->
-                <div class="form-row">
-                    <div class="form-group checkbox-group">
-                        <label>
-                            <input type="checkbox" id="is_company">
-                            Nakupujem na firmu
-                        </label>
-                    </div>
-                </div>
-                <div id="company-fields" class="company-fields" style="display: none;">
-                    <div class="form-group-title">Firemné údaje</div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="company_name">Názov firmy *</label>
-                            <input type="text" id="company_name" name="company_name" placeholder="Názov firmy *">
-                            <span class="field-error"></span>
-                        </div>
-                    </div>
-                    <div class="form-row three-cols">
-                        <div class="form-group">
-                            <label for="company_ico">IČO *</label>
-                            <input type="text" id="company_ico" name="company_ico" placeholder="IČO *">
-                            <span class="field-error"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="company_dic">DIČ</label>
-                            <input type="text" id="company_dic" name="company_dic" placeholder="DIČ">
-                        </div>
-                        <div class="form-group">
-                            <label for="company_ic_dph">IČ DPH</label>
-                            <input type="text" id="company_ic_dph" name="company_ic_dph" placeholder="IČ DPH">
-                        </div>
-                    </div>
-                    <h4>Fakturačná adresa (ak je odlišná od dodacej)</h4>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="company_billing_street">Ulica a číslo</label>
-                            <input type="text" id="company_billing_street" name="company_billing_street" placeholder="Ulica a číslo">
-                        </div>
-                    </div>
-                    <div class="form-row two-cols">
-                        <div class="form-group">
-                            <label for="company_billing_city">Mesto</label>
-                            <input type="text" id="company_billing_city" name="company_billing_city" placeholder="Mesto">
-                        </div>
-                        <div class="form-group">
-                            <label for="company_billing_postal_code">PSČ</label>
-                            <input type="text" id="company_billing_postal_code" name="company_billing_postal_code" placeholder="PSČ">
                         </div>
                     </div>
                 </div>
@@ -350,6 +348,7 @@
 <footer class="checkout-footer">
     <div class="container checkout-footer-inner">
         <p>&copy; 2026 EM-1 s.r.o.</p>
+        <a href="tel:+421905354537" class="checkout-footer-phone">+421 905 354 537</a>
         <nav class="checkout-footer-links">
             <a href="/vop" target="_blank">VOP</a>
             <a href="/ochrana-osobnych-udajov" target="_blank">Ochrana osobných údajov</a>
