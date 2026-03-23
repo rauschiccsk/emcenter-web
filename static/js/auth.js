@@ -72,6 +72,12 @@
             return;
         }
 
+        // Show success banner after password reset
+        if (new URLSearchParams(window.location.search).get("reset") === "success") {
+            var banner = document.getElementById("reset-success-banner");
+            if (banner) banner.style.display = "block";
+        }
+
         loginForm.addEventListener("submit", function (e) {
             e.preventDefault();
             clearFieldErrors("login-form");

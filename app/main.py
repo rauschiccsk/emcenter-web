@@ -274,6 +274,32 @@ async def register_page(request: Request):
     )
 
 
+@app.get("/forgot-password", response_class=HTMLResponse)
+async def forgot_password_page(request: Request):
+    """Forgot password page."""
+    return templates.TemplateResponse(
+        "forgot_password.html",
+        {
+            "request": request,
+            "umami_website_id": UMAMI_WEBSITE_ID,
+            "umami_script_url": UMAMI_SCRIPT_URL,
+        },
+    )
+
+
+@app.get("/reset-password", response_class=HTMLResponse)
+async def reset_password_page(request: Request):
+    """Reset password page (with token from email link)."""
+    return templates.TemplateResponse(
+        "reset_password.html",
+        {
+            "request": request,
+            "umami_website_id": UMAMI_WEBSITE_ID,
+            "umami_script_url": UMAMI_SCRIPT_URL,
+        },
+    )
+
+
 @app.get("/account", response_class=HTMLResponse)
 async def account_page(request: Request):
     """Customer account page (profile + orders)."""
@@ -674,6 +700,72 @@ async def proxy_customer_login(request: Request):
         )
     except Exception as e:
         logger.error("Proxy error POST /api/eshop/customers/login: %s", e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+
+
+@app.post("/api/eshop/customers/password/reset-request")
+async def proxy_password_reset_request(request: Request):
+    """Proxy to NEX Automat — request password reset email."""
+    try:
+        body = await request.json()
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(
+                f"{NEX_API_BASE}/api/eshop/customers/password/reset-request",
+                headers={
+                    "X-Eshop-Token": ESHOP_TOKEN,
+                    "Content-Type": "application/json",
+                },
+                json=body,
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type="application/json",
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: POST /api/eshop/customers/password/reset-request")
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+    except Exception as e:
+        logger.error("Proxy error POST /api/eshop/customers/password/reset-request: %s", e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+
+
+@app.post("/api/eshop/customers/password/reset")
+async def proxy_password_reset(request: Request):
+    """Proxy to NEX Automat — reset password with token."""
+    try:
+        body = await request.json()
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.post(
+                f"{NEX_API_BASE}/api/eshop/customers/password/reset",
+                headers={
+                    "X-Eshop-Token": ESHOP_TOKEN,
+                    "Content-Type": "application/json",
+                },
+                json=body,
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type="application/json",
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: POST /api/eshop/customers/password/reset")
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+    except Exception as e:
+        logger.error("Proxy error POST /api/eshop/customers/password/reset: %s", e)
         return JSONResponse(
             status_code=502,
             content={"detail": "Backend service unavailable"},
