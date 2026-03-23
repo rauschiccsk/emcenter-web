@@ -486,13 +486,19 @@ async def create_order(request: Request):
                 "order_notes",
                 "TESTOVACIA OBJEDNAVKA – emcenter.isnex.eu staging",
             )
+        # Forward Authorization header for customer_id resolution
+        backend_headers = {
+            "X-Eshop-Token": ESHOP_TOKEN,
+            "Content-Type": "application/json",
+        }
+        auth_header = request.headers.get("Authorization")
+        if auth_header:
+            backend_headers["Authorization"] = auth_header
+
         async with httpx.AsyncClient(timeout=30.0) as client:
             resp = await client.post(
                 f"{NEX_API_BASE}/api/eshop/orders",
-                headers={
-                    "X-Eshop-Token": ESHOP_TOKEN,
-                    "Content-Type": "application/json",
-                },
+                headers=backend_headers,
                 json=body,
             )
             return Response(

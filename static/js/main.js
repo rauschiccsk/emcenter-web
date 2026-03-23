@@ -809,9 +809,15 @@
             shipping_price: getDeliveryData().shipping_price
         };
 
+        var orderHeaders = { "Content-Type": "application/json" };
+        var authToken = sessionStorage.getItem("auth_token");
+        if (authToken) {
+            orderHeaders["Authorization"] = "Bearer " + authToken;
+        }
+
         fetch("/api/orders", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: orderHeaders,
             body: JSON.stringify(payload)
         })
             .then(function (resp) {
