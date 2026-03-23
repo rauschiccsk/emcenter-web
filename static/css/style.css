@@ -2906,6 +2906,12 @@ ul {
     opacity: 0.6;
     cursor: wait;
 }
+.btn-invoice-sm {
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    border-width: 1.5px;
+    gap: 0.2rem;
+}
 
 .btn-reorder {
     display: inline-flex;

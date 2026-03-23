@@ -443,7 +443,7 @@
             // Insert loading row
             var loadingRow = document.createElement("tr");
             loadingRow.className = "order-detail-row";
-            loadingRow.innerHTML = '<td colspan="4"><div class="order-detail-content"><p>Načítavam...</p></div></td>';
+            loadingRow.innerHTML = '<td colspan="5"><div class="order-detail-content"><p>Načítavam...</p></div></td>';
             rowElement.after(loadingRow);
 
             loadOrderDetail(orderNumber).then(function (detail) {
@@ -455,7 +455,7 @@
                     return;
                 }
 
-                loadingRow.innerHTML = '<td colspan="4">' + buildOrderDetailHTML(detail) + '</td>';
+                loadingRow.innerHTML = '<td colspan="5">' + buildOrderDetailHTML(detail) + '</td>';
 
                 // Check invoice availability
                 fetch("/api/eshop/customers/orders/" + encodeURIComponent(orderNumber) + "/invoice/check", {
@@ -524,11 +524,13 @@
             }
 
             var html = '<div class="orders-table-wrap"><table class="orders-table">';
-            html += '<thead><tr><th>Číslo</th><th>Dátum</th><th>Suma</th><th>Stav</th></tr></thead><tbody>';
+            html += '<thead><tr><th>Číslo</th><th>Dátum</th><th>Suma</th><th>Stav</th><th>Faktúra</th></tr></thead><tbody>';
 
+            var orderNumbers = [];
             for (var i = 0; i < orders.length; i++) {
                 var order = orders[i];
                 var orderNum = order.order_number || order.id || "-";
+                orderNumbers.push(orderNum);
                 var date = order.created_at ? new Date(order.created_at).toLocaleDateString("sk-SK") : "-";
                 var total = formatPrice(order.total_amount_vat || order.total_amount || order.total_price, order.currency === "EUR" ? "\u20ac" : order.currency);
                 var rawStatus = order.payment_status || order.status || "-";
@@ -539,11 +541,29 @@
                 html += "<td>" + date + "</td>";
                 html += "<td>" + total + "</td>";
                 html += "<td><span class='order-status order-status--" + escapeHtml(rawStatus) + "'>" + status + "</span></td>";
+                html += '<td id="invoice-cell-' + escapeHtml(orderNum) + '"></td>';
                 html += "</tr>";
             }
 
             html += "</tbody></table></div>";
             ordersEl.innerHTML = html;
+
+            // Check invoice availability for all orders in parallel
+            Promise.all(orderNumbers.map(function (num) {
+                return fetch("/api/eshop/customers/orders/" + encodeURIComponent(num) + "/invoice/check", {
+                    headers: { "Authorization": "Bearer " + token }
+                })
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (d) {
+                    if (d && d.available) {
+                        var cell = document.getElementById("invoice-cell-" + num);
+                        if (cell) {
+                            cell.innerHTML = '<button class="btn-invoice btn-invoice-sm" onclick="downloadInvoice(\'' + num + '\', this)">\uD83D\uDCC4 PDF</button>';
+                        }
+                    }
+                })
+                .catch(function () { /* ignore */ });
+            }));
         })
         .catch(function (err) {
             console.error("Error loading orders:", err);
