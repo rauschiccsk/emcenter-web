@@ -876,6 +876,76 @@ async def proxy_customer_order_retry_payment(order_number: str, request: Request
         )
 
 
+@app.get("/api/eshop/customers/orders/{order_number}/invoice/check")
+async def proxy_customer_invoice_check(order_number: str, request: Request):
+    """Proxy to NEX Automat — check if invoice PDF is available."""
+    try:
+        fwd_headers = {"X-Eshop-Token": ESHOP_TOKEN}
+        auth = request.headers.get("Authorization")
+        if auth:
+            fwd_headers["Authorization"] = auth
+        async with httpx.AsyncClient(timeout=10.0) as client:
+            resp = await client.get(
+                f"{NEX_API_BASE}/api/eshop/customers/orders/{order_number}/invoice/check",
+                headers=fwd_headers,
+            )
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type="application/json",
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: GET /api/eshop/customers/orders/%s/invoice/check", order_number)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+    except Exception as e:
+        logger.error("Proxy error GET /api/eshop/customers/orders/%s/invoice/check: %s", order_number, e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+
+
+@app.get("/api/eshop/customers/orders/{order_number}/invoice")
+async def proxy_customer_invoice_download(order_number: str, request: Request):
+    """Proxy to NEX Automat — download invoice PDF."""
+    try:
+        fwd_headers = {"X-Eshop-Token": ESHOP_TOKEN}
+        auth = request.headers.get("Authorization")
+        if auth:
+            fwd_headers["Authorization"] = auth
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            resp = await client.get(
+                f"{NEX_API_BASE}/api/eshop/customers/orders/{order_number}/invoice",
+                headers=fwd_headers,
+            )
+            content_type = resp.headers.get("content-type", "application/octet-stream")
+            return Response(
+                content=resp.content,
+                status_code=resp.status_code,
+                media_type=content_type,
+                headers={
+                    k: v
+                    for k, v in resp.headers.items()
+                    if k.lower() in ("content-disposition",)
+                },
+            )
+    except (httpx.TimeoutException, httpx.ConnectError):
+        logger.error("NEX API unavailable: GET /api/eshop/customers/orders/%s/invoice", order_number)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+    except Exception as e:
+        logger.error("Proxy error GET /api/eshop/customers/orders/%s/invoice: %s", order_number, e)
+        return JSONResponse(
+            status_code=502,
+            content={"detail": "Backend service unavailable"},
+        )
+
+
 # --- Legal Pages ---
 
 # Path to knowledge base markdown files

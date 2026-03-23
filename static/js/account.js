@@ -410,6 +410,10 @@
             html += '<button class="btn btn-primary" onclick="retryPayment(\'' + escapeHtml(order.order_number) + '\', this)">Zaplatiť objednávku</button>';
         }
 
+        // Invoice download button — hidden by default, shown if available
+        html += '<button class="btn btn-invoice" id="invoice-btn-' + escapeHtml(order.order_number) + '" style="display:none" onclick="downloadInvoice(\'' + escapeHtml(order.order_number) + '\', this)">';
+        html += '\uD83D\uDCC4 Stiahnuť faktúru</button>';
+
         // Reorder button — always visible
         html += '<button class="btn btn-reorder" onclick="reorderOrder(\'' + escapeHtml(order.order_number) + '\', this)">';
         html += '\uD83D\uDD04 Objednať znova</button>';
@@ -452,8 +456,50 @@
                 }
 
                 loadingRow.innerHTML = '<td colspan="4">' + buildOrderDetailHTML(detail) + '</td>';
+
+                // Check invoice availability
+                fetch("/api/eshop/customers/orders/" + encodeURIComponent(orderNumber) + "/invoice/check", {
+                    headers: { "Authorization": "Bearer " + token }
+                })
+                .then(function (r) { return r.ok ? r.json() : null; })
+                .then(function (d) {
+                    if (d && d.available) {
+                        var btn = document.getElementById("invoice-btn-" + orderNumber);
+                        if (btn) btn.style.display = "";
+                    }
+                })
+                .catch(function () { /* ignore — button stays hidden */ });
             });
         }
+    };
+
+    window.downloadInvoice = function (orderNumber, btn) {
+        btn.disabled = true;
+        btn.textContent = "Sťahujem...";
+        fetch("/api/eshop/customers/orders/" + encodeURIComponent(orderNumber) + "/invoice", {
+            headers: { "Authorization": "Bearer " + token }
+        })
+        .then(function (resp) {
+            if (!resp.ok) throw new Error("HTTP " + resp.status);
+            return resp.blob();
+        })
+        .then(function (blob) {
+            var url = URL.createObjectURL(blob);
+            var a = document.createElement("a");
+            a.href = url;
+            a.download = "faktura-" + orderNumber + ".pdf";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            btn.disabled = false;
+            btn.textContent = "\uD83D\uDCC4 Stiahnuť faktúru";
+        })
+        .catch(function () {
+            alert("Nepodarilo sa stiahnuť faktúru.");
+            btn.disabled = false;
+            btn.textContent = "\uD83D\uDCC4 Stiahnuť faktúru";
+        });
     };
 
     // --- Load Orders ---
