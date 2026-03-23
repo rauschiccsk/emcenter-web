@@ -1,5 +1,5 @@
 /**
- * EM Center — Account Page
+ * EM Technológia — Account Page
  * Profile edit, company details, password change, orders.
  */
 (function () {

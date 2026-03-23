@@ -1,5 +1,5 @@
 /**
- * EM Center — Landing Page JavaScript
+ * EM Technológia — Landing Page JavaScript
  * Vanilla JS, no dependencies.
  * F2.2: API integration — dynamic products, cart, checkout
  * F4.4d: Lead capture + discount code validation

@@ -1,5 +1,5 @@
 """
-EM Center — Playwright E2E tests pre staging eshop.
+EM Technológia — Playwright E2E tests pre staging eshop.
 
 10 scenárov pokrývajúcich hlavné konverzné toky:
   1. Products load from API

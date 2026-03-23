@@ -1,4 +1,4 @@
-"""EM Center Web — OASIS EM-1 landing page."""
+"""EM Technológia Web — OASIS EM-1 landing page."""
 
 import logging
 import os
@@ -36,7 +36,7 @@ logger = logging.getLogger("emcenter")
 limiter = Limiter(key_func=get_remote_address)
 
 # --- FastAPI app ---
-app = FastAPI(title="EM Center Web", docs_url=None, redoc_url=None)
+app = FastAPI(title="EM Technológia Web", docs_url=None, redoc_url=None)
 app.state.limiter = limiter
 
 # CORS middleware
@@ -209,7 +209,7 @@ class ContactForm(BaseModel):
 # --- Startup ---
 @app.on_event("startup")
 def on_startup():
-    logger.info("EM Center Web starting up...")
+    logger.info("EM Technológia Web starting up...")
     if not smtp_available():
         logger.warning(
             "SMTP is not configured. Email notifications will be disabled. "

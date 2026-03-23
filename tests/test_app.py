@@ -1,4 +1,4 @@
-"""Tests for EM Center Web application — proxy endpoints, landing page, resilience."""
+"""Tests for EM Technológia Web application — proxy endpoints, landing page, resilience."""
 
 from tests.conftest import MOCK_ORDER_PAYLOAD, MOCK_LEAD_CREATED
 
@@ -15,9 +15,9 @@ class TestLandingPage:
         assert resp.status_code == 200
 
     def test_homepage_contains_title(self, client):
-        """Page contains EM Center in title."""
+        """Page contains EM-1 in title."""
         resp = client.get("/")
-        assert "EM Center" in resp.text
+        assert "EM-1" in resp.text
 
     def test_homepage_contains_products_section(self, client):
         """Page contains products section."""

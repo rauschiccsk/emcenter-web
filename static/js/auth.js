@@ -1,5 +1,5 @@
 /**
- * EM Center — Authentication (Login + Registration)
+ * EM Technológia — Authentication (Login + Registration)
  * Handles login and registration forms, sessionStorage-based token persistence.
  */
 (function () {

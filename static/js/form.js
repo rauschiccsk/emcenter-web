@@ -1,5 +1,5 @@
 /**
- * EM Center — Contact form AJAX handler
+ * EM Technológia — Contact form AJAX handler
  * Vanilla JS, no dependencies.
  */
 (function () {

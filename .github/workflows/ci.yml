@@ -1,4 +1,4 @@
-name: CI/CD — EM Center Web
+name: CI/CD — EM Technológia Web
 
 on:
   push:

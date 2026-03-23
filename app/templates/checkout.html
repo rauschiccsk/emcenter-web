@@ -149,11 +149,10 @@
                     </div>
                     <div class="form-group">
                         <label for="billing_country">Krajina *</label>
-                        <select id="billing_country" name="billing_country">
+                        <select id="billing_country" name="billing_country" disabled>
                             <option value="SK" selected>Slovensko</option>
-                            <option value="CZ">Česká republika</option>
-                            <option value="HU">Maďarsko</option>
                         </select>
+                        <input type="hidden" name="billing_country" value="SK">
                     </div>
                 </div>
 
@@ -195,11 +194,10 @@
                         </div>
                         <div class="form-group">
                             <label for="shipping_country">Krajina</label>
-                            <select id="shipping_country" name="shipping_country">
+                            <select id="shipping_country" name="shipping_country" disabled>
                                 <option value="SK" selected>Slovensko</option>
-                                <option value="CZ">Česká republika</option>
-                                <option value="HU">Maďarsko</option>
                             </select>
+                            <input type="hidden" name="shipping_country" value="SK">
                         </div>
                     </div>
                 </div>

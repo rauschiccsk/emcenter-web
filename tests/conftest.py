@@ -1,4 +1,4 @@
-"""Fixtures for EM Center Web tests."""
+"""Fixtures for EM Technológia Web tests."""
 
 import json
 from unittest.mock import AsyncMock, MagicMock, patch
